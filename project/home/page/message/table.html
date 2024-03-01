@@ -1,0 +1,317 @@
+<!-- 留言板 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="../../layui/css/layui.css">
+  <link rel="stylesheet" href="../../css/diy.css">
+  <style>
+    .layui-body {
+        overflow-x: scroll;
+    }
+    body{
+  background:none;
+    }
+    img {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+</head>
+<body>
+<div class="section1">
+  <!-- 内容主体区域 -->
+  <div class="manu message" style="padding: 15px;">
+    <form class="layui-form" action="">
+    <div class="form-input-box-t layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-inline input-i block">
+          <input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-inline input-i block">
+          <input type="text" name="nickname" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="buts layui-inline">
+        <button type="button" class="layui-btn" id="inquire"><span>查询</span></button>
+        <button type="button" class="layui-btn" id="reset"><span>重置</span></button>
+        <button type="button" class="layui-btn" id="delete" style="display: none"><span>删除</span></button>
+  <!--      <a href="./view_add.html" target="main_self_frame" type="button" class="layui-btn layui-btn-normal" style="display: none" id="add">新增/Add</a>-->
+      </div>
+    </form>
+    </div>
+    
+  </div>
+  <p id='message_text' class="table_name_text">数据列表</p>
+  <div class="table">
+    <table class="layui-hide" id="bulletinBoard" lay-filter="bulletinBoard"></table>
+
+    <script type="text/html" id="barDemo">
+      <button class="layui-btn layui-btn-xs layui-btn-sm" lay-event="detail"><span>详情</span></button>
+      {{# if(d.can_reply){ }}
+      <button class="layui-btn layui-btn-xs layui-btn-sm" lay-event="reply"><span>回复</span></button>
+      {{# } }}
+      {{# if(d.has_reply){ }}
+      <button class="layui-btn layui-btn-xs layui-btn-sm" lay-event="check_reply"><span>查看回复</span></button>
+      {{# } }}
+    </script>
+  </div>
+</div>
+<div id="reply_modal" style="display: none;">
+  <div style="padding:16px;">
+    <textarea id="reply"></textarea>
+  </div>
+</div>
+</body>
+<script src="../../js/jquery.2.1.1.min.js"></script>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/permissionSet.js"></script>
+
+
+<script>
+  var BaseUrl = baseUrl()
+  let tabNameText = $getUrlParams().tabName
+  $('#message_text').text(tabNameText+'列表')
+  layui.use(['element', 'layer', 'util', 'layedit'], function () {
+    var element = layui.element
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , layedit = layui.layedit
+            , $ = layui.$;
+
+    let personInfo = JSON.parse(sessionStorage.personInfo)
+    let user_group = personInfo.user_group
+    let token = sessionStorage.token || null
+  
+
+
+    // 权限判断
+    /**
+     * 获取路径对应操作权限 鉴权
+     * @param {String} action 操作名
+     */
+    function $check_action(path1, action = "get") {
+      var o = $get_power(path1);
+      if (o && o[action] != 0 && o[action] != false) {
+        return true;
+      }
+      return false;
+    }
+    let deletes = document.querySelector("#delete")
+    // let add = document.querySelector("#add")
+
+
+    if (user_group == "管理员" || $check_action('/message/table','del')) {
+      deletes.style.display = "inline-block"
+    }
+    // if (user_group == "管理员" || $check_action('/message/view')) {
+    //   add.style.display = "inline-block"
+    // }
+
+    /**
+     * 获取权限
+     * @param {String} path 路由路径
+     */
+    function $get_power(path) {
+      var list_data = JSON.parse(sessionStorage.list_data)
+      var list = list_data;
+      var obj;
+      for (var i = 0; i < list.length; i++) {
+        var o = list[i];
+        if (o.path === path) {
+          obj = o;
+          break;
+        }
+      }
+      return obj;
+    }
+
+    var path1
+
+    function getpath() {
+      var list_data = JSON.parse(sessionStorage.list_data)
+      for (var i = 0; i < list_data.length; i++) {
+        var o = list_data[i];
+        if (o.path === "/message/table") {
+          console.log(o.path);
+          path1 = o.path
+          $get_power(o.path)
+        }
+      }
+    }
+
+    getpath()
+
+    let url = BaseUrl+'/api/message/get_list';
+
+    if (!user_group || user_group === "游客"){
+      url = url+"?user_id=0";
+    }
+    if(user_group !== "管理员"){
+      url = url+"?user_id="+personInfo.user_id;
+    }
+
+    let reply = document.querySelector('#reply')
+
+
+    // 表单
+    table.render({
+      elem: '#bulletinBoard'
+      ,id:"bulletinBoard"
+      , toolbar: true
+      , url: url
+      ,headers: {
+        'x-auth-token': token,
+        'Content-Type': 'application/json'
+      }
+      , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+        layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+        //,curr: 5 //设定初始在第 5 页
+        , groups: 1 //只显示 1 个连续页码
+        , first: false //不显示首页
+        , last: false //不显示尾页
+
+      }
+      , cols: [[
+          { type: 'checkbox', fixed: 'left' }
+        , { field: 'avatar', width: '5%', title: '头像', sort: true,templet: function (d) {return "<div><img src=" + fullUrl(BaseUrl,d.avatar) + "></div>"} }
+        , { field: 'title', width: '12%', title: '标题', sort: true}
+        , { field: 'nickname', width: '8%', title: '昵称', sort: true}
+        // , { field: 'phone', width: '12%', title: '留言手机号', sort: true, fixed: 'left' }
+        // , { field: 'email', width: '12%', title: '留言邮箱', sort: true, fixed: 'left' }
+        , { field: 'content', width: '20%', title: '内容', sort: true }
+        , { field: 'create_time', width: '10%', title: '新增时间', sort: true, templet: "<div>{{layui.util.toDateString(d.create_time, 'yyyy-MM-dd HH:mm:ss')}}</div>" }
+        , {
+          field: 'update_time', width: '10%', title: '更新时间', sort: true, templet: "<div>{{layui.util.toDateString(d.update_time, 'yyyy-MM-dd HH:mm:ss')}}</div>"
+        }
+        , { field: 'operate', width: '15%', title: '操作', sort: true, fixed: 'right', toolbar: '#barDemo' }
+      ]]
+      , page: true,
+      request: {
+        limitName: 'size'
+      },
+      response: {
+        statusName: 'code', //规定返回/Back的状态码字段为code
+        statusCode: 200 //规定成功的状态码味200
+      },
+      parseData: function (res) {
+        for (let i = 0; i < res.result.list.length; i++) {
+          res.result.list[i].has_reply = false
+          res.result.list[i].can_reply = false
+            if (res.result.list[i].reply_state){
+              res.result.list[i].has_reply = true
+            }else {
+              if (user_group==='管理员'){
+                res.result.list[i].can_reply = true
+              }
+            }
+        }
+        return {
+          "code": 200,
+          "msg": "",
+          "count": res.result.count,
+          "data": res.result.list
+        }
+      },
+      where: { like: 0, size: 10 }
+    });
+
+    //监听行工具事件
+    table.on('tool(bulletinBoard)', function (obj) {
+      let data = obj.data;
+      let layEvent = obj.event
+      if (layEvent==='detail'){
+       window.location.href = "./view_detail.html?" + data.message_id;
+      }else if (layEvent==='check_reply'){
+        // window.location.href = "./view_reply.html?" + data.message_id;
+        reply.innerHTML = data.reply;
+        layer.open({
+          type: 1,
+          offset: '16px',
+          shade: false, // 不显示遮罩
+          content: '<div style="padding: 16px;">'+data.reply+'</div>',
+          title: '查看回复',
+          btn: ['关闭']
+        });
+      }else if(layEvent==='reply'){
+          //layedit.setContent(editor, data.reply)
+          //reply.innerHTML = data.reply;
+          
+          layer.open({
+            type: 1,
+            offset: '16px',
+            shade: false, // 不显示遮罩
+            title: '回复',
+            content: $('#reply_modal'), // 捕获的元素
+            btn: ['确定', '关闭'],
+            yes: function(index, layero, that){
+              let  replyContent=layedit.getContent(editorReply)
+               console.log(replyContent)
+              $.ajax({
+                url: BaseUrl + "/api/message/set?message_id="+data.message_id,
+                type: "post",
+                async: false,
+                data: {
+                  message_id:data.message_id,
+                  reply:replyContent,
+                  reply_state: 1
+                },
+                success: function (data) {
+                  layer.close(index);
+                  location.reload()
+                }
+              });
+            }
+          });
+          // 拿到本地存储的token
+  layedit.set({
+    uploadImage: {
+      url: BaseUrl + '/api/message/upload' //接口url
+      , type: 'post' //默认post
+    }
+  });
+ 
+   
+    let editorReply = layedit.build('reply', {
+      tool: [
+        'strong' //加粗
+         , 'italic' //斜体
+         , 'underline' //下划线
+         , 'del' //删除/Del线
+         , '|' //分割线
+         , 'left' //左对齐
+         , 'center' //居中对齐
+       , 'right' //右对齐
+       , 'link' //超链接
+         , 'unlink' //清除链接
+       , 'image' //插入图片
+         , 'help' //帮助
+       ]
+     });
+      }
+    });
+
+    // 请求参数：
+
+    let request = { like: 0, size: 10, page: 1, title: '',nickname: '', orderby: 'create_time desc' }
+
+    // 重置/Reset参数
+    let resetName = { like: 0, size: 10, page: 1 }
+    fun('bulletinBoard', BaseUrl+'/api/message/del', 'message_id', request, resetName)
+
+  })
+</script>
+
+</html>

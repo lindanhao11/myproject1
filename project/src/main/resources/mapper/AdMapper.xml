@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.demo.dao.AdMapper">
+
+    <resultMap type="com.project.demo.entity.Ad" id="AdResult">
+        <result property="adId"    column="ad_id"    />
+        <result property="display"    column="display"    />
+        <result property="hits"    column="hits"    />
+        <result property="location"    column="location"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="img"    column="img"    />
+        <result property="url"    column="url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAdVo">
+        select ad_id, display, hits, location, title, content, img, url, create_time, update_time from ad
+    </sql>
+
+    <select id="selectAdList" parameterType="com.project.demo.entity.Ad" resultMap="AdResult">
+        <include refid="selectAdVo"/>
+        <where>
+            <if test="display != null "> and display = #{display}</if>
+            <if test="hits != null "> and hits = #{hits}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+        </where>
+    </select>
+
+    <select id="selectAdById" parameterType="Integer" resultMap="AdResult">
+        <include refid="selectAdVo"/>
+        where ad_id = #{adId}
+    </select>
+
+    <insert id="insertAd" parameterType="com.project.demo.entity.Ad" useGeneratedKeys="true" keyProperty="adId">
+        insert into ad
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="display != null ">display,</if>
+            <if test="hits != null ">hits,</if>
+            <if test="location != null  and location != ''">location,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="img != null  and img != ''">img,</if>
+            <if test="url != null  and url != ''">url,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="display != null ">#{display},</if>
+            <if test="hits != null ">#{hits},</if>
+            <if test="location != null  and location != ''">#{location},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="img != null  and img != ''">#{img},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAd" parameterType="com.project.demo.entity.Ad">
+        update ad
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="display != null ">display = #{display},</if>
+            <if test="hits != null ">hits = #{hits},</if>
+            <if test="location != null  and location != ''">location = #{location},</if>
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="img != null  and img != ''">img = #{img},</if>
+            <if test="url != null  and url != ''">url = #{url},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where ad_id = #{adId}
+    </update>
+
+    <delete id="deleteAdById" parameterType="Integer">
+        delete from ad where ad_id = #{adId}
+    </delete>
+
+    <delete id="deleteAdByIds" parameterType="String">
+        delete from ad where ad_id in
+        <foreach item="adId" collection="array" open="(" separator="," close=")">
+            #{adId}
+        </foreach>
+    </delete>
+
+</mapper>

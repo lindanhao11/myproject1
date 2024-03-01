@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" class="register">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/diy.css">
+
+    <script src="../js/axios.min.js"></script>
+</head>
+
+<body>
+<article class="sign_in">
+    <div class="warp">
+     
+        <div class="layui-container">
+            <div class="layui-row">
+                
+            <div class="empty-box">
+                <div class="Left-empty-box"><span></span><span></span></div>
+                <div class="Right-empty-box"><span></span><span></span></div>
+            </div>
+                 <div class="register-form-box">
+                    
+                        <div class="resgister">
+                            <h1>注册</h1>
+                            <span></span>
+                        </div>
+                        <form class="layui-form" action="">
+                             <div class="form-box">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">账号：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                            placeholder="请输入账号"
+                                            class="layui-input" id="username">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">密码:</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="password" placeholder="5-16个字符" autocomplete="off"
+                                            class="layui-input"
+                                            id="password">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">确认密码:</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="password" placeholder="5-16个字符" autocomplete="off"
+                                            class="layui-input"
+                                            id="confirm_password">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">昵称：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                            placeholder="请输入昵称"
+                                            class="layui-input" id="nickname">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">邮箱：</label>
+                                <div class="layui-input-block">
+                                    <input type="email" name="title" lay-verify="title" autocomplete="off"
+                                            placeholder="例:test@.com"
+                                            class="layui-input" id="email">
+                                </div>
+                            </div>
+                             <div class="layui-upload">
+                                 <button type="button" class="layui-btn"
+                                         id="user_avatar">头像</button>
+                                 <div class="layui-upload-list">
+                                     <img class="layui-upload-img" id="user_avatar_img">
+                                     <p id="user_avatar_p"></p>
+                                 </div>
+                                 <div style="width: 95px;">
+                                     <div class="layui-progress layui-progress-big"
+                                          lay-showpercent="yes" lay-filter="demo">
+                                         <div class="layui-progress-bar" lay-percent=""></div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div style="margin-top: 10px;"></div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">身份:</label>
+                                <div class="layui-input-block">
+                                    <select name="interest" id="user_group" lay-filter="user_group">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                            </div>
+                             <div class="register-bottom">
+
+                                                                                                            <div id="student_users" class="test1 diy_sf" style="display: none">
+                                                                                                                                                                                                    <div class="layui-form-item" id="student_users_name_box">
+                                                        <label class="layui-form-label">姓名</label>
+                                                        <div class="layui-input-block">
+                                                            <input type="text" name="title" lay-verify="title"
+                                                                    autocomplete="off" placeholder="请输入姓名"
+                                                                    class="layui-input" id="student_users_name">
+                                                        </div>
+                                                    </div>
+                                                                                                                                                                                                                                                                                                <div class="layui-form-item" id="student_users_number_box">
+                                                            <label class="layui-form-label">编号</label>
+                                                            <div class="layui-input-block">
+                                                                <select name="interest" id="student_users_number" lay-filter="student_users_number">
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                    <div class="layui-form-item" id="student_users_category_box">
+                                                            <label class="layui-form-label">类别</label>
+                                                            <div class="layui-input-block">
+                                                                <input type="text" name="title" disabled lay-verify="title"
+                                                                        autocomplete="off" placeholder="请输入类别"
+                                                                        class="layui-input" id="student_users_category">
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                    <div class="layui-form-item input-box" id="student_users_product_number_box">
+                                                            <label class="layui-form-label">商品编号</label>
+                                                            <div class="layui-input-block select">
+                                                                <div id="student_users_product_number"></div>
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                    <div class="layui-form-item" id="student_users_gender_box">
+                                                            <label class="layui-form-label">性别</label>
+                                                            <div class="layui-input-block">
+                                                                <select name="interest" id="student_users_gender" lay-filter="gender">
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                    <div class="layui-form-item" id="student_users_resume_box">
+                                                            <label class="layui-form-label">简历</label>
+                                                            <div class="layui-upload-drag" id="enclosure">
+                                                                <i class="layui-icon"></i>
+                                                                <p>将文件拖到此处,或点击上传</p>
+                                                                <div class="layui-hide" id="student_users_resume">
+                                                                    <hr>
+                                                                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                    <div class="layui-form-item layui-form-text" id="student_users_remarks_box">
+                                                            <label class="layui-form-label">备注</label>
+                                                            <div class="layui-input-block">
+                                                        <textarea placeholder="请输入备注" class="layui-textarea"
+                                                                    id="student_users_remarks"></textarea>
+                                                            </div>
+                                                        </div>
+                                                                                                                                                                                                                                                                                                <!-- 上传图片开始 -->
+                                                        <div class="layui-form-item" id="student_users_business_license_box">
+                                                            <div class="layui-upload">
+                                                                <button type="button" class="layui-btn"
+                                                                        id="student_users_business_license">营业执照</button>
+                                                                <div class="layui-upload-list">
+                                                                    <img class="layui-upload-img" id="student_users_business_license_img">
+                                                                    <p id="student_users_business_license_p"></p>
+                                                                </div>
+                                                                <div style="width: 95px;">
+                                                                    <div class="layui-progress layui-progress-big"
+                                                                            lay-showpercent="yes" lay-filter="demo">
+                                                                        <div class="layui-progress-bar" lay-percent=""></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style="margin-top: 10px;"></div>
+                                                        </div>
+                                                        <!-- 上传图片结束 -->
+                                                        <!-- 上传文件 -->
+                                                                                                                                                                            </div>
+                                                                                                                                        <div id="teacher_users" class="test2 diy_sf" style="display: none">
+                                                                                                                                                                                                    <div class="layui-form-item" id="teacher_users_teacher_id_box">
+                                                        <label class="layui-form-label">教师工号</label>
+                                                        <div class="layui-input-block">
+                                                            <input type="text" name="title" lay-verify="title"
+                                                                    autocomplete="off" placeholder="请输入教师工号"
+                                                                    class="layui-input" id="teacher_users_teacher_id">
+                                                        </div>
+                                                    </div>
+                                                                                                                                                                                                                                                                                            <div class="layui-form-item" id="teacher_users_teachers_name_box">
+                                                        <label class="layui-form-label">教师姓名</label>
+                                                        <div class="layui-input-block">
+                                                            <input type="text" name="title" lay-verify="title"
+                                                                    autocomplete="off" placeholder="请输入教师姓名"
+                                                                    class="layui-input" id="teacher_users_teachers_name">
+                                                        </div>
+                                                    </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                        </form>
+                        <div class="layui-btn-container register-box">
+                            <div class="Register-btn">
+                                <a href="#" type="button" class="layui-btn layui-btn-normal" id="enroll">注册</a>
+                            </div>
+                            <div class="back-btn"> 
+                                <a href="../index.html" type="button" class="layui-btn layui-btn-normal">返回</a>
+                            </div> 
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+</body>
+
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../js/index.js"></script>
+<script src="../js/base.js"></script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <script src="https://maplemei.gitee.io/xm-select/xm-select.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    // layui模块导入
+    var BaseUrl = baseUrl()
+    layui.use(['element', 'layer', 'util', 'jquery'], function () {
+        var element = layui.element
+                , layer = layui.layer
+                , util = layui.util
+                , table = layui.table
+                , upload = layui.upload
+                , laydate = layui.laydate
+                , layedit = layui.layedit
+                , form = layui.form
+                , $ = layui.$;
+
+        let form1 = {
+            username: "",
+            password: "",
+            nickname: "",
+            email: "",
+            // phone: "",
+            user_group: "",
+            avatar: ""
+        }
+
+        let from_data = {}
+
+        // 获取用户单选框数据
+        async function enroll_select() {
+            let choose = [];
+            const {data: res} = await axios.get(BaseUrl + '/api/user_group/get_list?register_min=1&register_max=2')
+            let info = res;
+            let chooser = info.result.list;
+            for (let i = 0; i < chooser.length; i++) {
+                // 拿到单选框的父级节点
+                var select = document.getElementById('user_group');
+                var op = document.createElement("option");
+                op.setAttribute('source_table', chooser[i].source_table)
+                op.innerHTML = chooser[i].name
+                op.value = i + 1
+                // 新增/Add节点
+                select.appendChild(op)
+                layui.form.render("select");
+            }
+        }
+
+
+        let username = document.getElementById("username")
+        let password = document.getElementById("password")
+        let nickname = document.getElementById("nickname")
+        let email = document.getElementById("email")
+        // let phone = document.getElementById("phone")
+        let enroll = document.getElementById("enroll")
+
+
+                                    let test1 = document.querySelector('.test1')
+                                                let test2 = document.querySelector('.test2')
+                                                                                                                                            
+        let num = null
+        let source_table = null
+        let token = null
+
+        var userAvatarUploadInst = upload.render({
+            elem: '#user_avatar'
+            , url: BaseUrl + '/api/user/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , headers: {
+                'x-auth-token': token || ''
+            }, before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#user_avatar_img').attr('src', result); //图片链接（base64）
+                });
+
+                element.progress('demo', '0%'); //进度条复位
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                //上传成功的一些操作
+                //……
+                form1['avatar'] = res.result.url
+                $('#user_avatar_p').html(''); //置空上传失败的状态
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var user_avatar_p = $('#user_avatar_p');
+                user_avatar_p.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-sm layui-btn-xs demo-reload">重试</a>');
+                user_avatar_p.find('.demo-reload').on('click', function () {
+                    userAvatarUploadInst.upload();
+                });
+            }
+            //进度条
+            , progress: function (n, elem, e) {
+                element.progress('demo', n + '%'); //可配合 layui 进度条元素使用
+                if (n == 100) {
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+
+        // 下拉框的显示隐藏
+        layui.form.on('select(user_group)', function (data) {
+            from_data = {}
+            let text = data.elem[data.elem.selectedIndex].text
+            form1['user_group'] = text
+            source_table = $(data.elem).find("option:selected").attr("source_table")
+            num = data.value
+            let item = document.querySelectorAll('.diy_sf')
+
+            for (let i = 0; i < item.length; i++) {
+                if (source_table === item[i].id) {
+                    item[i].style.display = 'block'
+                } else {
+                    item[i].style.display = 'none'
+                }
+            }
+
+        });
+
+        // 数据
+                                                                                                                                                                                            inits(BaseUrl + '/api/classification_information/get_list?', "student_users_number","number")
+                            layui.form.on('select(student_users_number)', function (data) {
+                                from_data['number'] = data.elem[data.elem.selectedIndex].text;
+                                                            $.ajax({
+                                    url: BaseUrl + "/api/classification_information/get_obj?number="+data.elem[data.elem.selectedIndex].text,
+                                    type: "get",
+                                    async: false,
+                                    data: {},
+                                    success: function (data) {
+                                        if (typeof data === 'string'){
+                                            data = JSON.parse(data)
+                                        }
+                                        if (data && data.result && data.result.obj){
+                                                                                                                                                                                                                                                        from_data['category'] = data.result.obj.category;
+                                            document.querySelector('#student_users_category').value = data.result.obj.category;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                    }
+                                });
+                                                        })
+                                                                                                                                                                                                                    var xm_select_student_users_product_number;
+                            async function list_student_users_product_number() {
+                                let options = {
+                                    el: '#student_users_product_number',
+                                    name: 'xmselect_student_users_product_number',//表单的name属性
+                                    // layVerify: 'required',//必填项
+                                    //layVerType: 'tips',//提示类型 同layui
+                                    tips: '请选择',
+                                    toolbar: {//工具条,全选,清空,反选,自定义
+                                        show: true,
+                                        list: []
+                                    },
+                                    data: [],
+                                    on: function (v) {
+                                        let result = []
+                                        if (v.arr && v.arr.length>0){
+                                            for (let i=0;i<v.arr.length;i++){
+                                                result.push(v.arr[i].value);
+                                            }
+                                        }
+                                        from_data['product_number'] = result.toString();
+                                                                            }
+                                };
+                                xm_select_student_users_product_number = xmSelect.render(options)
+                                let {data: res} = await axios.get(BaseUrl + '/api/product_information/get_list')
+                                let arr = res.result.list
+                                let data = [];
+                                for (let i = 0; i < arr.length; i++) {
+                                    data.push({name: arr[i].product_number, value: arr[i].product_number})
+                                }
+                                xm_select_student_users_product_number.update({data: data})
+                            }
+                            list_student_users_product_number()
+                                                                                                                                    var list_student_users_gender = ['男','女']
+
+                            async function student_users_gender(list) {
+                                var student_users_gender = document.querySelector("#student_users_gender")
+                                var op1 = document.createElement("option");
+                                op1.value = '0'
+                                student_users_gender.appendChild(op1)
+                                // 收集数据 长度
+                                var count
+                                // 收集数据 数组
+                                var arr = []
+                                arr = list
+                                for (var i = 0; i < arr.length; i++) {
+                                    // 创建节点
+                                    var op = document.createElement("option");
+                                    // 给节点赋值
+                                    op.innerHTML = arr[i]
+                                    op.value = arr[i]
+                                    // 新增/Add节点
+                                    student_users_gender.appendChild(op)
+                                    layui.form.render("select");
+                                }
+                            }
+
+                            student_users_gender(list_student_users_gender)
+                            layui.form.on('select(student_users_gender)', function (data) {
+                                from_data['gender'] = data.elem[data.elem.selectedIndex].text;
+                            })
+
+
+                                                                                                                                                                                                                                                                                                    //常规使用 - 普通图片上传
+                            var uploadInst = upload.render({
+                                elem: '#student_users_business_license'
+                                , url: BaseUrl + '/api/notification_announcement/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+                                , headers: {
+                                    'x-auth-token': token || ''
+                                }, before: function (obj) {
+                                    //预读本地文件示例，不支持ie8
+                                    obj.preview(function (index, file, result) {
+                                        $('#student_users_business_license_img').attr('src', result); //图片链接（base64）
+                                    });
+
+                                    element.progress('demo', '0%'); //进度条复位
+                                    layer.msg('上传中', {icon: 16, time: 0});
+                                }
+                                , done: function (res) {
+                                    //如果上传失败
+                                    if (res.code > 0) {
+                                        return layer.msg('上传失败');
+                                    }
+                                    //上传成功的一些操作
+                                    //……
+                                    from_data['business_license'] = res.result.url
+                                    $('#student_users_business_license_p').html(''); //置空上传失败的状态
+                                }
+                                , error: function () {
+                                    //演示失败状态，并实现重传
+                                        var student_users_business_license_p = $('#student_users_business_license_p');
+                                        student_users_business_license_p.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-sm layui-btn-xs demo-reload">重试</a>');
+                                        student_users_business_license_p.find('.demo-reload').on('click', function () {
+                                        uploadInst.upload();
+                                    });
+                                }
+                                //进度条
+                                , progress: function (n, elem, e) {
+                                    element.progress('demo', n + '%'); //可配合 layui 进度条元素使用
+                                    if (n == 100) {
+                                        layer.msg('上传完毕', {icon: 1});
+                                    }
+                                }
+                            });
+                                                                                                                                                                                                                                                                                                                                                                                                                        
+        enroll.onclick = async function () {
+            form1['username'] = username.value;
+            form1['password'] = password.value;
+            form1['nickname'] = nickname.value;
+            form1['email'] = email.value;
+            // form1['phone'] = phone.value;
+
+
+            // 正则判断
+            var email_regular = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+            // var phone_regular = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+
+            // 表单验证
+            if (!username.value) {
+                layer.msg('账号不能为空');
+            } else if (username.value.length > 16 || username.value.length < 5) {
+                layer.msg('账号长度应为5到16个字符之间');
+            } else if (!password.value) {
+                layer.msg('密码不能为空');
+            } else if (password.value.length > 16 || password.value.length < 5) {
+                layer.msg('密码长度应为5到16个字符之间');
+            } else if (nickname.value && nickname.value.length > 12 || nickname.value.length < 2) {
+                layer.msg('昵称长度应为2个字符到12个字符之间');
+            } else if (email.value && !email_regular.test(email.value)) {
+                layer.msg('请输入正确的邮箱地址 例：test@test.com!');
+            }
+            // else if (phone.value && !phone_regular.test(phone.value)) {
+            //     layer.msg('请输入正确的手机号码 例：18955552312!');
+            // }
+            else if (password.value != confirm_password.value) {
+                layer.msg('<span>确认</span>密码与密码不一致！');
+            } else if (!form1.user_group) {
+                layer.msg('请选择用户组!');
+            }
+            else if(!form1.avatar){
+                layer.msg("请上传头像!");
+            }
+            else if (form1.user_group) {
+                                                        async function submit1() {
+                                                                                                                                        let student_users_name = document.querySelector('#student_users_name')
+                                        from_data['name'] = student_users_name.value
+                                                                                                                                                                                                            let student_users_number = document.querySelector('#student_users_number')
+                                        from_data['number'] = student_users_number.value
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let student_users_gender = document.querySelector('#student_users_gender')
+                                        from_data['gender'] = student_users_gender.value
+                                                                                                                                                                                                            upload.render({
+                                            elem: '#student_users_resume'
+                                            , url: BaseUrl + '/api/notification_announcement/upload'
+                                            , headers: {
+                                                'x-auth-token': token || ''
+                                            } //此处配置你自己的上传接口即可
+                                            , accept: 'file' //普通文件
+                                            , done: function (res) {
+                                                layer.msg('上传成功');
+                                                from_data['resume'] = res.result.url
+                                            }
+                                        });
+                                                                                                                                                                                                            let student_users_remarks = document.querySelector('#student_users_remarks')
+                                        from_data['remarks'] = student_users_remarks.innerHTML
+                                                                                                                                                                                                                    if (form1.user_group === "学生用户") {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+
+                        const {data: res} = await axios.post(BaseUrl + '/api/user/register?',
+                                form1, {
+                                    headers: {
+                                        'x-auth-token': token,
+                                        'Content-Type': 'application/json'
+                                    }
+                                }
+                        )
+                        if (res.error){
+                            layer.msg(res.error.message);
+                            return;
+                        }
+                        if (from_data) {
+                            Object.keys(from_data).forEach(item => {
+                                if (from_data[item] === '') delete from_data[item]
+                                if (from_data[item] === null) delete from_data[item]
+                            })
+
+                            const {data: res2} = await axios.get(BaseUrl + '/api/user/get_obj', {
+                                params: {
+                                    username: form1.username,
+                                    nickname: form1.nickname,
+                                    user_group: form1.user_group
+                                }
+                            })
+
+                            let user_id = res2.result.obj.user_id
+                            from_data['user_id'] = user_id
+                            if (user_id) {
+                                const {data: resss} = await axios.post(BaseUrl + `/api/student_users/add?`,
+                                        from_data, {
+                                            headers: {
+                                                'x-auth-token': token,
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                if (resss.result == 1) {
+                                    layer.msg('注册/Register成功');
+                                    setTimeout(() => {
+                                        window.location.replace("../index.html");
+                                    }, 1000);
+                                }else if(resss.error){
+                                    let user_id = from_data.user_id;
+                                    resss.get(BaseUrl + '/api/user/del', {user_id})
+                                    layer.msg(resss.error.message);
+                                }
+                            }
+                        }
+                    }
+
+                    if (form1.user_group === "学生用户") {
+                        await submit1()
+                    }
+                                                                            async function submit2() {
+                                                                                                                                        let teacher_users_teacher_id = document.querySelector('#teacher_users_teacher_id')
+                                        from_data['teacher_id'] = teacher_users_teacher_id.value
+                                                                                                                                                                                                            let teacher_users_teachers_name = document.querySelector('#teacher_users_teachers_name')
+                                        from_data['teachers_name'] = teacher_users_teachers_name.value
+                                                                                                                        if (form1.user_group === "教师用户") {
+                                                                                                                                                                                                                                                                                                                                                                            }
+
+                        const {data: res} = await axios.post(BaseUrl + '/api/user/register?',
+                                form1, {
+                                    headers: {
+                                        'x-auth-token': token,
+                                        'Content-Type': 'application/json'
+                                    }
+                                }
+                        )
+                        if (res.error){
+                            layer.msg(res.error.message);
+                            return;
+                        }
+                        if (from_data) {
+                            Object.keys(from_data).forEach(item => {
+                                if (from_data[item] === '') delete from_data[item]
+                                if (from_data[item] === null) delete from_data[item]
+                            })
+
+                            const {data: res2} = await axios.get(BaseUrl + '/api/user/get_obj', {
+                                params: {
+                                    username: form1.username,
+                                    nickname: form1.nickname,
+                                    user_group: form1.user_group
+                                }
+                            })
+
+                            let user_id = res2.result.obj.user_id
+                            from_data['user_id'] = user_id
+                            if (user_id) {
+                                const {data: resss} = await axios.post(BaseUrl + `/api/teacher_users/add?`,
+                                        from_data, {
+                                            headers: {
+                                                'x-auth-token': token,
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                if (resss.result == 1) {
+                                    layer.msg('注册/Register成功');
+                                    setTimeout(() => {
+                                        window.location.replace("../index.html");
+                                    }, 1000);
+                                }else if(resss.error){
+                                    let user_id = from_data.user_id;
+                                    resss.get(BaseUrl + '/api/user/del', {user_id})
+                                    layer.msg(resss.error.message);
+                                }
+                            }
+                        }
+                    }
+
+                    if (form1.user_group === "教师用户") {
+                        await submit2()
+                    }
+                                                                                                                                                                                                                                                                        }
+        }
+
+        var list_data = []
+
+        /**
+         * 获取路径对应操作权限 鉴权
+         * @param {String} action 操作名
+         */
+        function $check_register_field(action, field , path) {
+            let o = $get_power(path);
+            let auth;
+            if (o && o[action] != 0 && o[action] != false) {
+                auth = o["field_" + action];
+            }
+            if (auth) {
+                return auth.indexOf(field) !== -1;
+            }
+            return false;
+        }
+
+        /**
+         * 获取权限
+         * @param {String} path 路由路径
+         */
+        function $get_power(path) {
+            let list = list_data;
+            let obj;
+            for (let i = 0; i < list.length; i++) {
+                let o = list[i];
+                if (o.path === path) {
+                    obj = o;
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        function $get_list_data(){
+            if (!sessionStorage.personInfo){
+                $.ajax({
+                    url: BaseUrl + "/api/auth/get_list",
+                    type: "get",
+                    async: false,
+                    data: {
+                        user_group: "游客"
+                    },
+                    success: function (data) {
+                        if (typeof data === 'string'){
+                            data = JSON.parse(data)
+                        }
+                        if (data && data.result && data.result.list){
+                            list_data = data.result.list
+                            enroll_select();
+                            $check_list_data();
+                        }
+                    }
+                });
+            }else {
+                list_data = JSON.parse(sessionStorage.list_data);
+                enroll_select();
+                $check_list_data();
+            }
+
+        }
+
+        function $check_list_data(){
+                                                                    if (!$check_register_field('add','name','/student_users/view')){
+                        document.querySelector('#student_users_name_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','number','/student_users/view')){
+                        document.querySelector('#student_users_number_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','category','/student_users/view')){
+                        document.querySelector('#student_users_category_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','product_number','/student_users/view')){
+                        document.querySelector('#student_users_product_number_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','gender','/student_users/view')){
+                        document.querySelector('#student_users_gender_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','resume','/student_users/view')){
+                        document.querySelector('#student_users_resume_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','remarks','/student_users/view')){
+                        document.querySelector('#student_users_remarks_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','business_license','/student_users/view')){
+                        document.querySelector('#student_users_business_license_box').style.display = "none"
+                    }
+                                                                                                        if (!$check_register_field('add','teacher_id','/teacher_users/view')){
+                        document.querySelector('#teacher_users_teacher_id_box').style.display = "none"
+                    }
+                                        if (!$check_register_field('add','teachers_name','/teacher_users/view')){
+                        document.querySelector('#teacher_users_teachers_name_box').style.display = "none"
+                    }
+                                                                                                                                                                                                                                }
+
+        $get_list_data()
+    })
+
+    function getRandomImg() {
+        const num = Math.ceil(Math.random() * 5) + '.png'
+        return ('../img/' + num)
+    }
+</script>
+
+</html>

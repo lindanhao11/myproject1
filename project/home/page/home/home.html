@@ -1,0 +1,1269 @@
+<!--
+ * @Description:首页模板
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>样式开发测试测试测试测试单</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="stylesheet" href="../../layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="../../css/diy.css" media="all" />
+    <style type="text/css">
+          .robotic{
+        position: fixed;
+        top: 166px;
+        left: -4px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        z-index: 99999;
+      }
+
+      .robot_box{
+        top: 208px;
+        left: 38px;
+        position: fixed;
+        z-index: 9999;
+      }
+       .robot_box iframe{
+        width: 350px;
+      }
+               .support_entry {
+        position: fixed;
+        top: 400px;
+        right: 20px;
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        z-index: 99999;
+      }
+      .support_module {
+        position: absolute;
+        top: 2%;
+        left: 30%;
+        width: 700px;
+        height: 650px;
+        cursor: pointer;
+        z-index: 99999;
+      }
+      .support_module .container {
+        /* height: 650px; */
+        width: 700px;
+        height: 650px;
+        border-radius: 4px;
+        border: 0.5px solid #e0e0e0;
+        background-color: #f5f5f5;
+        /* display: flex;
+        flex-flow: column; */
+        overflow: hidden;
+        position: fixed;
+        /* top: 100px; */
+        padding: 0;
+        z-index: 99999999;
+      }
+      .support_module .small_css {
+        height: 40px;
+        width: 200px;
+        right: 0;
+        bottom: 0px;
+      }
+      .support_module .big_css {
+        top: 60px;
+        left: 50%;
+      }
+      .support_module .content {
+        width: calc(100% - 0px);
+        overflow-y: scroll;
+        height: 60%;
+      }
+      .support_module .content::-webkit-scrollbar {
+        display: none;
+      }
+      .support_module_title {
+        text-align: right;
+        height: 40px;
+        line-height: 40px;
+        border-bottom: 1px solid #ccc;
+      }
+      .support_module_title .title_btn {
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 20px;
+        color: #888;
+      }
+      .support_module .content:hover::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .support_module .bubble {
+        max-width: 400px;
+        padding: 10px;
+        border-radius: 5px;
+        position: relative;
+        color: #000;
+        word-wrap: break-word;
+        word-break: normal;
+      }
+      .chatItem{
+      
+        margin: 5px 0;
+      }
+      .item_left{
+        display: flex;
+      }
+      .support_module .item_left .bubble {
+        margin-left: 15px;
+        background-color: #fff;
+      }
+      .support_module .item_left .bubble:before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-top: 10px solid transparent;
+        border-right: 10px solid #fff;
+        border-bottom: 10px solid transparent;
+        left: -20px;
+      }
+      .support_module .item_right .bubble {
+        margin-right: 15px;
+        background-color: #9eea6a;
+      }
+      .support_module .item_right .bubble:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid #9eea6a;
+        border-top: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        left: none;
+
+        right: -20px;
+      }
+      .support_module .item {
+        margin-top: 15px;
+        display: flex;
+        width: 100%;
+      }
+      .support_module .item.item_right {
+        justify-content: flex-end;
+        min-width: 400px;
+      }
+      .support_module .item.item-center {
+        justify-content: center;
+      }
+      .support_module .item.item-center span {
+        font-size: 12px;
+        padding: 2px 4px;
+        color: #fff;
+        background-color: #dadada;
+        border-radius: 3px;
+        -moz-user-select: none; /*火狐*/
+        -webkit-user-select: none; /*webkit浏览器*/
+        -ms-user-select: none; /*IE10*/
+        -khtml-user-select: none; /*早期浏览器*/
+        user-select: none;
+      }
+
+      .support_module .avatar img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+      }
+      .support_module .input-area {
+        border-top: 0.5px solid #e0e0e0;
+        height: 16%;
+
+        background-color: #fff;
+      }
+      .support_module textarea {
+        flex: 1;
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        outline: none;
+        resize: none;
+        width: 102%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+      }
+      .support_module .button-area {
+        display: flex;
+        height: 50px;
+        line-height: 50px;
+        padding: 5px;
+        justify-content: flex-end;
+        text-align: right;
+        background: #fff;
+      }
+      .support_module .button-area button {
+        width: 80px;
+        height: 40px;
+        line-height: 40px;
+        border: none;
+        outline: none;
+        border-radius: 4px;
+        float: right;
+        cursor: pointer;
+        background: #9eea6a;
+        color: #333;
+        margin: 0px;
+      }
+      .title-s {
+        display: flex;
+        margin-right: 81px;
+      }
+      .tiles-text {
+        line-height: 2rem;
+        background-color: #c8c8c8;
+        position: relative;
+        left: 23px;
+        border-radius: 9px;
+        font-size: 13px;
+        padding-left: 8px;
+        padding-right: 8px;
+        color: #000000;
+      }
+
+      .tiles-text::before {
+        content: "";
+        position: absolute;
+        border: 11px solid #000;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-right-color: #c8c8c8;
+        left: -27px;
+        top: 6px;
+      }
+      .tishi {
+        position: fixed;
+        bottom: 60px;
+        width: 85px;
+        background-color: #3a4750;
+        color: #f1f1f1;
+        padding: 5px;
+        border-radius: 5px;
+        right: 31px;
+      }
+
+      .tishi::before {
+        left: 3px;
+        content: "";
+        position: absolute;
+        top: 31px;
+        border: 8px solid #000;
+        border-top-color: #3a4750;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+      }
+
+      .ip1 {
+        caret-color: #4e6ef2;
+        /* position: relative; */
+        z-index: 17;
+        box-sizing: border-box;
+        display: block;
+        padding: 10px 20px;
+        margin: 0 !important;
+        margin-left: 0 !important;
+        height: 48px;
+        line-height: 20px;
+        width: inherit;
+        border-right: 1px solid #c8c8c8;
+        font-size: 18px;
+        color: #1f1f1f;
+        transition: 0.3s;
+        font-family: PingFangSC-Regular, Tahoma, Helvetica, "Microsoft Yahei",
+          "微软雅黑", Arial, STHeiti;
+        border-radius: 0px;
+      }
+      .bt1 {
+        height: 40px;
+        line-height: 39px;
+        background: #4c3b3b00;
+        border-radius: 10px;
+        box-shadow: 1 6px 1px 2px #015249;
+        font-size: 16px;
+        font-weight: 800;
+        border: 0;
+        color: #f3f6f8;
+        cursor: pointer;
+        width: inherit;
+      }
+      .vw1 {
+        width: 350px;
+        height: 530px;
+        flex: 4;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        align-items: center;
+        margin-top: 50px;
+        position: relative;
+        background-color: #ffffff;
+        margin: 0 auto;
+
+        border: 1px solid;
+        border-radius: 5px;
+      }
+      .vw2 {
+        margin-bottom: 0px;
+        width: 350px;
+        background-color: #3a4750;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        bottom: 151px;
+        /* left: 5px; */
+        margin-left: 7px;
+        z-index: 9;
+      }
+      .vw3 {
+        margin-top: 7px;
+        display: flex;
+      }
+      .vw3 text {
+        background: #332323;
+        color: #f1f1f1;
+        border-radius: 6px;
+        line-height: 34px;
+      }
+
+      .vw4 {
+        display: flex;
+        position: relative;
+        width: 100%;
+        margin-top: 13px;
+      }
+      .vw4-l {
+        flex-direction: row-reverse;
+      }
+
+      .vw4-r {
+        flex-direction: row;
+      }
+      .lf {
+        display: flex;
+        flex-direction: row;
+      }
+      .vw4-l {
+        flex-direction: column;
+      }
+
+      .centers-ft {
+        width: 265px;
+        position: relative;
+        right: 18px;
+
+        border-radius: 10px;
+        display: flex;
+        flex-direction: inherit;
+      }
+
+      .centers {
+        line-height: 2rem;
+        border-radius: 10px;
+        /* border-top-left-radius: 0; */
+        /* border-bottom-left-radius: 2px; */
+        margin-right: 6px;
+        font-size: 13px;
+        color: #fff;
+        overflow: hidden;
+        background-color: #3a4750;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      .centers-ft::before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        right: -22px;
+        height: 0px;
+        width: 0px;
+        border: 11px solid #000;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: #3a4750;
+        border-right-color: transparent;
+      }
+
+      .nones-imgse {
+        border-radius: 5px !important;
+        margin-right: 5px;
+        position: relative;
+      }
+      .nones-imgse::before {
+        content: "";
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        background-image: url("../../img/you.jpg");
+        background-size: 100% cover;
+      }
+
+      .tittle {
+        background-color: #1208087d;
+        width: 100%;
+        text-align: center;
+        height: 50px;
+        display: block;
+        margin: 0;
+        line-height: 50px;
+        color: #ffffff;
+        margin-bottom: 0px;
+      }
+
+      /* // .centers-ft:nth-last-of-type{
+		// 	margin-bottom: 50px;
+		// } */
+
+      .nones-l {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+
+      .noes {
+        width: 35px;
+        height: 35px;
+        background-color: #aebecb;
+        border-radius: 5px;
+        margin-left: 5px;
+      }
+
+      html::-webkit-scrollbar-thumb:window-inactive {
+        background: rgb(160, 87, 221);
+      }
+
+      .Colse {
+        position: absolute;
+        right: 0px;
+        background-color: #22222285;
+        border-radius: 5px;
+        border: 1px;
+        color: #f1f1f1;
+        width: 58px !important;
+      }
+      .robotic{
+        position: fixed;
+        top: 166px;
+        left: -4px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        z-index: 99999;
+      }  	      
+
+         .ad_img img{
+        height: 100px;
+        width:100px;
+      }
+           </style>
+  </head>
+
+  <body>
+        <!--动态菜单-->
+        <div class="loop">
+          <div class="categries">
+            <ul id="dynamic_menu_list">
+            </ul>
+          </div>
+          <!-- 右侧轮播 -->
+          <div class="runimage">
+            <div class="layui-carousel" id="test1">
+              <div carousel-item id="rotation_list"></div>
+            </div>
+          </div>
+        </div>
+                <!-- 顶部广告 -->
+        <div id="top_adver_list_wrap" class="adver_list channels_list">
+          <div class="shelves">
+            <div
+              class="layui-row layui-col-space15 t_list_wrap"
+              id="top_adver_list_box"
+            >
+            </div>
+          </div>
+        </div>
+                <!--列表list-->
+                   <div id="goodsListWrap" class="channels_list">
+          <div class="channelsB">
+                     <h3 class="floorhd_tit">测试购物车 </h3>
+           <a class="floorhd_tit_more" href="../../page/goods/list.html?pageName=测试购物车"
+              >更多
+              <i class="layui-icon layui-icon-next"></i>
+            </a>
+		                 
+            
+          </div>
+          <div class="shelves">
+            <div
+              class="layui-row layui-col-space15"
+              id="goods_list_box"
+            >
+              <script id="goods_list" type="text/html" >
+                {{# layui.each(d.list, function(index, item){ }}
+                <div class="layui-col-md3 layui-col-sm3">
+                  <div class="hot-goods-box">
+                    <a href="../../page/goods/detail.html?goods_id={{=item.goods_id}}">
+                      <img src="{{=fullUrl(BaseUrl, item.img)}}" />
+                    </a>
+                    <a>
+                      <div class="cmdlist-text">
+                        <p class="info">
+                          {{= item.title}}
+                          <i class="layui-icon layui-icon-cart cartIcon"  onclick="add_cart({{=item.goods_id}})"></i>
+                        </p>
+                        <div class="price">
+                          <b>￥{{= item.price}}</b>
+                          <p>
+                            ¥
+                            <del>{{=item.price_ago}}</del>
+                          </p>
+                          <span class="flow">
+                            <i class="layui-icon layui-icon-heart"></i>
+                            {{=item.sales}}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+              </script>
+            </div>
+          </div>
+        </div>
+                         <!-- 中部广告 -->
+        <div id="middle_adver_list_wrap" class="adver_list channels_list">
+          <div class="shelves">
+            <div
+              class="layui-row layui-col-space15 t_list_wrap"
+              id="middle_adver_list_box"
+            >
+            </div>
+          </div>
+        </div>
+                          <div id="article_s" class="channels_list">
+            <div class="channelsB">
+              <h3 class="floorhd_tit"> 新闻资讯</h3>
+              <a class="floorhd_tit_more" href="../../page/article/list.html?pageName=新闻资讯"
+                >更多<i class="layui-icon layui-icon-next"></i
+              ></a>
+            </div>
+            <div class="shelves">
+              <div class="layui-row layui-col-space15" id="hot_articles_list">
+                <script id="articles_list" type="text/html">
+                  {{# layui.each(d.list, function(index, item){ }}
+                   <div class="layui-col-md4 layui-col-sm4">
+                      <div class="hot-goods-box">
+                  
+                        <a href="../../page/article/detail.html?article_id={{=item.article_id}}">
+                        <img src="{{=fullUrl(BaseUrl, item.img)}}" />
+                        </a>
+                      <a href="../../page/article/detail.html?article_id={{=item.article_id}}" class="cmdlist-dic">
+                        {{=item.title}}
+                      </a>
+
+                      <p class="info Like_opt">
+                        <span>
+                          <i class="layui-icon  layui-icon-praise cartIcon"></i
+                          >{{=item.praise_len||'0'}}</span
+                        >
+                        <a class="info_right"
+                          ><i class="layui-icon layui-icon-group"></i
+                          >{{=item.hits}}</a
+                        >
+                      </p>
+                      <p class="info_time">{{=item.create_time}}</p>
+                    </div>
+                  </div>
+                  
+                  {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+                </script>
+              </div>
+            </div>
+          </div>
+            
+                                                                <!-- 热门小说/公告/图书 -->
+          <!--列表list-->
+          <div id="course_information_list_wrap" class="channels_list_wrap channels_list">
+            <div class="channelsB">
+              <h3 class="floorhd_tit">课程信息</h3>
+              <a class="floorhd_tit_more" href="../../page/course_information/list.html?pageName=课程信息"
+                >更多
+                <i class="layui-icon layui-icon-next"></i>
+              </a>
+            </div>
+            <div class="shelves">
+             <!--t_list_box-->
+              <div
+                class="layui-row layui-col-space15 t_list_wrap"
+                id="course_information_list_box"
+              >
+                <script id="course_information_list_script" type="text/html">
+                  {{# layui.each(d.list, function(index, item){ }}
+                                       <div class="layui-col-md4 layui-col-sm4">
+                      <a  href="../../page/course_information/detail.html?course_information_id={{=item.course_information_id}}" class='course_information_list'>
+                        <div class="t_box">
+                                                   <div class="t_img t_box_right">
+                             <img src="{{=fullUrl(BaseUrl, item['curriculum'])}}" />
+                          </div>
+                                                    <div class="t_box_left">
+                                                                                                                                                                     <p class="t_title">课程名称:{{=item['course_name']}}</p>
+                                                                                                                                                                                                              <p class="t_title">课程编号:{{=item['course_id']}}</p>
+                                                                                                                                                                                                              <p class="t_title">任课教师:{{=item['teacher']}}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+                         
+                        </div>
+                        </a>
+                      </div>
+                                      {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+                </script>
+              </div>
+            </div>
+          </div>
+                                                                                                               <!-- 热门小说/公告/图书 -->
+          <!--列表list-->
+          <div id="notification_announcement_list_wrap" class="channels_list_wrap channels_list">
+            <div class="channelsB">
+              <h3 class="floorhd_tit">通知公告</h3>
+              <a class="floorhd_tit_more" href="../../page/notification_announcement/list.html?pageName=通知公告"
+                >更多
+                <i class="layui-icon layui-icon-next"></i>
+              </a>
+            </div>
+            <div class="shelves">
+             <!--t_list_box-->
+              <div
+                class="layui-row layui-col-space15 t_list_wrap"
+                id="notification_announcement_list_box"
+              >
+                <script id="notification_announcement_list_script" type="text/html">
+                  {{# layui.each(d.list, function(index, item){ }}
+                                       <div class="layui-col-md4 layui-col-sm4">
+                      <a  href="../../page/notification_announcement/detail.html?notification_announcement_id={{=item.notification_announcement_id}}" class='notification_announcement_list'>
+                        <div class="t_box">
+                                                   <div class="t_box_left">
+                                                                                                                                                                     <p class="t_title">发布人:{{=item['publisher']}}</p>
+                                                                                                                                                                                                              <p class="t_title">公告标题:{{=item['announcement_title']}}</p>
+                                                                                                                                                                                                              <p class="t_title">发布时间:{{=item['release_time']}}</p>
+                                                                                                                                                                                                                                                                    </div>
+                         
+                        </div>
+                        </a>
+                      </div>
+                                      {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+                </script>
+              </div>
+            </div>
+          </div>
+                                <!--底部广告 -->
+          <div id="bottom_adver_list_wrap" class="adver_list channels_list">
+            <div class="shelves">
+              <div
+                class="layui-row layui-col-space15 t_list_wrap"
+                id="bottom_adver_list_box"
+              >
+              </div>
+            </div>
+          </div>
+    
+   
+      
+		<!-- 智能机器人回复 -->
+		<img
+      class="support_entry"
+      src="../../img/support.jpg"
+      onclick="openSupportModal()"
+      alt=""
+    />
+    <div class="support_module" style="display: none">
+      <div class="container" class="small_css">
+        <div class="support_module_title">
+          <span class="title_btn" onclick="scaleSmall()"
+            ><i class="layui-icon layui-icon-close"></i>
+          </span>
+        </div>
+        <div class="content" id="support_content"></div>
+        <div class="input-area">
+          <textarea
+            name="text"
+            style="height: 50px"
+            id="sendValue"
+            placeholder="输入内容"
+          ></textarea>
+        </div>
+        <div class="button-area">
+          <button id="send-btn" onclick='sendChat()'>发 送</button>
+        </div>
+      </div>
+    </div>
+            <img class="robotic" src="../../img/robot.png"  onclick="showDialog(true)" alt=""/>
+			<div class="robot_box" style="display: none">
+       <div class="vw1">
+        <h3 class="tittle">智能机器人</h3>
+        <button onclick="showDialog(false)" class="Colse">关闭</button>
+          <iframe src="https://chat.weixk.com/#/chat" width="350px" height="500px"></iframe>
+      </div>
+    </div>
+     </body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script type="text/javascript">
+    var BaseUrl = baseUrl();
+    let token = sessionStorage.token;
+    let user_group = "";
+    let nickname = "";
+    let user_id = null;
+    
+    // 查看登录与否
+    if (sessionStorage.token != undefined) {
+     
+      user_group = JSON.parse(sessionStorage.personInfo).user_group;
+      user_id = JSON.parse(sessionStorage.personInfo).user_id;
+      nickname = JSON.parse(sessionStorage.personInfo).nickname;
+      
+    } else {
+      user_group = "游客";
+      user_id = null;
+    }
+    let rotationList = []; // 轮播图
+        let articlesList = []; // 商城咨询
+        			let robot_dialog_visible=false;
+            let goodsListArr = []; // 商城中心
+       // 其它list（除了商品/新闻）
+                                          let list_course_information= []
+                                                                    let list_notification_announcement= []
+                     function showDialog(flag) {
+        if(flag){
+          $(".robot_box").css("display", "block");
+        }else{
+          $(".robot_box").css("display", "none");
+        }
+      
+      }
+        		let chatList = [];
+    let isAdmin = false;
+    getChat();
+    function openSupportModal() {
+      if (!token) {
+        layer.msg("请先进行登录");
+      }
+      console.log("打开客服");
+
+      $(".support_module").css("display", "block");
+      if (chatList.length) {
+        setTimeout(() => {
+          scrollBottom();
+        }, 0);
+      }
+    }
+    // 滚动到最底部
+    function scrollBottom() {
+      let contentBox = $("#support_content");
+      contentBox.scrollTop = contentBox.scrollHeight + 500;
+    }
+    // 获取聊天记录--渲染聊天数据
+    function getChat() {
+      let record = window.localStorage.getItem("supportChat");
+      let _token = window.localStorage.getItem("token");
+      if (user_group== "管理员") {
+        isAdmin = true;
+      }else{
+        isAdmin =false;
+      }
+      if (token) {
+        token = token || "";
+      }
+      if (record) {
+        chatList = JSON.parse(record);
+        if(chatList.length){
+          var objecthtmls=''
+          $(".support_content").empty();
+          $(".chatItem").remove();
+          for (var i = 0; i < chatList.length; i++) {
+            var item = chatList[i];
+            objecthtmls = "<div class='chatItem'>"
+              if(item.sendTime){
+                objecthtmls +="<div class='item item-center'><span>"+item.sendTime+"</span></div>"
+              }
+              if(item.isAdmin){
+                objecthtmls +="<div class='item item_left item_left'>"
+                  objecthtmls +="<div class='avatar'>"
+                    objecthtmls +="<img src='../../img/system_icon.jpg' />"
+                    objecthtmls +="</div>"
+                    objecthtmls +="<div class='bubble'>"+item.content+"</div>"
+                +"</div>"
+              }else{
+                objecthtmls +="<div class='item item_left item_right'>"
+                  objecthtmls +="<div class='bubble bubble-right'>"+item.content+"</div>"
+                  objecthtmls +="<div class='avatar'>"
+                    objecthtmls +="<img src='../../img/mine.jpg' />"
+                    objecthtmls +="</div>"
+                    objecthtmls +="</div>"  
+              }
+              objecthtmls +="</div>"
+            $("#support_content").append(objecthtmls);
+          }
+        }
+      }
+     
+    }
+    // 缩小聊天窗口'一'
+    function scaleSmall() {
+      $(".support_module").css("display", "none");
+    }
+    // 发送聊天
+    function sendChat() {
+      let nowTime = new Date(+new Date() + 8 * 3600 * 1000)
+        .toJSON()
+        .substr(0, 16)
+        .replace("T", " ");
+      let nowTimeChuo = new Date().getTime();
+      let reallyTime = "";
+      let spaceTime = 12000; //	20分钟
+      let sendValue=$("#sendValue").val()
+      console.log(isAdmin)
+      if (!sendValue) {
+        layer.msg("不能发送空内容");
+        return;
+      }
+     reallyTime = nowTime
+      let obj = {
+        isAdmin: isAdmin,
+        content: sendValue,
+        sendTime:$toTime(reallyTime,"yyyy-MM-dd hh:mm:ss"),
+        nowTime: nowTimeChuo,
+      };
+      chatList.push(obj);
+
+      setTimeout(() => {
+      scrollBottom();
+      }, 0);
+
+      window.localStorage.setItem("supportChat", JSON.stringify(chatList));
+      getChat()
+      $("#sendValue").val('');
+    }
+        // 获取分类
+    function initClassification(arr,name,id){
+      let spanhtmls=''
+      for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        spanhtmls+="<span class='categries_title'><a href='../../page/"+id+"/list.html?type_name="+item.name+"' class='categries_name'>"+item.name+"</a></span>/"          
+      }
+      var objecthtmls ="<li >"+name+"<span class='categries_symbol'>"+spanhtmls+"</span></li>"
+      $("#dynamic_menu_list").append(objecthtmls) 
+    }
+    // 退出登录
+    async function sign_out(url) {
+      let { data: ren } = await axios.get(BaseUrl + "/api/user/quit", {
+        params: {},
+      });
+      sessionStorage.clear();
+      if (url) {
+        window.location.replace(url);
+      } else {
+        window.location.reload();
+      }
+    };
+     // 个人中心
+    function to_admin(url) {
+     window.location.replace(
+       url
+      );
+    };
+    // 检索页面
+    function global_search_btn(url) {
+       window.location.replace('../../page/search/index.html' + "?word=" + search_val.value);
+    }
+        //  获取广告
+    let top_list_ad= []
+    let middle_list_ad= []
+    let bottom_list_ad= []
+    async function get_ad() {
+      let { data: json } = await axios.get(BaseUrl + "/api/ad/get_list", {
+       params: {
+          orderby: '`display` desc',
+        },
+      });
+      if (json.result && json.result.list) {
+         let item = json.result.list;
+        if(json.result.list.length){
+         for (var i = 0; i < json.result.list.length; i++){
+            if(item[i].location==='顶部广告'){
+              top_list_ad.push(item[i])  
+            }else if(item[i].location==='中部广告'){
+              middle_list_ad.push(item[i])
+            }else if(item[i].location==='底部广告'){
+              bottom_list_ad.push(item[i])
+            }
+          }
+          init_adver(top_list_ad,"#top_adver_list_box")
+          init_adver(middle_list_ad,"#middle_adver_list_box")
+          init_adver(bottom_list_ad,"#bottom_adver_list_box")
+        }else{
+          $('#top_adver_list_box').css('display','none')
+          $('#middle_adver_list_box').css('display','none')
+          $('#bottom_adver_list_box').css('display','none')
+        }
+      }
+    }
+    // 渲染广告
+     function init_adver(arr,id){
+      if(arr.length){
+        var objhtml=""
+        for (var i = 0; i < arr.length; i++){
+          let item = arr[i];
+          objhtml+=`<div class="layui-col-md2 layui-col-sm2">
+          <a href="${item.url}" target="_blank" class='top_adver_list'>
+            <div class="t_box">
+              <div class="t_img t_box_right">`
+                 if (item.content) {
+                 objhtml+=`<p class="t_title">${item.content}</p>`
+                 } else { 
+                  objhtml+=`<div class="ad_img">${item.img}</div>`
+                 }
+              objhtml+= `</div></div></a></div>`
+        }
+       $(id).html(objhtml)
+      }else{
+        $(id).css('display','none')
+      }
+    }
+        // 首页页面模块权限/数据请求
+    async function get_list() {
+      // 更多管理请求
+      let { data: ren } = await axios.get(BaseUrl + "/api/auth/get_list", {
+        params: {
+          user_group: user_group,
+        },
+      });
+      var permissions = ren.result.list;
+      let list_data = JSON.stringify(permissions);
+      sessionStorage.setItem("list_data", [list_data]);
+       var tables = ren.result.list;
+      
+      
+            check_action("/forum/list", "get", "forum");
+      async function get_forum_type_list() {
+           let { data: res } = await axios.get(
+                  BaseUrl + "/api/forum_type/get_list",
+                  {}
+          );
+          if (res.result && res.result.list) {
+           initClassification(res.result.list,'交流社区',"forum")
+        }
+        }
+        get_forum_type_list()
+        
+                  check_action("/subject_exam/table", "get", "subject_exam");
+                  check_action("/exam/list", "get", "exam");
+                  check_action("/message/list", "get", "message");
+          }
+    
+    // 获取轮播图
+    async function get_rotationList() {
+      let { data: res } = await axios.get(BaseUrl + "/api/slides/get_list", {
+        params: {},
+      });
+      rotationList = res.result.list;
+      init("rotation_list");
+    }
+    // 获取list数据（除goods和新闻）
+    	        	        	             async function get_course_information_list() {
+          let url = "/api/course_information/get_list";
+                        var oNowDate = dateFormat("yyyy-MM-dd hh:mm:ss");
+              var url_get_list = "/api/course_information/get_list?timing_start_time_max=" + oNowDate +
+                "&timing_end_time_min=" + oNowDate + "&like=0";
+              url = url_get_list;
+                                         let { data: res_course_information } = await axios.get(
+              BaseUrl + url,
+              {params: {
+                                 // timing_start_time_max: oNowDate,
+                 // timing_end_time_min: oNowDate,
+                  //like: 0,
+                                                                  page: 1,
+                  size: 12,
+              }
+            
+            });
+            if (res_course_information.result) {
+              list_course_information=res_course_information.result
+              init("course_information_list_box");
+            }
+         }
+          	        	        	        	        	             async function get_notification_announcement_list() {
+          let url = "/api/notification_announcement/get_list";
+                                         let { data: res_notification_announcement } = await axios.get(
+              BaseUrl + url,
+              {params: {
+                                                                  page: 1,
+                  size: 12,
+              }
+            
+            });
+            if (res_notification_announcement.result) {
+              list_notification_announcement=res_notification_announcement.result
+              init("notification_announcement_list_box");
+            }
+         }
+                    // 获取文章/商城咨询
+      async function get_article_type_list() {
+             let { data: res } = await axios.get(
+                     BaseUrl + "/api/article_type/get_list",
+                     {}
+             );
+             if (res.result && res.result.list) {
+               let text=$page_title("/article/list")||'新闻资讯'
+              initClassification(res.result.list,text,'article')  
+           }
+          }
+           get_article_type_list()
+      async function get_article_List() {
+        let { data: res_article } = await axios.get(BaseUrl + "/api/article/get_list", {
+          params: {
+            page: 1,
+            size: 6,
+          },
+        });
+        if (res_article.result) {
+         for (var k = 0, length = res_article.result.list.length; k < length; k++) {
+            console.log(res_article.result.list[k].create_time);
+            let time=$toTime(res_article.result.list[k].create_time,"yyyy-MM-dd")
+            console.log(time);
+            res_article.result.list[k].create_time=time
+           }
+          articlesList = res_article.result;
+          init("hot_articles_list");
+        }
+      }
+        // 获取商城中心
+          // 获取分类
+      async function get_goods_type_list() {
+          let { data: res } = await axios.get(
+                  BaseUrl + "/api/goods_type/get_list",
+                  {}
+          );
+          if (res.result && res.result.list) {
+            initClassification(res.result.list,'测试购物车','goods') 
+        }
+      }
+        get_goods_type_list()
+      async function get_goodsList() {
+        let { data: res_goods } = await axios.get(BaseUrl + "/api/goods/get_list", {
+          params: {
+            page: 1,
+            size: 12,
+          },
+        });
+        if (res_goods.result) {
+          goodsListArr = res_goods.result;
+          init("goods_list_box");
+        }
+      }
+       function addcart(id){
+        if(user_id){
+          get_goods_detail(id);
+          }else{
+            window.location.replace("../../login.html");
+          }
+        
+      }
+      async function get_goods_detail(goods_id) {
+        let { data: res } = await axios.get(
+          BaseUrl + "/api/goods/get_obj?goods_id=" + goods_id
+        );
+        if (res.result) {
+          goods_detail = res.result.obj;
+        }
+        add_cart(goods_detail)
+      }
+      async function add_cart(obj) {
+        console.log(obj);
+        var {
+          title,
+          img,
+          price,
+          price_ago,
+          num_buy,
+          description,
+          goods_id,
+          type,
+        } = obj;
+        var body = {
+          title,
+          img,
+          price,
+          price_ago,
+          num:1,
+          price_count: price,
+          description,
+          goods_id,
+          type,
+          user_id: user_id,
+        };
+        let { data: res } = await axios.get(BaseUrl + "/api/cart/get_list", {
+          params: {
+            goods_id: obj.goods_id,
+            user_id: user_id,
+          },
+        });
+        if (res.result.count) {
+          var { cart_id, num, price, price_count } = res.result.list[0];
+          num += 1;
+          price_count += price;
+          let { data: resCart } = await axios.post(
+            BaseUrl + `/api/cart/set?cart_id=${cart_id}`,
+            {
+              num,
+              price,
+              price_count,
+            }
+          );
+          if (resCart) {
+            layer.msg("已加入购物车");
+            console.log("更改值");
+          }
+        } else {
+          let { data: resCartAdd } = await axios.post(
+            BaseUrl + `/api/cart/add`,
+            body
+          );
+          if (resCartAdd) {
+            layer.msg("已加入购物车");
+          }
+        }
+      }
+        // 初始化页面-渲染数据
+    function init(text) {
+      layui.use(["laytpl", "carousel", "jquery"], function () {
+        var carousel = layui.carousel;
+        var $ = layui.jquery;
+        var laytpl = layui.laytpl;
+
+                // 顶部广告
+         if (text == "top_adver_list_box") {
+          var top_adver_list = top_adver_list_script.innerHTML
+          topAdverList = document.getElementById("top_adver_list_box");
+          laytpl(top_adver_list).render(list_ad, function (html) {
+            //渲染视图
+            topAdverList.innerHTML = html;
+          });
+        }
+        // 中部广告
+        if (text == "middle_adver_list_box") {
+          var middle_adver_list = middle_adver_list_script.innerHTML
+          middleAdverList = document.getElementById("middle_adver_list_box");
+          laytpl(middle_adver_list).render(list_ad, function (html) {
+            //渲染视图
+            middleAdverList.innerHTML = html;
+          });
+        }
+        // 底部广告
+        if (text == "bottom_adver_list_box") {
+          var bottom_adver_list = bottom_adver_list_script.innerHTML
+          bottomAdverList = document.getElementById("bottom_adver_list_box");
+          laytpl(bottom_adver_list).render(list_ad, function (html) {
+            //渲染视图
+            bottomAdverList.innerHTML = html;
+          });
+        }
+                           // 商品链接数据渲染
+          if (text == "goods_list_box") {
+            var goods_list_Tpl =goods_list.innerHTML
+              goodsList = document.getElementById("goods_list_box");
+            laytpl(goods_list_Tpl).render(goodsListArr, function (html) {
+              //渲染视图
+              goodsList.innerHTML = html;
+            });
+            
+            if($check_cart_page("/cart/list")){
+              $('.addcart').css('display','none')
+            }
+          }
+                                                                          if (text == "course_information_list_box") {
+              var course_information_list_Tpl =course_information_list_script.innerHTML
+                course_informationList = document.getElementById(
+                  "course_information_list_box"
+                );
+              laytpl(course_information_list_Tpl).render(list_course_information, function (html) {
+                //渲染视图
+                 course_informationList.innerHTML = html;
+              });
+            }
+
+                                                                                                                if (text == "notification_announcement_list_box") {
+              var notification_announcement_list_Tpl =notification_announcement_list_script.innerHTML
+                notification_announcementList = document.getElementById(
+                  "notification_announcement_list_box"
+                );
+              laytpl(notification_announcement_list_Tpl).render(list_notification_announcement, function (html) {
+                //渲染视图
+                 notification_announcementList.innerHTML = html;
+              });
+            }
+
+                                    // 商城咨询数据渲染
+          if (text == "hot_articles_list") {
+            var article_list_Tpl = articles_list.innerHTML
+              hotArticlesList = document.getElementById("hot_articles_list");
+            laytpl(article_list_Tpl).render(articlesList, function (html) {
+              //渲染视图
+              hotArticlesList.innerHTML = html;
+            });
+          }
+                // 轮播图
+        if (text == "rotation_list") {
+          $("#rotation_list").empty();
+          for (var i = 0; i < rotationList.length; i++) {
+            var item = rotationList[i];
+            //src 为你的图片地址
+            $("#rotation_list").append(
+               "<div><img src=" + fullUrl(BaseUrl, item.img) + "></div>"
+            );
+          }
+          carousel.render({
+            elem: "#test1",
+            width: "100%", //设置容器宽度
+            height: "435px",
+            arrow: "always", //始终显示箭头
+            interval: 3000,
+          });
+        }
+      });
+    }
+
+    window.onload = function () {
+      // 不需要验证模块权限
+      get_rotationList();
+      get_list();// 首页页面模块权限/数据请求
+            get_ad();
+                    get_article_List();
+                                                    get_course_information_list();
+                                                                               get_notification_announcement_list();
+                   // 商城中心
+              let goods_flag = $check_action("/goods/list", "get");
+          get_goodsList();
+       
+            
+       }
+      
+  </script>
+</html>

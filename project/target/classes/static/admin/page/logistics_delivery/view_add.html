@@ -1,0 +1,416 @@
+<!-- 新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/diy.css">
+    <script src="../../js/axios.min.js"></script>
+
+    <style>
+        img {
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+<article class="sign_in">
+    <div class="warp tpl">
+        <div class="layui-container">
+            <div class="layui-row">
+                <form class="layui-form" action="">
+                    <div class="from-input-box-i">
+                        <div class="layui-form-item unique">
+                            <label class="layui-form-label">订单号</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入订单号"
+                                       class="layui-input" id="order_number">
+                            </div>
+                        </div>
+                        <div class="layui-form-item unique">
+                            <label class="layui-form-label">商品名称</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入商品名称"
+                                       class="layui-input" id="product_name">
+                            </div>
+                        </div>
+                        <div class="layui-form-item unique">
+                            <label class="layui-form-label">购买数量</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入购买数量"
+                                       class="layui-input" id="purchase_quantity">
+                            </div>
+                        </div>
+                        <div class="layui-form-item number">
+                            <label class="layui-form-label">交易总额</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="number" name="num" class="layui-input num" id="total_transaction_amount">
+                            </div>
+                        </div>
+                        <div class="layui-form-item tiem-box">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发货日期</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="the_date_of_issuance"
+                                           placeholder="yyyy-MM-dd">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item uid-box">
+                            <label class="layui-form-label">联系人</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="contact_name" class="layui-input num" id="contact_name">
+                            </div>
+                        </div>
+                        <div class="layui-form-item unique">
+                            <label class="layui-form-label">配送单号</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入配送单号"
+                                       class="layui-input" id="delivery_number">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">买家</label>
+                            <div class="layui-input-block select block">
+                                <select name="interest" lay-filter="ordinary_users" disabled="true" id="ordinary_users">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item unique">
+                            <label class="layui-form-label">收货地址</label>
+                            <div class="layui-input-block input-i block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入收货地址"买家
+                                       class="layui-input" id="shipping_address">
+                            </div>
+                        </div>
+                        <div class="layui-form-item select-box">
+                            <label class="layui-form-label">配送状态</label>
+                            <div class="layui-input-block select block">
+                                <select name="interest" lay-filter="delivery_status" id="delivery_status">
+                                    <option value="待取货">待取货</option>
+                                    <option value="派送中">派送中</option>
+                                    <option value="已完成">已完成</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item select-box">
+                            <label class="layui-form-label">签收状态</label>
+                            <div class="layui-input-block select block">
+                                <select name="interest" lay-filter="signing_status" disabled="disabled" id="signing_status">
+                                    <option value="待签收">待签收</option>
+                                    <option value="已签收">已签收</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+                <div class="layui-btn-container">
+                    <button type="button" class="layui-btn layui-btn-normal login" id="submit">确认</button>
+                    <button type="button" class="layui-btn layui-btn-normal login" id="cancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+</body>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/index.js"></script>
+
+<script>
+    var BaseUrl = baseUrl()
+    let cancel = document.querySelector("#cancel")
+    cancel.addEventListener("click", () => {
+        colseLayer()
+    })
+    let logistics_delivery_id = location.search.substring(1)
+    layui.use(['upload', 'element', 'layer', 'laydate'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element
+            , layer = layui.layer
+            , laydate = layui.laydate
+            , form = layui.form;
+
+        let url
+
+        let token = sessionStorage.token || null
+        let personInfo = JSON.parse(sessionStorage.personInfo)
+        let user_group = personInfo.user_group
+        let use_id = personInfo.user_id
+
+
+        // 权限判断
+        /**
+         * 获取路径对应操作权限 鉴权
+         * @param {String} action 操作名
+         */
+        function $check_action(path1, action = "get") {
+            var o = $get_power(path1);
+            if (o && o[action] != 0 && o[action] != false) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * 获取权限
+         * @param {String} path 路由路径
+         */
+        function $get_power(path) {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            var list = list_data;
+            var obj;
+            for (var i = 0; i < list.length; i++) {
+                var o = list[i];
+                if (o.path === path) {
+                    obj = o;
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        let submit = document.querySelector('#submit')
+        // 提交按钮校验权限
+        if (user_group == "管理员" || $check_action('/logistics_delivery/view', 'add') || $check_action('/logistics_delivery/view', 'set')) {
+        } else {
+            $("#submit").hide()
+        }
+
+        let form_data2 = {
+            "order_number": '', // 订单号
+            "product_name": '', // 商品名称
+            "purchase_quantity": '', // 购买数量
+            "total_transaction_amount": 0, // 交易总额
+            "the_date_of_issuance": '', // 发货日期
+            "contact_name": 0, // 联系人
+            "delivery_number": '', // 配送单号
+            "shipping_address": '', // 收货地址
+            "delivery_status": '', // 配送状态
+            "signing_status": '', // 签收状态
+            "logistics_delivery_id": 0, // ID
+            "ordinary_users":0
+        }
+
+        var path1
+
+        function getpath() {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            for (var i = 0; i < list_data.length; i++) {
+                var o = list_data[i];
+                if (o.path === "/logistics_delivery/table") {
+                    path1 = o.path
+                    $get_power(o.path)
+                }
+            }
+        }
+
+        getpath()
+
+        // 日期选择
+        laydate.render({
+            elem: '#the_date_of_issuance'
+            , format: 'yyyy-MM-dd'
+            , done: function (value) {
+                form_data2.the_date_of_issuance = value + ' 00:00:00'
+            }
+        });
+
+        async function init_ordinary_users(url, id) {
+            // 拿到单选框的父级节点
+            let select = document.querySelector("#"+id)
+            // 收集数据 数组
+            let arr = []
+            let { data: res } = await axios.get(url)
+            arr = res.result.list
+            for (let i = 0; i < arr.length; i++) {
+                // 创建节点
+                let op = document.createElement('option')
+                // 给节点赋值
+                op.innerHTML = arr[i].nickname
+                op.value = arr[i].user_id
+                // 新增/Add节点
+                select.appendChild(op)
+                layui.form.render('select')
+            }
+        }
+        init_ordinary_users(BaseUrl + '/api/user/get_list', 'ordinary_users')
+
+        layui.form.on('select(delivery_status)', function (data) {
+            form_data2['delivery_status'] = data.elem[data.elem.selectedIndex].text;
+        })
+        layui.form.on('select(signing_status)', function (data) {
+            form_data2['signing_status'] = data.elem[data.elem.selectedIndex].value;
+        })
+        layui.form.on('select(ordinary_users)', function (data) {
+            form_data2['ordinary_users'] = data.elem[data.elem.selectedIndex].value;
+        })
+
+        let order_number = document.querySelector("#order_number")
+        order_number.onkeyup = function (event) {
+            form_data2.order_number = event.target.value
+        }
+        let product_name = document.querySelector("#product_name")
+        product_name.onkeyup = function (event) {
+            form_data2.product_name = event.target.value
+        }
+        let contact_name = document.querySelector("#contact_name")
+        contact_name.onkeyup = function (event) {
+            form_data2.contact_name = event.target.value
+        }
+        let purchase_quantity = document.querySelector("#purchase_quantity")
+        purchase_quantity.onkeyup = function (event) {
+            form_data2.purchase_quantity = event.target.value
+        }
+        let total_transaction_amount = document.querySelector("#total_transaction_amount")
+        total_transaction_amount.onkeyup = function (event) {
+            form_data2.total_transaction_amount = Number(event.target.value)
+        }
+        let delivery_number = document.querySelector("#delivery_number")
+        delivery_number.onkeyup = function (event) {
+            form_data2.delivery_number = event.target.value
+        }
+        let shipping_address = document.querySelector("#shipping_address")
+        shipping_address.onkeyup = function (event) {
+            form_data2.shipping_address = event.target.value
+        }
+
+        if (logistics_delivery_id !== '') {
+            async function axios_get_3() {
+                const {data: rese} = await axios.get(BaseUrl + '/api/logistics_delivery/get_obj', {
+                    params: {
+                        logistics_delivery_id: logistics_delivery_id
+                    }, headers: {
+                        'x-auth-token': token
+                    }
+                })
+
+                let data = rese.result.obj
+                Object.keys(form_data2).forEach((key) => {
+                    form_data2[key] = data[key];
+                    $("#" + key).val(form_data2[key])
+                });
+
+
+                let delivery_status_options = document.querySelector('#delivery_status').querySelectorAll('option')
+                let delivery_status_choose = data['delivery_status']
+                for (let i = 0; i < delivery_status_options.length; i++) {
+                    if (delivery_status_options[i].innerHTML == delivery_status_choose) {
+                        delivery_status_options[i].selected = true
+                        form_data2.delivery_status = delivery_status_options[i].text
+                        layui.form.render("select");
+                    }
+                }
+
+                let signing_status_options = document.querySelector('#signing_status').querySelectorAll('option')
+                let signing_status_choose = data['signing_status']
+                for (let i = 0; i < signing_status_options.length; i++) {
+                    if (signing_status_options[i].innerHTML == signing_status_choose) {
+                        signing_status_options[i].selected = true
+                        form_data2.signing_status = signing_status_options[i].text
+                        layui.form.render("select");
+                    }
+                }
+
+                let ordinary_users_options = document.querySelector('#ordinary_users').querySelectorAll('option')
+                let ordinary_users_choose = data['ordinary_users']
+                for (let i = 0; i < ordinary_users_options.length; i++) {
+                    if (ordinary_users_options[i].innerHTML == ordinary_users_choose) {
+                        ordinary_users_options[i].selected = true
+                        form_data2.ordinary_users = ordinary_users_options[i].text
+                        layui.form.render("select");
+                    }
+                }
+
+                //文本
+                order_number.value = form_data2.order_number
+                //文本
+                product_name.value = form_data2.product_name
+                //文本
+                contact_name.value = form_data2.contact_name
+                //文本
+                purchase_quantity.value = form_data2.purchase_quantity
+                //数字
+                total_transaction_amount.value = form_data2.total_transaction_amount
+                //文本
+                delivery_number.value = form_data2.delivery_number
+                //文本
+                shipping_address.value = form_data2.shipping_address
+
+                the_date_of_issuance.value = layui.util.toDateString(form_data2.the_date_of_issuance, "yyyy-MM-dd")
+                layui.form.render("select");
+
+            }
+
+            axios_get_3()
+        }
+
+
+        submit.onclick = async function () {
+            try {
+                form_data2.order_number = order_number.value
+                form_data2.product_name = product_name.value
+                form_data2.contact_name = contact_name.value
+                form_data2.purchase_quantity = purchase_quantity.value
+                form_data2.total_transaction_amount = Number(total_transaction_amount.value)
+                form_data2.the_date_of_issuance = layui.util.toDateString(form_data2.the_date_of_issuance, "yyyy-MM-dd")
+                form_data2.delivery_number = delivery_number.value
+                form_data2.shipping_address = shipping_address.value
+            } catch (err) {
+                console.log(err)
+            }
+
+            if (logistics_delivery_id == '') {
+                console.log("新增/Add")
+                const {data: res} = await axios.post(BaseUrl + '/api/logistics_delivery/add?',
+                    form_data2, {
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                if (res.result == 1) {
+                    layer.msg('确认完毕');
+                    setTimeout(function () {
+                        colseLayer()
+                    }, 1000)
+                } else {
+                    layer.msg(res.error.message);
+                }
+            } else {
+                console.log("详情/Details")
+
+                const {data: res} = await axios.post(BaseUrl + '/api/logistics_delivery/set?logistics_delivery_id=' + logistics_delivery_id,
+                    form_data2, {
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                if (res.result == 1) {
+                    layer.msg('确认完毕');
+                    setTimeout(function () {
+                        colseLayer()
+                    }, 1000)
+                } else {
+                    layer.msg(res.error.message);
+                }
+            }
+        }
+    });
+</script>
+
+</html>

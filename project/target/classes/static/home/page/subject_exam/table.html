@@ -1,0 +1,135 @@
+<!--
+ * @Author: zq
+ * @Date: 2023-09-25 17:29:38
+ * @LastEditTime: 2023-09-25 21:42:52
+ * @LastEditors: zq
+ * @Description: table模板
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>table模板</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+  </head>
+  <body>
+ <div class="diy_table">
+      <table class="layui-hide" id="ID-table-demo-data"></table>
+    </div>
+</body>
+    <!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+    <script src="../../js/base.js"></script>
+    <script src="../../js/jquery.2.1.1.min.js"></script>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/axios.min.js"></script>
+    <script src="../../js/permissionSet.js"></script>
+
+    <script type="text/html" id="barDemo">
+      <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="edit">答题</a>
+        <!-- <a class="layui-btn layui-btn-xs " lay-event="more">
+          更多
+          <i class="layui-icon layui-icon-down"></i>
+        </a> -->
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="more">详情</a>
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="edit">题库</a>
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="edit">评分</a>
+      </div>
+    </script>
+    <script>
+      var BaseUrl = baseUrl();
+      layui.use("table", function () {
+        var table = layui.table;
+        // 已知数据渲染
+        var inst = table.render({
+          //url: '/static/2.8/json/table/demo1.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+          elem: "#ID-table-demo-data",
+          height: "full-35",
+          css: [
+            // 直接给当前表格主容器重置 css 样式
+            ".layui-table-page{text-align: center;}", // 让分页栏居中
+          ].join(""),
+          cols: [
+            [
+              //标题栏
+              { field: "id", title: "ID", width: 80, sort: true },
+              { field: "username", title: "用户", width: 120 },
+              { field: "sign", title: "签名", minWidth: 160 },
+              { field: "sex", title: "性别", width: 80 },
+              { field: "city", title: "城市", width: 100 },
+              { field: "experience", title: "积分", width: 80, sort: true },
+              {
+                fixed: "right",
+                title: "操作",
+                width: 220,
+                minWidth: 125,
+                toolbar: "#barDemo",
+              },
+            ],
+          ],
+          data: [
+            {
+              // 赋值已知数据
+              id: "10001",
+              username: "张三1",
+              sex: "男",
+              city: "浙江杭州",
+              sign: "人生恰似一场修行",
+              experience: "116",
+            },
+            {
+              // 赋值已知数据
+              id: "10001",
+              username: "张三1",
+              sex: "男",
+              city: "浙江杭州",
+              sign: "人生恰似一场修行",
+              experience: "116",
+            },
+            {
+              // 赋值已知数据
+              id: "10001",
+              username: "张三1",
+              sex: "男",
+              city: "浙江杭州",
+              sign: "人生恰似一场修行",
+              experience: "116",
+            },
+            {
+              // 赋值已知数据
+              id: "10001",
+              username: "张三1",
+              sex: "男",
+              city: "浙江杭州",
+              sign: "人生恰似一场修行",
+              experience: "116",
+            },
+          ],
+          skin: "line", // 表格风格
+          //even: true,
+          page: true, // 是否显示分页
+          limits: [5, 10, 15],
+          limit: 5, // 每页默认显示的数量
+        });
+
+        // 触发单元格工具事件
+        table.on("tool(test)", function (obj) {
+          // 双击 toolDouble
+          var data = obj.data; // 获得当前行数据
+          // console.log(obj)
+          if (obj.event === "edit") {
+            layer.open({
+              title: "编辑 - id:" + data.id,
+              type: 1,
+              area: ["80%", "80%"],
+              content: '<div style="padding: 16px;">自定义表单元素</div>',
+            });
+          }
+        });
+      });
+    </script>
+
+</html>

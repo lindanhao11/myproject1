@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet"/>
+    <link href="../../css/diy.css" rel="stylesheet"/>
+    <script src="../../js/jquery.2.1.1.min.js"></script>
+    <script src="../../js/jquery_expand.js"></script>
+    <style>
+        body {
+            font: 16px/28px "Microsoft yahei";
+        }
+
+        .description {
+            margin-bottom: 1rem;
+            color: #292828;
+        }
+
+        .article_content img {
+            width: 100%;
+            height: 100%;
+        }
+         .qecodeWrap{
+          height:50px;
+          position: relative;
+         }
+        .qecode {
+        width: 270px;
+        background: white;
+        position: absolute;
+        left:5%;
+        top: 0;
+        z-index: 999;
+        }
+        .qecodeImg {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        text-align: center;
+        padding-top: 10px;
+        margin: 0 auto;
+        }
+        .btn_share{
+            position: relative;
+            top: 15px;
+            background: rgb(240, 238, 238);
+            border: 1px solid #ccc;
+            height: 38px;
+            padding: 3px 10px;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+        .btn_share_icon{
+            width: 30px;
+            height: 28px;
+            float: left;
+            margin-right: 10px;
+        }
+        .share_box{
+            display: none;
+            float: left;
+        }
+        .share_box img{
+            width: 30px;
+            height: 28px;
+            margin-right: 10px;
+        }
+        .btn_share:hover .share_box{
+            display: block;
+        }
+        .rich_text{
+	margin-bottom: 25px;
+	border-bottom: 1px solid #ccc;
+	padding-top: 25px;
+	display: block;
+	width: 100%;
+	padding-bottom: 25px;
+}
+.rich_text .diy_title{
+	font-size: 22px;
+	height: 24px;
+	line-height: 24px;
+	padding-left: 10px;
+	border-left: 6px solid rgb(200, 0, 0);
+	margin-bottom: 25px;
+
+}
+.rich_text .diy_html h1,
+.rich_text .diy_html h2,
+.rich_text .diy_html h3{
+	font-size: 18px!important;
+	color: #333!important;
+	font-weight: bold!important;
+	margin-bottom: 15px!important;
+}
+.rich_text .diy_html p,
+.rich_text .diy_html div,
+.rich_text .diy_html a,
+.rich_text .diy_html span{
+	font-size: 16px!important;
+	color: #666!important;
+}
+.rich_text .diy_html img{
+	max-width: 100%!important;
+}
+    </style>
+</head>
+
+<body>
+<div class="container">
+<div class="diy_detail">
+<div class="t_detail" id="course_information_detail_box">
+    <div class="source_time">
+        时间:　
+        <span id="create_time" class="forum_create_time"></span>
+    </div>
+    <!-- <hr>水平分割线 -->
+    <hr/>
+    <div class="label_text">
+        <div class="operation_interface">
+            <div class="operation_interface_left">
+                <span class="hits_sum">点击数：<span id="hits_sum"></span></span>
+                <span class="praise_len_sum">点赞数：<span id="praise_len_sum"></span></span>
+            </div>
+            <div class="operation_interface_right">
+	                <el-button class="layui-btn layui-btn-sm layui-btn-primary" style="margin: 5px !important;"    id="student_course_selection_nav">
+                <span>选课</span>
+        </el-button>
+            
+                <el-button class="layui-btn layui-btn-sm layui-btn-primary" style="margin: 5px !important;"    id="course_grades_nav">
+                <span>成绩</span>
+        </el-button>
+            
+                           <button class="layui-btn layui-btn-sm layui-btn-primary" id="add_praise">
+                    <i class="layui-icon layui-icon-heart layui-font-12" id="detail_praise"></i>
+                    <span>点赞</span>
+                </button>
+                <button class="layui-btn layui-btn-sm layui-btn-primary" id="add_collect">
+                    <i class="layui-icon layui-icon-rate layui-font-12" id="detail_collect"></i>
+                    <span>收藏</span>
+                </button>
+				<button class="layui-btn layui-btn-sm layui-btn-primary" id="toReadPage">
+                   立即阅读
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <img src="" id="curriculum_img" class="detial_img" />
+        <div class="description" id="course_name_description"></div>
+            <div class="description" id="course_id_description"></div>
+                <div class="description" id="teacher_description"></div>
+            <div class="description" id="release_time_description"></div>
+            <div class="description" id="course_selection_time_description"></div>
+            <div class="description" id="course_quota_description"></div>
+               <div class="description" id="course_attachments_description"></div>
+               <div class="description" id="course_audio_description"></div>
+               <div class="description" id="course_video_description"></div>
+            <div class="description" id="course_website_description"></div>
+            <div class="description" id="course_type_description"></div>
+    <!-- scan-->
+<div class="qecodeWrap">
+<img src="../../img/qrcode_img.png" id='scan-img'  style="width: 35px; height: 35px;margin-left:3px;"  onmouseenter ="enters()" />
+<div  class="qecode" style="display: none" onmouseleave="leaver()">
+    <div  class="qecodeImg" >
+        <img  id='qecodeImgSrc' src="" style="width:250px;height:300px;" />
+        <span class="qecodeTitle"></span>
+    </div>
+</div>
+</div>
+ <!-- 倒计时 -->
+    <div class='time_type'>
+        <span class='time_type_text'> </span>
+        <div id="start">
+            <span>00</span>天
+            <span>00</span>小时
+            <span>00</span>分
+            <span>00</span>秒
+        </div>
+    </div>
+<!-- 分享 -->
+    <div class="btn_share">
+        <img class="btn_share_icon" src="../../img/share_icon.png"/>
+        <span class="share_box">
+            <img onclick="toShare('https://weixin.qq.com/')" src="../../img/wx_icon.png" alt="">
+            <img onclick="toShare('https://weixin.qq.com/')" src="../../img/friend_icon.png" alt="">
+            <img onclick="toShare('https://im.qq.com/')" src="../../img/qq_icon.png" alt="">
+            <img onclick="toShare('https://qzone.qq.com/')" src="../../img/qq_space.png" alt="">
+            <img onclick="toShare('https://weibo.com/')" src="../../img/wb_icon.png" alt="">
+            <img onclick="toShare('https://douyin.com/')" src="../../img/tiktok_icon.png" alt="">
+        </span>
+    </div>
+</div>
+<!-- 富文本 -->
+<div class='richWrap  t_detail'></div>
+<!-- 地图 -->
+<div class="warp t_detail">
+    <div class="container" style="margin-top:8px;">
+        <div class="row">
+            <div class="col">
+                <template>
+                    <div>
+                        <iframe id='mapIframe'  style="border: none" :width="searchTableHeight+100" :height="searchTableHeight"
+                                src=""></iframe>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 定位 -->  
+<div class="warp t_detail">
+    <div class="container" style="margin-top:8px;">
+        <div class="row">
+            <div class="col">
+                <div class="location_address" style="width: 100%;">当前定位</div>
+                <div id="map_container" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="t_detail comment_editor" id="t_comment_list">
+    <p class="comment_editor_title">评论区</p>
+    <div class="comment_editor" id="t_comment"></div>
+    <!-- 分页器--开始-->
+    <div id="cont" class="layui-row layui-col-space30"></div>
+    <div id="pageSum"></div>
+    <!-- 分页器--结束 -->
+    <form
+            class="layui-form"
+            action=""
+            lay-filter="addCommentForm"
+            id="addCommentForm"
+    >
+        <p class="replyToSb">
+            对<span id="replyToSbName">XX</span>回复
+            <button
+                    class="layui-btn layui-btn-sm layui-btn-primary"
+                    id="resetReplySb"
+            >
+                重置回复人
+            </button>
+        </p>
+        <div class="layui-form-item">
+        <textarea
+                class="layui-textarea"
+                id="demo"
+                placeholder="请输入内容"
+                style="display: none"
+                name="demo"
+                autocomplete="off"
+        ></textarea>
+        </div>
+        <div class="layui-form-item publish_comment">
+            <button
+                    type="button"
+                    class="layui-btn"
+                    data-type="text"
+                    id="fileNotifySubmit"
+            >
+                发 表
+            </button>
+        </div>
+    </form>
+</div>
+</div>
+ </div>
+</div>
+</body>
+<script src="../../js/base.js"></script>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/sdk.js"></script>
+<script src="../../js/permissionSet.js"></script>
+<script
+    type="text/javascript"
+    src="https://webapi.amap.com/maps?v=2.0&key=6c91f593f56f0ab0d6fe02f20276e97a"
+  ></script>
+<!--富文本编辑器-->
+<script>
+var BaseUrl = baseUrl();
+        //<!-- scan-->
+    function leaver() {
+		$('.qecode').css('display','none')
+	};
+             //<!-- scan-->
+    function enters() {
+		$('.qecode').css('display','block')
+	};
+               // 分享点击	
+	    function toShare(e){
+			window.open(e);
+		}
+        layui.use(["layedit", "form", "laypage", "jquery"], function () {
+        var layedit = layui.layedit,
+                laypage = layui.laypage,
+                $ = layui.jquery;    
+        // 获取地址栏参数
+        let course_information_id = $getUrlParams().course_information_id;
+        let token = sessionStorage.token;
+        let user_id;
+        let nickname;
+        let avatar;
+         if (token) {
+            user_id = JSON.parse(sessionStorage.personInfo).user_id;
+            avatar = JSON.parse(sessionStorage.personInfo).avatar;
+            nickname = JSON.parse(sessionStorage.personInfo).nickname;
+        }
+       
+        // 详情区域显示与否
+        check_action("/course_information/details", "get", "course_information_detail_box");
+                                                                             // 用户列表
+                let  list_user_teacher=[];
+                /**
+			 * 获取教师用户用户列表
+			 */
+			async function get_list_user_teacher() {
+				let { data: json } = await axios.get(
+                       BaseUrl + "/api/user/get_list?user_group=教师用户"
+                    );
+                if(json.result && json.result.list){
+					list_user_teacher = json.result.list;
+				}
+				else if(json.error){
+					console.error(json.error);
+				}
+			}
+           get_list_user_teacher()
+                                                                                                                                                                                                                                                        function get_user_info(name,id){
+            var obj = null;
+                                                                                                                                    if (name == 'teacher'){
+                            obj =list_user_teacher.getObj({"user_id":id});
+                        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            var ret = "";
+            if(obj){
+                ret = obj.nickname+"-"+obj.username;
+            }
+            return ret;
+		}
+        //<!-- 富文本-->
+        let	richList= [
+                     {
+                title: "课程备注",
+                name: "course_notes",
+                type: "多文本"
+            },
+                    {
+                title: "课程详情",
+                name: "course_details",
+                type: "编辑"
+            },
+        		]
+         // 初始话富文本
+        function initrichWrap(){
+            $('.richWrap').empty();
+            let objecthtmls=''
+            if(richList.length){
+                for (let idx = 0; idx < richList.length; idx++) {
+                    let item= richList[idx];
+                    // $check_field('get',item.name)
+                    if($check_field('get',item.name,"/course_information/details")){
+                        objecthtmls="<div class='rich_text'>"
+                            +"<div class='view'>"
+                            +"<div class='diy_title'>"
+                               +"<span>"+item.title+"</span>"
+                            +"</div>"
+                            +"<div class='diy_html' >"+course_information_detail[item.name]+"</div>"
+                            +"</div></div>";
+                    }
+                $(".richWrap").append(objecthtmls);
+                }
+            }
+        }
+                  //<!-- scan-->
+        function bindImageViewerEvent(src) {
+            var images = document.getElementById('scan-img')
+            images.onclick = function() {
+            layer.photos({
+				  photos: {
+					data: [{
+					  src: src
+					}]
+				  },
+				  shadeClose: true,
+				  closeBtn: 1,
+				  anim: 5,
+				  full:true
+			});
+          }
+        }
+                          //<!-- 地图 map-->
+        let reportUrl= "https://map.baidu.com/@12683619.778731756,2559833.254994969,18.04z";
+		let	searchTableHeight= 0;
+		let	searchTableWidth= 0;
+        function widthHeight() {
+			searchTableHeight = window.innerHeight - 146;
+			searchTableWidth = window.innerWidth - 280;
+		}
+        window.onresize = () => {
+				widthHeight(); // 自适应高宽度
+		};
+                        //<!-- 定位 location-->  
+        function initLocationMap(location_lng,location_lat){		
+           var map = new AMap.Map("map_container", {
+                resizeEnable: true, //是否监控地图容器尺寸变化
+                zoom: 10, //设置地图显示的缩放级别
+                center: [location_lng, location_lat], //设置地图中心点坐标
+                });
+
+            // 创建一个 Marker 实例：（标记点）
+            var marker = new AMap.Marker({
+                position: new AMap.LngLat(location_lng, location_lat), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                title: "位置标题",
+            });
+
+            // 将创建的点标记添加到已有的地图实例：
+            map.add(marker);
+		}
+              
+             //<!-- 倒计时 --> 
+        let timeTypeShow=true;
+        let timer_title=''; // 计时器标题
+		let	timing_start_time=''; // 计时开始时间
+		let	timing_end_time=''; // 计时结束时间
+        function oDiv(el) {
+				if(typeof(el) == 'string') {
+					return(document.getElementById(el));
+				}
+				return(el);
+			}
+        function   fillZero(num, digit) {
+				var str = '' + num;
+				if(str.length < digit) {
+					str = '0' + str;
+				}
+				return str;
+			}
+        function  runTiming(obj) {
+				var oDiv2 =oDiv('start');
+				var aSpan = oDiv2.getElementsByTagName('span');
+				var sTxtDay = aSpan[0]; //天
+				var sTxtHour = aSpan[1] //小时
+				var sTxtMin = aSpan[2] //分
+				var sTxtSec = aSpan[3] //秒
+				var timer = null;
+				timer = setInterval(updateTime, 1000);
+				updateTime();
+
+				function updateTime() {
+					var oEndDate = obj.timing_end_time;
+					var seart = obj.timing_start_time;
+                    if(oEndDate.indexOf("-") != -1){
+                        oEndDate = new Date(oEndDate).getTime();
+                    }
+                    if(seart.indexOf("-") != -1){
+                        seart = new Date(seart).getTime();
+                    }
+					var oNowDate = new Date();
+					var iRemain = 0
+					iRemain = parseInt((oNowDate.getTime() - seart) / 1000);
+					if(iRemain <= 0) { //判断开始时间是否小于或等于今天
+						clearInterval(timer);
+						iRemain = 0;
+						timeTypeShow = false;
+					}else{
+					iRemain = parseInt((oEndDate - oNowDate.getTime()) / 1000);
+						if(iRemain <= 0) { //判断结束时间是否小于或等于今天
+							clearInterval(timer);
+							iRemain = 0;
+							timeTypeShow = false;
+						}else{
+							timeTypeShow = true;
+							var iDay = parseInt(iRemain / 86400); //剩余天数
+
+							iRemain %= 86400;
+							var iHour = parseInt(iRemain / 3600); //剩余小时
+
+							iRemain %= 3600;
+							var iMin = parseInt(iRemain / 60); //剩余分钟
+
+							iRemain %= 60;
+							var iSec = iRemain; //剩余秒
+
+							sTxtDay.innerHTML = fillZero(iDay, 2);
+							sTxtHour.innerHTML =fillZero(iHour, 2);
+							sTxtMin.innerHTML =fillZero(iMin, 2);
+							sTxtSec.innerHTML = fillZero(iSec, 2);
+						}
+                        if(timeTypeShow){
+                            $('.time_type').css('display','block')
+                        }else{
+                            $('.time_type').css('display','none')
+                        }
+                       
+                        $('.time_type_title').text(obj['timer_title'])
+					}
+				}
+			}
+               // 获取课程信息详情
+        let course_information_detail = {};
+
+        async function get_course_information_detail() {
+            let { data: res } = await axios.get(
+                    BaseUrl + "/api/course_information/get_obj?course_information_id=" + course_information_id
+            );
+            if (res.result && res.result.obj) {
+                course_information_detail = res.result.obj;
+                
+                $("#create_time").html($toTime(course_information_detail['create_time'],"yyyy-MM-dd hh:mm:ss"))
+                $("#hits_sum").html(course_information_detail['hits']);
+                $("#praise_len_sum").html(course_information_detail['praise_len']);
+    $("#curriculum_img").attr("src",fullUrl(BaseUrl,course_information_detail['curriculum']));
+         if(course_information_detail['course_name']){
+        $("#course_name_description").html("课程名称"+":"+course_information_detail['course_name']);
+     }else{
+       $("#course_name_description").css('display','none')
+     }
+             if(course_information_detail['course_id']){
+        $("#course_id_description").html("课程编号"+":"+course_information_detail['course_id']);
+     }else{
+       $("#course_id_description").css('display','none')
+     }
+              $("#teacher_description").html("任课教师"+":"+get_user_info('teacher',course_information_detail['teacher']))
+            $("#release_time_description").html("发布时间"+":"+$toTime(course_information_detail['release_time'],"yyyy-MM-dd"))
+             if(course_information_detail['course_selection_time']){
+        $("#course_selection_time_description").html("选课时间"+":"+course_information_detail['course_selection_time']);
+     }else{
+       $("#course_selection_time_description").css('display','none')
+     }
+             if(course_information_detail['course_quota']){
+        $("#course_quota_description").html("课程名额"+":"+course_information_detail['course_quota']);
+     }else{
+       $("#course_quota_description").css('display','none')
+     }
+                            $("#course_attachments_description").html("课程附件"+":"+"<a href="+fullUrl(BaseUrl,course_information_detail['course_attachments'])+"  target='_blank' style='color: rgb(64, 158, 255);'>点击下载</a>")
+                                    if(course_information_detail['course_audio']){           
+                $("#course_audio_description").html("课程音频"+":"+"<audio  style='text-align: left' src="+fullUrl(BaseUrl,course_information_detail['course_audio'])+" controls></audio>")
+            }else{
+                $("#course_audio_description").html("课程音频：暂无")
+            }
+           
+                                  if(course_information_detail['course_video']){
+               $("#course_video_description").html("课程视频"+":"+"<a href='../media/video.html?filename="+fullUrl(BaseUrl,course_information_detail['course_video'])+"'  target='_blank' style='color: rgb(64, 158, 255);'>查看视频</a>")
+            }else{
+                $("#course_video_description").html("课程视频：暂无")
+            }
+          
+                        $("#course_website_description").html("课程网址"+":"+"<a href="+fullUrl(BaseUrl,course_information_detail['course_website'])+"  target='_blank' style='color: rgb(64, 158, 255);'>course_information_detail['course_website']</a>");                         
+             if(course_information_detail['course_type']){
+        $("#course_type_description").html("课程类型"+":"+course_information_detail['course_type']);
+     }else{
+       $("#course_type_description").css('display','none')
+     }
+     //<!-- 富文本-->
+   initrichWrap()
+
+
+            //<!-- scan-->
+    $('#qecodeImgSrc').attr('src',BaseUrl+course_information_detail['qrcode_img'])
+    $('.qecodeTitle').text(course_information_detail['qrcode_title'])
+    bindImageViewerEvent(course_information_detail['qrcode_img'])        
+            //<!-- 地图 -->
+    $('#mapIframe').attr('src',reportUrl)
+            // <!-- 定位 -->  
+    $(".location_address").html("当前定位:"+course_information_detail['location_address'])
+    let location_lng=course_information_detail['location_lng']
+    let location_lat=course_information_detail['location_lat']
+    initLocationMap(location_lng,location_lat)
+       
+     await get_obj_after(res);
+
+     //跨表按钮
+                   if($check_action('/student_course_selection/edit','add')){
+          $("#student_course_selection_nav").css('display','inline-block')
+          $('#student_course_selection_nav').click(function(){
+            if('course_information'=='student_course_selection'){
+                to_table(course_information_detail,'./view_add.html?'+course_information_id)
+            }else{
+                to_table(course_information_detail,'../student_course_selection/view_add.html')
+            }
+           
+           })
+          
+        }else{
+           $("#student_course_selection_nav").css('display','none')
+        }       
+                if($check_action('/course_grades/edit','add')){
+          $("#course_grades_nav").css('display','inline-block')
+          $('#course_grades_nav').click(function(){
+            if('course_information'=='course_grades'){
+                to_table(course_information_detail,'./view_add.html?'+course_information_id)
+            }else{
+                to_table(course_information_detail,'../course_grades/view_add.html')
+            }
+           
+           })
+          
+        }else{
+           $("#course_grades_nav").css('display','none')
+        }       
+                }
+}
+        get_course_information_detail();
+
+        // 评论区显示与否
+        check_action("/comment/list", "get", "t_comment_list");
+        let form_comment = {
+            content: "",
+            source_table: "course_information",
+            source_field: "course_information_id",
+            source_id: 0,
+            reply_to_id: 0,
+        };
+
+
+        let list_comment_list = [];
+        let pages = 1;
+        let count_pages = 0;
+
+        /**
+         * 获取评论
+         * @param { Object } obj 文章对象
+         * @param { Number } page 分页数
+         * @param { Number } size 评论显示条数
+         */
+        async function get_comment(page = 1, size = 5) {
+            let { data: res } = await axios.get(BaseUrl + `/api/comment/get_list`, {
+                params: {
+                    source_table: "course_information",
+                    source_field: "course_information_id",
+                    source_id: course_information_id,
+                    page,
+                    size,
+                    reply_to_id: "0",
+                    orderby: "create_time desc",
+                },
+            });
+            if (res.result) {
+                var list_comment = res.result.list;
+                list_comment.map((o) => {
+                    o.list_reply = [];
+                });
+                add_reply(list_comment);
+
+                count_pages = res.result.count;
+                // 分页---总页数低于页码总数
+                laypage.render({
+                    elem: "pageSum",
+                    curr: pages,
+                    count: Number(count_pages), //数据总数
+                    limit: 5,
+                    layout: ["prev", "page", "next"],
+                    jump: function (obj, first) {
+                        // 首次不执行
+                        if (!first) {
+                            // 点击其他页码跳转
+                            pages = obj.curr;
+                            get_comment(obj.curr);
+                        }
+                    },
+                });
+            }
+        }
+
+        /**
+         * @param { Array } list 评论列表
+         * 添加回复到评论列表
+         */
+        async function add_reply(list) {
+            list_comment_list = list;
+            for (let idx = 0; idx < list.length; idx++) {
+                const obj = list[idx];
+                let { data: res } = await axios.get(
+                        BaseUrl + `/api/comment/get_list`,
+                        {
+                            params: {
+                                source_table: "course_information",
+                                source_field: "course_information_id",
+                                source_id: course_information_id,
+                                orderby: "create_time desc",
+                                reply_to_id: obj.comment_id,
+                            },
+                        }
+                );
+                if (res.result) {
+                    list_comment_list[idx].list_reply = list;
+                    obj.list_reply = res.result.list;
+                }
+            }
+            //  渲染评论列表
+            let t_comment = document.getElementById("t_comment");
+            t_comment.innerHTML = "";
+            var objecthtmls = "";
+            for (let idx = 0; idx < list_comment_list.length; idx++) {
+                const item = list_comment_list[idx];
+                let childItem = item.list_reply;
+              objecthtmls += "<div class='comment_area'>"
+              +"<div class='comment_area_wrap'>"
+               +"<div class='comment_area_left'>"
+                +"<img src='"+fullUrl(BaseUrl,item.avatar)+"' />"
+                +"</div>"
+                +"<div class='comment_area_right'>"
+                 + "<p class='title'>"
+                   +"<span>"+item.nickname+"</span>"
+                    +"<span class='time'>"+$toTime(item.create_time, "yyyy-MM-dd hh:mm:ss")+"</span>"
+                  +"</p>"
+                  +"<p class='record'>"
+                   +"<span>"+item.content+"</span>"
+                   +"<button class='layui-btn layui-btn-sm layui-btn-primary'  id='responden' comment_id="+item.comment_id+">回复</button>"
+                  
+                  +"</p>"
+                +"</div>"
+              +"</div>";
+                // console.log(childItem.length)
+                if (childItem.length) {
+                    for (let idxChild = 0; idxChild < childItem.length; idxChild++) {
+                        let childItemObj = childItem[idxChild];
+                        objecthtmls += "<div class='comment_area_child comment_area_wrap'>"
+                            +"<div class='comment_area_left'>"
+                            +"<img src='"+fullUrl(BaseUrl,childItemObj.avatar)+"' /></div>"
+                            +"<div class='comment_area_right'>"
+                            +"<p class='title'>"
+                            +"<span>"+childItemObj.nickname+"</span>"
+                            +"<span class='time'>"+$toTime(childItemObj.create_time, "yyyy-MM-dd hh:mm:ss")+"</span>"
+                                +"</p>"
+                                +"<p class='record'>"
+                                +"<span>"+childItemObj.content+"</span>"
+                                +"</p>"
+                            +"</div>"
+                        +"</div>";
+                    }
+                }
+            }
+            t_comment.innerHTML = objecthtmls;
+        }
+        // 获取回复人
+        $("#t_comment").on("click", "#responden", function () {
+            var comment_id = $(this).attr("comment_id");
+            let replyToSbName = document.getElementById("replyToSbName");
+            form_comment.reply_to_id = comment_id;
+            var reply_to_id = form_comment.reply_to_id;
+            list_comment_list.map((o) => {
+                if (o.comment_id == reply_to_id) {
+                    replyToSbName.innerHTML = o.nickname;
+                }
+            });
+        });
+        setTimeout(() => {
+            get_comment();
+        }, 1000);
+
+        /**
+         * 获取对象之后
+         * @param {Object} json 结果对象
+         */
+        async function get_obj_after(json) {
+            let obj = json.result.obj;
+                await add_hits(obj)
+                await get_comment();
+                form_comment.source_id = obj.course_information_id;
+                get_praise();
+                check_collect();
+if(obj["timing_end_time"]&&obj["timing_start_time"]){
+if (JSON.stringify(obj["timing_end_time"]).indexOf("-")===-1) {
+                   obj["timing_end_time"] = $toTime(parseInt(obj["timing_end_time"]), "yyyy-MM-dd hh:mm:ss")
+                    }
+                    if (JSON.stringify(obj["timing_start_time"]).indexOf("-")===-1) {
+                    obj["timing_start_time"] = $toTime(parseInt(obj["timing_start_time"]), "yyyy-MM-dd hh:mm:ss")
+                    }
+               runTiming(obj);
+               }
+        };
+        // 添加访问量
+        async function add_hits(obj) {
+            let {data: res} = await axios.post(
+                    BaseUrl + "/api/course_information/set?course_information_id="+obj.course_information_id,
+                    {hits: parseInt(obj.hits) + 1}
+            );
+            if (res) {
+                hits = parseInt(obj.hits) + 1;
+                if(res.result){
+                        console.log("添加访问量状态：" ,res.result);
+						var body = {
+							source_table: "course_information",
+							source_field: "course_information_id",
+							source_id: obj.course_information_id,
+							user_id: user_id,
+						};
+                    let {data: ress} = await axios.post(
+                        BaseUrl + "/api/hits/add",
+                        body
+                    );
+                }else if(ress.error){
+						console.error(ress.error);
+				}    
+            }
+        }
+        let check_praised = false; // 是否已点赞
+        let check_collected = false; // 是否已收藏
+        // 获取点赞
+        async function get_praise() {
+            let { data: res } = await axios.get(BaseUrl + `/api/praise/count`, {
+                params: {
+                    source_table: "course_information",
+                    source_field: "course_information_id",
+                    source_id: course_information_id,
+                    user_id: user_id,
+                },
+            });
+            if (res.result || res.result === 0) {
+                check_praised = res.result ? true : false;
+                if (check_praised) {
+                    $("#detail_praise")
+                            .removeClass("layui-icon-heart")
+                            .addClass("layui-icon-heart-fill");
+                } else {
+                    $("#detail_praise")
+                            .removeClass("layui-icon-heart-fill")
+                            .addClass("layui-icon-heart");
+                }
+                console.log("点赞状态：", check_praised);
+            } else if (res.error) {
+                layer.msg(res.error.message);
+                console.error(res.error);
+            }
+        }
+         // 立即阅读
+        $("#toReadPage").click(function () {
+            window.location.replace("../novel_chapters/read.html?course_information_id="+course_information_id);
+        });
+        // 添加点赞
+        $("#add_praise").click(function () {
+            add_praise_opt();
+        });
+        // 添加点赞
+        async function add_praise_opt() {
+            if (!user_id) {
+                window.location.replace("../../login.html");
+                return;
+            }
+            var body = {
+                source_table: "course_information",
+                source_field: "course_information_id",
+                source_id: course_information_id,
+                user_id: user_id,
+            };
+            let praise_len = parseInt(course_information_detail.praise_len);
+            if (!check_praised) {
+                check_praised = true;
+                let { data: res } = await axios.post(
+                        BaseUrl + `/api/praise/add`,
+                        body
+                );
+                if (res.result) {
+                    praise_len += 1;
+                   course_information_detail.praise_len=praise_len
+                    $("#praise_len_sum").html(course_information_detail['praise_len']);
+                    let praise_len_new = praise_len;
+                    let { data: res } = await axios.post(
+                            BaseUrl + "/api/course_information/set?course_information_id="+course_information_id,
+                            {"praise_len":praise_len_new}
+                    );
+                    if (res.result) {
+                        $("#detail_praise")
+                                .removeClass("layui-icon-heart")
+                                .addClass("layui-icon-heart-fill");
+                        console.log("添加点赞数状态：", res.result);
+                    } else if (res.error) {
+                        console.error(res.error);
+                    }
+                    // get_course_information_detail()
+                    layer.msg("点赞成功");
+                } else if (res.error) {
+                    $("#detail_praise")
+                            .removeClass("layui-icon-heart-fill")
+                            .addClass("layui-icon-heart");
+
+                    layer.msg(res.error.message);
+                    console.error(res.error);
+                }
+            } else {
+                check_praised = false;
+                let { data: res } = await axios.get(BaseUrl + `/api/praise/del`, {
+                    params: {
+                        source_table: "course_information",
+                        source_field: "course_information_id",
+                        source_id: course_information_id,
+                        user_id,
+                    },
+                });
+                if (res.result) {
+                    if(praise_len>0){
+                    praise_len -= 1;
+                    }else{
+                    praise_len=0;
+                    }
+                    course_information_detail.praise_len=praise_len
+                    $("#praise_len_sum").html(course_information_detail['praise_len']);
+                    let praise_len_new = praise_len;
+                    let { data: praiseAdd } = await axios.post(
+                            BaseUrl + "/api/course_information/set?course_information_id="+course_information_id,
+                            {"praise_len":praise_len_new}
+                    );
+                    if (praiseAdd.result) {
+                    $("#detail_praise")
+                            .removeClass("layui-icon-heart-fill")
+                            .addClass("layui-icon-heart");
+
+                        console.log("取消点赞数状态：", praiseAdd.result);
+                    } else if (praiseAdd.error) {
+                        console.error(praiseAdd.error);
+                    }
+                    // get_course_information_detail()
+                    layer.msg("取消点赞");
+                } else if (res.error) {
+                    layer.msg(res.error.message);
+                    console.error(res.error);
+                }
+            }
+        }
+        // 是否被收藏
+        async function check_collect() {
+            let { data: res } = await axios.get(BaseUrl + "/api/collect/count", {
+                params: {
+                    source_table: "course_information",
+                    source_field: "course_information_id",
+                    source_id: course_information_id,
+                    user_id: user_id,
+                },
+            });
+            if (res.result || res.result === 0) {
+                check_collected = res.result ? true : false;
+                if (check_collected) {
+                    $("#detail_collect")
+                            .removeClass("layui-icon-rate")
+                            .addClass("layui-icon-rate-solid");
+                } else {
+                    $("#detail_collect")
+                            .removeClass("layui-icon-rate-solid")
+                            .addClass("layui-icon-rate");
+                }
+            }
+        }
+        // 添加收藏
+        $("#add_collect").click(function () {
+            add_collect_opt();
+        });
+        async function add_collect_opt() {
+            if (!user_id) {
+                window.location.replace("../../login.html");
+                return;
+            }
+            var body = {
+                source_table: "course_information",
+                source_field: "course_information_id",
+                source_id: course_information_id,
+                user_id: user_id,
+            };
+            if (!check_collected) {
+              check_collected = true;
+                                                                                body.title =  course_information_detail.course_name
+                                                                                                                                                                                                                                                                                                body.img =  course_information_detail.curriculum
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                let { data: resCollect } = await axios.post(
+                        BaseUrl + `/api/collect/add`,
+                        body
+                );
+                if (resCollect) {
+                    $("#detail_collect")
+                            .removeClass("layui-icon-rate")
+                            .addClass("layui-icon-rate-solid");
+                    layer.msg("收藏成功");
+                }
+            } else {
+                check_collected = false;
+                let { data: resCollect } = await axios.get(
+                        BaseUrl + "/api/collect/del",
+                        {
+                            params: {
+                                source_table: "course_information",
+                                source_field: "course_information_id",
+                               
+                                source_id: course_information_id,
+                                user_id: user_id
+                            },
+                        }
+                );
+                if (resCollect) {
+                    layer.msg("取消收藏");
+                    $("#detail_collect")
+                            .removeClass("layui-icon-rate-solid")
+                            .addClass("layui-icon-rate");
+                }
+            }
+        }
+
+   
+        layui.layedit.set({
+            uploadImage: {
+                url: BaseUrl + "/api/comment/upload", //接口url
+                type: "post", //默认post
+            },
+        });
+
+
+        var demo = layui.layedit.build("demo", {
+            tool: [
+                "strong", //加粗
+                "italic", //斜体
+                "underline", //下划线
+                "del", //删除/Del线
+                "|", //分割线
+                "left", //左对齐
+                "center", //居中对齐
+                "right", //右对齐
+                "link", //超链接
+                "unlink", //清除链接
+                //"face", //表情
+                //"image", //插入图片
+                //"help", //帮助
+            ],
+        });
+        layedit.sync(demo);
+
+        let postUrl;
+        /**
+         * 发表评论
+         */
+        async function publish() {
+            if (!user_id) {
+                window.location.replace("../../login.html");
+                return;
+            }
+            form_comment.source_id = course_information_id;
+            form_comment["content"] = layui.layedit.getContent(demo);
+            var form = form_comment;
+            form = Object.assign(form, {
+                user_id: user_id,
+                avatar: avatar,
+                nickname: nickname,
+            });
+            if (!form.content) {
+                layer.msg("输入内容不能为空");
+                return;
+            }
+            var post_url = postUrl;
+            if (!post_url) {
+                post_url = "/api/comment/add";
+            }
+            let { data: res } = await axios.post(BaseUrl + post_url, form, {
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            });
+            let returnContent = "";
+            if (res.result) {
+                //layedit.setContent(demo, returnContent);
+                // window.location.reload();
+                await get_comment();
+                $("#addCommentForm")[0].reset();
+                layui.form.render();
+                form_comment.content = "";
+            } else if (res.error) {
+                layer.msg(res.error.message);
+            }
+        }
+        $("#fileNotifySubmit").on("click", function () {
+            // layedit.sync(demo);
+            publish();
+        });
+    });
+</script>
+</html>

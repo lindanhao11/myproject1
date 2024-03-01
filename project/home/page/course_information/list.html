@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>样式开发测试测试测试测试单</title>
+    <link href="../../layui/css/layui.css" rel="stylesheet"/>
+    <link href="../../css/diy.css" rel="stylesheet"/>
+    <style>
+     #list_title_text_t{
+        min-height: 32px;
+      }
+             .y_music_player {
+        width: 60%;
+        height:100px;
+        margin: 0 auto;
+        background: #ffffff;
+        z-index: 9999;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        box-shadow: #eeeeee 0 0 5px;
+        margin-bottom: 10px;
+        padding: 0 20px;
+      }
+      .play_control {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .play_control .layui-icon {
+        font-size:32px;
+      }
+      #pauseBtn{
+        display:none;
+      }
+      #playBtn{
+        display:inline-block;
+      }
+      .cover_img {
+        padding: 5px;
+        width: 56px;
+        height: 55px;
+      }
+      .play_progress {
+        display: flex;
+        flex-direction: column;
+        margin-left: 20px;
+        padding: 10px 0;
+        flex: 1;
+      }
+      .music_name {
+        font-size: 18px;
+        margin-left: 16px;
+      }
+      .play_progress_slider_box {
+        line-height: 30px;
+        height: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .play_progress_slider {
+        margin-left: 15px;
+        flex: 1;
+      }
+      .play-time {
+        margin-left: 30px;
+        font-size: 14px;
+      }
+      .play-volume {
+        width: 100px;
+        display: flex;
+        flex-direction: row;
+        margin-left: 20px;
+        align-items: center;
+      }
+      .play-volume img {
+        width: 24px;
+        height: 24px;
+      }
+      .play_volume_slider {
+        width: 80px;
+        margin-left: 20px;
+      }
+      .play_mode {
+        cursor: pointer;
+      }
+      .play_mode img {
+        width: 25px;
+        height: 25px;
+        
+      }
+      .y_music_player .el-slider__runway {
+        margin: 0;
+      }
+      .singleCycle{
+        display:none;
+      }
+      .random{
+        display:none;
+      }
+      #seekBar {
+        width:100%; /* 调整进度条的宽度 */
+        border: none;
+      }
+           </style>
+</head>
+<body>
+<div class="container">
+ <div class='diy_list_form'>
+ <div class="list_title"><p class="list_title_text" id="list_title_text_t"></p></div>
+    <form class="layui-form diy_list_form_search">
+        <div class="layui-row diy_list_search">
+            <div class="layui-col-md1">
+                <p class="diy_list_search_title">关键字搜索:</p>
+            </div>
+           
+         <div class="layui-col-md2">
+        <div class="layui-form-item">
+            <input
+                    type="text"
+                    name="course_name"
+                    placeholder="课程名称搜索"
+                    autocomplete="off"
+                    class="layui-input"
+                    id="course_name"
+            />
+        </div>
+    </div>
+             <div class="layui-col-md2">
+        <div class="layui-form-item">
+            <input
+                    type="text"
+                    name="course_id"
+                    placeholder="课程编号搜索"
+                    autocomplete="off"
+                    class="layui-input"
+                    id="course_id"
+            />
+        </div>
+    </div>
+             <div class="layui-col-md2">
+        <div class="layui-form-item">
+            <input
+                    type="text"
+                    name="teacher"
+                    placeholder="任课教师搜索"
+                    autocomplete="off"
+                    class="layui-input"
+                    id="teacher"
+            />
+        </div>
+    </div>
+                                             <div class="layui-col-md2">
+        <div class="layui-form-item">
+            <input
+                    type="text"
+                    name="course_type"
+                    placeholder="课程类型搜索"
+                    autocomplete="off"
+                    class="layui-input"
+                    id="course_type"
+            />
+        </div>
+    </div>
+                                                                <div class="layui-col-md2">
+            <div class="layui-form-item">  
+                    <button
+                            class="layui-btn demo-dropdown-base layui-btn-sm layui-btn-danger"
+                            id="teacher_user_list"
+                    > <span>全部</span>
+                        <i class="layui-icon layui-icon-down layui-font-12"></i>
+                    </button>
+            </div>
+       </div>             
+                                                                  <div class="layui-col-md2">
+            <div class="layui-form-item">          
+                    <button
+                            class="layui-btn demo-dropdown-base layui-btn-sm layui-btn-danger"
+                            id="course_type_list"
+                    > <span>全部</span>
+                        <i class="layui-icon layui-icon-down layui-font-12"></i>
+                    </button>
+          </div>
+       </div>          
+                                    
+            <div class="layui-col-md2">
+                <button
+                        type="button"
+                        class="layui-btn layui-btn-sm layui-btn-danger"
+                        id="searchGo"
+                >
+                    <i class="layui-icon layui-icon-search"></i>
+                </button>
+                <button
+                        type="button"
+                        class="layui-btn layui-btn-sm layui-btn-danger"
+                         id="clearForm"
+                >
+                    重置
+                </button>
+            </div>
+        </div>
+        <div class="diy_list_filter">
+          下拉搜索：
+            <div class="layui-form-item">
+                <button
+                        class="layui-btn demo-dropdown-base layui-btn-danger"
+                        id="sort_list_box"
+                >
+                    <span>排序</span>
+                    <i class="layui-icon layui-icon-down layui-font-12"></i>
+                </button>
+            </div>
+        </div>
+
+    </form>
+    <div class="layui-fluid layadmin-cmdlist-fluid">
+        <div class="layui-row layui-col-space15 t_list_wrap" id="course_information_list_box">
+        </div>
+        <!-- 分页器--开始-->
+        <div id="cont" class="layui-row layui-col-space30"></div>
+        <div id="pageSum"></div>
+        <!-- 分页器--结束 -->
+    </div>
+         <div class="y_music_player">
+      <div class="play_control">
+        <i class="layui-icon layui-icon-left" onclick="changeMusic('prev')"></i>
+        <i class="layui-icon layui-icon-pause" id='pauseBtn'  onclick="pauseMusic()"></i>
+        <i class="layui-icon layui-icon-play" id='playBtn' onclick="playMusic()"></i>
+        <i
+          class="layui-icon layui-icon-right"
+          onclick="changeMusic('next')"
+        ></i>
+        <img class="cover_img ml-3" fit="cover" src="../../img/1.png" />
+      </div>
+      <div class="play_progress">
+        <div class="play_progress_slider_box">
+          <div class="music_name">
+            歌名：
+            <span class="music_name_text">周深</span>
+          </div>
+          <div class="play_mode">
+            <img
+            class='cycle'
+              src="../../img/cycle.png"
+              onclick="changePlayMode('singleCycle')"
+              title="列表循环"
+            />
+            <img
+              class='singleCycle'
+              src="../../img/singleCycle.png"
+              onclick="changePlayMode('random')"
+              title="单曲循环"
+            />
+            <img
+            class='random'
+              src="../../img/random.png"
+              onclick="changePlayMode('cycle')"
+              title="单曲循环"
+            />
+          </div>
+        </div>
+        <div class="play_progress_slider_box progress">
+          <div  class="play_progress_slider"><input type="range" min="0" max="100" value="0" step="1" id="seekBar"/></div> 
+          <div class="play-time SongTime">1:30/04:30</div>
+        </div>
+      </div>
+      <div class="play-volume">
+        <img src="../../img/volume.png" />
+        <div id="slider2" class="play_progress_slider"></div>
+      </div>
+      <audio src="" type="" preload="auto" id="audio" onended="changeMusic('next')"></audio>
+    </div>
+    </div>
+</div>
+</div></body>
+<script src="../../js/base.js"></script>
+<script src="../../js/jquery.2.1.1.min.js"></script>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/sdk.js"></script>
+<script src="../../js/permissionSet.js"></script>
+
+
+<script>
+ var BaseUrl = baseUrl()
+  let pageName = $getUrlParams().pageName;
+      if(pageName){
+        $("#list_title_text_t").text(pageName);
+      }
+    check_action("/course_information/list", "get", "course_information_list_box");
+
+        layui.use(["laypage", "layer", "dropdown", "jquery","slider"], function () {
+            var laypage = layui.laypage,
+                    layer = layui.layer;
+            var dropdown = layui.dropdown;
+            var $ = layui.jquery;
+            var slider = layui.slider;
+
+           
+            let pages = 1;
+            let list_arr = [];
+            let type_arr = [];
+            let sort_list = [{
+                title: "创建时间从高到低",
+                value: "create_time desc",
+                },
+                {
+                    title: "创建时间从低到高",
+                    value: "create_time asc",
+                },
+                {
+                    title: "更新时间从高到低",
+                    value: "update_time desc",
+                },
+                {
+                    title: "更新时间从低到高",
+                    value: "update_time asc",
+                },
+                    {
+                    title: "课程名称正序",
+                    value: "course_name asc",
+                },
+                {
+                    title: "课程名称倒序",
+                    value: "course_name desc",
+                },
+                        {
+                    title: "课程编号正序",
+                    value: "course_id asc",
+                },
+                {
+                    title: "课程编号倒序",
+                    value: "course_id desc",
+                },
+                        {
+                    title: "任课教师正序",
+                    value: "teacher asc",
+                },
+                {
+                    title: "任课教师倒序",
+                    value: "teacher desc",
+                },
+                                                        {
+                    title: "课程类型正序",
+                    value: "course_type asc",
+                },
+                {
+                    title: "课程类型倒序",
+                    value: "course_type desc",
+                },
+                        ];
+                                                                             // 用户列表
+                let  list_user_teacher=[];
+                /**
+			 * 获取教师用户用户列表
+			 */
+			async function get_list_user_teacher() {
+				let { data: json } = await axios.get(
+                       BaseUrl + "/api/user/get_list?user_group=教师用户"
+                    );
+                if(json.result && json.result.list){
+					list_user_teacher = json.result.list;
+				}
+				else if(json.error){
+					console.error(json.error);
+				}
+			}
+           get_list_user_teacher()
+                                                                                                                                                                                                                                                    var musicList =  [];
+    var playState = false;
+    var playProgress = 0;
+    var playMode = "cycle";
+    var playVolume = 100;
+    var playIndex = 0;
+    var playTime = 0;
+    var totalDuration = 0;
+    var currentTime = 0;
+        function get_user_info(name,id){
+            var obj = null;
+                                                                                                        if (name == 'teacher'){
+                        obj =list_user_teacher.getObj({"user_id":id});
+                    }
+                                                                                                                                                                                                                                                                                                                                                            var ret = "";
+            if(obj){
+                ret = obj.nickname+"-"+obj.username;
+            }
+            return ret;
+		}
+            // 获取list数据
+            async function get_tpl_list(pagesNum, arr) {
+               var url="/api/course_information/get_list"
+                                var oNowDate = dateFormat("yyyy-MM-dd hh:mm:ss");
+                              let params1 = {
+                    page: pagesNum,
+                    size: 12,
+                                        timing_start_time_max: oNowDate,
+                    timing_end_time_min: oNowDate,
+                    like: 0,
+                                                                            };
+                let params;
+                if (arr) {
+                    params = Object.assign({}, params1, arr);
+                } else {
+                    params = params1;
+                }
+                const paramsList = removeEmptyValues(params)
+               
+    
+                let {data: res} = await axios.get(
+                        BaseUrl +url,
+                        {
+                            params: paramsList,
+                        }
+                );
+                if (res.result && res.result.list) {
+                                 playIndex = 0
+                 get_list_after(res)
+                                   let course_information_list_box = document.getElementById("course_information_list_box");
+                    list_arr = res.result;
+                    // 列表--数据渲染
+                   course_information_list_box.innerHTML='';
+                   var objecthtmls =''
+                    for (var i = 0; i < list_arr.list.length; i++) {
+                        var item = list_arr.list[i];
+                        objecthtmls += "<div class='layui-col-md4 layui-col-sm4 t_list'>"
+                          +"<a href='./detail.html?course_information_id="+item['course_information_id']+"'>"
+                                +"<div class='t_box announcement_list_box'>"
+                                 +"<div class='t_img t_box_right'>"
+                                  	                                                                                                                                             	                                                                                                                                             	                                                                    	                                                                                                                +"<img src='"+fullUrl(BaseUrl,item['curriculum'])+"' />"
+                                                                                                            	                                                                    	                                                                    	                                                                                                                                             	                                                                    	                                                                    	                                                                    	                                                                    	                                                                                                                                             	                                                                    	                                                                                                       +"</div>"
+                                  +"<div class='t_box_left'>" 
+                                  	                                                                                                               +"<p class='t_title'>课程名称:"+item['course_name']+"</p>"
+                                         
+                                                                            
+                                                                      	                                                                                                               +"<p class='t_title'>课程编号:"+item['course_id']+"</p>"
+                                         
+                                                                            
+                                                                      	                                                                    	                                                                                                                                                   
+                                                                      	                                                                    	                                                                    	                                                                                                               +"<p class='t_title'>课程名额:"+item['course_quota']+"</p>"
+                                         
+                                                                            
+                                                                      	                                                                    	                                                                    	                                                                    	                                                                    	                                                                                                               +"<p class='t_title'>课程类型:"+item['course_type']+"</p>"
+                                         
+                                                                            
+                                                                      	                                                                    	                                                                                                      +"</div>"   
+                                 
+                                   
+                                +"</div>"
+                                 +"</a>"
+                            +"</div>";
+                        //src 为你的图片地址
+                       
+                    }
+                     course_information_list_box.innerHTML=objecthtmls;
+                    // 分页---总页数低于页码总数
+                    laypage.render({
+                        elem: "pageSum",
+                        curr: pages,
+                        count: Number(list_arr.count), //数据总数
+                        limit: 12,
+                        layout: ["prev", "page", "next"],
+                        jump: function (obj, first) {
+                            // 首次不执行
+                            if (!first) {
+                                // 点击其他页码跳转
+                                pages = obj.curr;
+                                get_tpl_list(obj.curr, {});
+                                // layer.msg("第 " + obj.curr + " 页");
+                            }
+                        },
+                    });
+                }
+            }
+
+            get_tpl_list(1);
+
+                                                        /**
+             *添加teacher数据
+             */
+            let list_user_teacher = [];
+            async function get_teacher_user_list() {
+                let { data: res } = await axios.get(
+                        BaseUrl + "/api/user/get_list?user_group=教师用户",
+                });
+                if (res.result && res.result.list) {
+                    if (res.result && res.result.list) {
+                        res.result.list.map((o) =>
+                                list_user_teacher.push({
+                                    title: o.nickname+"-"+o.username,
+                                    value: o.user_id,
+                                })
+                        );
+                        dropdown.render({
+                            elem: "#teacher_user_list",
+                            data: list_user_teacher,
+                            click: function (obj) {
+                                query["teacher"] = obj.value;
+                                get_tpl_list(1, query);
+                            },
+                        });
+                    }
+                }
+            }
+            get_teacher_user_list();
+                                                                    /**
+             *添加course_type数据
+             */
+            let list_course_type = [];
+            async function get_course_type_list() {
+                let { data: res } = await axios.get(
+                        BaseUrl + "/api/course_classification/get_list",
+                        {params:{}}
+                );
+               
+                if (res.result && res.result.list) {
+                        list_course_type.push({
+                            title: "全部",
+                            value: "0",
+                        });
+                        res.result.list.map((o) =>
+                                list_course_type.push({
+                                    title: o.course_type,
+                                    value: o.course_type,
+                                })
+                        );
+                        dropdown.render({
+                            elem: "#course_type_list",
+                            data: list_course_type,
+                            click: function (obj) {
+                                this.elem.find("span").text(obj.title);
+                                if (obj.title == "全部") {
+                                    get_tpl_list(1, {});
+                                } else {
+                                    query["course_type"] = obj.title;
+                                    get_tpl_list(1, query);
+                                }
+                            },
+                        });
+                    }
+                
+            }
+            get_course_type_list();
+                                let query = {};
+            let clearForm = document.getElementById("clearForm");
+            clearForm.addEventListener('click', function () {
+                                                        query['course_name'] = ''
+                            course_name.value = ''
+                                                                        query['course_id'] = ''
+                            course_id.value = ''
+                                                                        query['teacher'] = ''
+                            teacher.value = ''
+                                                                                                                                                                                                                                                                                                        query['course_type'] = ''
+                            course_type.value = ''
+                                                                                                 get_tpl_list(1, query);
+            })
+                let course_name = document.getElementById("course_name");
+            course_name.addEventListener('blur', function () {
+                const value = course_name.value;
+                if (value.length) {
+                    query['course_name'] = value
+                }
+            })
+                    let course_id = document.getElementById("course_id");
+            course_id.addEventListener('blur', function () {
+                const value = course_id.value;
+                if (value.length) {
+                    query['course_id'] = value
+                }
+            })
+                    let teacher = document.getElementById("teacher");
+            teacher.addEventListener('blur', function () {
+                const value = teacher.value;
+                if (value.length) {
+                    query['teacher'] = value
+                }
+            })
+                                                    let course_type = document.getElementById("course_type");
+            course_type.addEventListener('blur', function () {
+                const value = course_type.value;
+                if (value.length) {
+                    query['course_type'] = value
+                }
+            })
+                        // 跳转搜索页面
+            searchGo.onclick = function () {
+                    if (course_name.value.length) {
+                    query['course_name'] = course_name.value
+                } else {
+                    query['course_name'] = ''
+                }
+                        if (course_id.value.length) {
+                    query['course_id'] = course_id.value
+                } else {
+                    query['course_id'] = ''
+                }
+                        if (teacher.value.length) {
+                    query['teacher'] = teacher.value
+                } else {
+                    query['teacher'] = ''
+                }
+                                                        if (course_type.value.length) {
+                    query['course_type'] = course_type.value
+                } else {
+                    query['course_type'] = ''
+                }
+                            get_tpl_list(1, query);
+            }
+	var audio=$("#audio")[0]
+    var audioE = document.getElementById("audio")
+    var seekBar = document.getElementById("seekBar"); // 获取进度条元素和音频对象
+    // seekBar.max = audioE.duration;
+    audioE.addEventListener('timeupdate', function() {
+      if(audioE.currentTime==0){
+        seekBar.value = '0'
+      }else{
+        var progressPercentage = (audioE.currentTime / audioE.duration) * 100;
+        seekBar.value =parseInt(progressPercentage);
+      }
+    });
+    //实时事件（获取每个变化的值）   
+     $('#seekBar').on('input propertychange',function(){
+      var valueAsNumber=seekBar.value
+       var targetPosition = valueAsNumber * audioE.duration / 100;
+       audioE.currentTime = targetPosition;
+       if( playState ){
+        audio.play()
+       }
+    })
+    //时间的格式化
+    function format(t) {
+        var m=Math.floor(t/60);
+        var s=Math.floor(t%60);
+        if(m<=9)     //小于10时，在前面填0
+            m="0"+m;
+        if(s<=9)
+            s="0"+s;
+        return m+":"+s;
+    }
+    $('#pauseBtn').css('display','none')
+    $('#playBtn').css('display','inline-block')
+    function getPlayProgress(){
+       audio.ontimeupdate = () => {
+         currentTime=parseInt(audio.currentTime)
+         totalDuration=parseInt(audio.duration)
+         playProgress = parseInt((currentTime/totalDuration)* 100)
+         if(audio.duration){
+          $(".SongTime").html(timeFormat(audio.currentTime) + " / " + timeFormat(audio.duration));
+          //slider1.setValue(playProgress)
+         }else{
+          $(".SongTime").html(timeFormat(audio.currentTime) + "  / " + '00:00');
+        }
+      }
+     }
+    window.changePlayMode=function (mode){
+      playMode = mode
+      switch (mode){
+        case 'cycle':{ //列表循环
+         $('.cycle').css('display','inline-block')
+         $('.singleCycle').css('display','none')
+         $('.random').css('display','none')
+         audioE.loop=false;
+         audioE.removeEventListener("ended",suiji,false);
+         audioE.addEventListener("ended", liebiao, false);
+          break
+        }
+        case 'singleCycle':   //单曲循环
+        $('.cycle').css('display','none')
+         $('.singleCycle').css('display','inline-block')
+         $('.random').css('display','none')
+         audioE.loop=true;
+          break
+        
+        case 'random': // 随机播放
+          $('.cycle').css('display','none')
+         $('.singleCycle').css('display','none')
+         $('.random').css('display','inline-block')
+         if(audioE!=null){
+          audioE.loop=false;
+          audioE.removeEventListener("ended",liebiao,false);
+          audioE.addEventListener("ended", suiji, false);
+          }
+          break
+      }
+    }
+    //列表循环，触发下一首的点击事件
+    function liebiao(){
+      changeMusic("next");
+    }
+   //产生随机数，自动播放
+    function suiji() {
+      playIndex=Math.floor(Math.random()*musicList.length);//产生随机数，范围为0到oMusic.length-1,
+      initPalyIndex()
+    }
+    function getAudioInfo() {
+      getPlayProgress()
+      if (playState) {
+        playMusic();
+      }
+    }
+    function timeFormat(number) {
+        var minute = parseInt(number / 60);
+        var second = parseInt(number % 60);
+        minute = minute >= 10 ? minute : "0" + minute;
+        second = second >= 10 ? second : "0" + second;
+        return minute + ":" + second;
+    } 
+    window.playMusic=function () {
+      getPlayProgress();
+      audio.play()
+      playState = true;
+      if(playState){
+       $('#pauseBtn').css('display','inline-block')
+       $('#playBtn').css('display','none')
+      }
+    }
+    window.pauseMusic=function () {
+      audio.pause()
+      playState = false;
+      if(!playState){
+       $('#pauseBtn').css('display','none')
+       $('#playBtn').css('display','inline-block')
+      }
+    }
+    function setVolume(e) {
+      $("#audio").attr("volume", e/100);
+      slider2.setValue(playVolume)
+    }
+    window.changeMusic =function (operate) {
+      switch (operate) {
+        case "prev": {
+          operate === "prev" ? playIndex-- : playIndex++;
+          if (playIndex > musicList.length - 1) {
+            playIndex = 0;
+          }
+          if (playIndex < 0) {
+            playIndex = musicList.length - 1;
+          }
+          break;
+        }
+        case "next": {
+          if (playIndex == musicList.length - 1){
+          	playIndex = 0;
+          }else{
+            playIndex++;
+          }
+          break;
+        }
+      }
+      initPalyIndex()
+    }
+    function get_list_after(json ){
+      musicList=[]
+      let list = json.result.list;
+      for (let i = 0 ; i < list.length; i++){
+        let obj = {};
+        if(list[i].song_audio){
+          obj.music_name = list[i].music_name
+              obj.cover = BaseUrl +list[i].singer_cover
+              obj.singer = list[i].singer_name
+              obj.audio_frequency =  BaseUrl +list[i].song_audio
+              musicList.push(obj)
+       }     
+      }
+      if(musicList.length){
+        initPalyIndex()
+      }
+    }
+      // 音量
+    var slider2 = slider.render({
+        elem: "#slider2",
+        value: 100, //初始值
+        theme: '#1e5bff', // 主题色
+        change: function(value){
+            audio.volume=(value / 100).toFixed(2)
+        }
+    });
+    function initPalyIndex(){
+      $("#audio").attr('src',musicList[playIndex].audio_frequency)
+      $(".cover_img").attr('src',musicList[playIndex].cover)
+      $(".music_name_text").html(musicList[playIndex].music_name)
+      getAudioInfo()
+    }
+            // 初始化页面数据
+            // 筛选--渲染数据
+
+            // 排序--渲染数据
+            dropdown.render({
+                elem: "#sort_list_box",
+                data: sort_list,
+                click: function (obj) {
+                    this.elem.find("span").text(obj.title);
+                    query["orderby"] = obj.value;
+                    get_tpl_list(1, query);
+                },
+            });
+        });
+</script>
+</html>

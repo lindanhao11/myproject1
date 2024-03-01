@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.demo.dao.LinkMapper">
+
+    <resultMap type="com.project.demo.entity.Link" id="LinkResult">
+        <result property="linkId"    column="link_id"    />
+        <result property="display"    column="display"    />
+        <result property="name"    column="name"    />
+        <result property="img"    column="img"    />
+        <result property="url"    column="url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLinkVo">
+        select link_id, display, name, img, url, create_time, update_time from link
+    </sql>
+
+    <select id="selectLinkList" parameterType="com.project.demo.entity.Link" resultMap="LinkResult">
+        <include refid="selectLinkVo"/>
+        <where>
+            <if test="display != null "> and display = #{display}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+        </where>
+    </select>
+
+    <select id="selectLinkById" parameterType="Integer" resultMap="LinkResult">
+        <include refid="selectLinkVo"/>
+        where link_id = #{linkId}
+    </select>
+
+    <insert id="insertLink" parameterType="com.project.demo.entity.Link" useGeneratedKeys="true" keyProperty="linkId">
+        insert into link
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="display != null ">display,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="img != null  and img != ''">img,</if>
+            <if test="url != null  and url != ''">url,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="display != null ">#{display},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="img != null  and img != ''">#{img},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLink" parameterType="com.project.demo.entity.Link">
+        update link
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="display != null ">display = #{display},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="img != null  and img != ''">img = #{img},</if>
+            <if test="url != null  and url != ''">url = #{url},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where link_id = #{linkId}
+    </update>
+
+    <delete id="deleteLinkById" parameterType="Integer">
+        delete from link where link_id = #{linkId}
+    </delete>
+
+    <delete id="deleteLinkByIds" parameterType="String">
+        delete from link where link_id in
+        <foreach item="linkId" collection="array" open="(" separator="," close=")">
+            #{linkId}
+        </foreach>
+    </delete>
+
+</mapper>

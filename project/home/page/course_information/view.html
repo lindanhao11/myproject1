@@ -1,0 +1,1516 @@
+<!-- 新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>样式开发测试测试测试测试单</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/diy.css">
+    <script src="../../js/jquery.2.1.1.min.js"></script>
+    <script src="../../js/jquery_expand.js"></script>
+    <script src="../../js/axios.min.js"></script>
+
+    <style>
+        img {
+            width: 200px;
+        }
+
+
+        
+    </style>
+</head>
+
+<body>
+<article class="sign_in" id="course_information_form">
+    <div class="warp tpl">
+        <div class="layui-container">
+            <div class="layui-row">
+                <form class="layui-form" action="">
+                <div class="from-input-box-i">
+                                                                                                                              <div class="UIDItem">
+                                                                                                            <div class="layui-form-item unique" id="course_name_box">
+                                            <label class="layui-form-label">课程名称</label>
+                                            <div class="layui-input-block input-i block">
+                                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                                       placeholder="请输入课程名称"
+                                                       class="layui-input" id="course_name">
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                                                            <div class="layui-form-item unique" id="course_id_box">
+                                            <label class="layui-form-label">课程编号</label>
+                                            <div class="layui-input-block input-i block">
+                                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                                       placeholder="请输入课程编号"
+                                                       class="layui-input" id="course_id">
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                                                                                                        <div class="layui-form-item uid-box" id="teacher_box">
+                                                <label class="layui-form-label">任课教师</label>
+                                                <div class="layui-input-block select block">
+                                                    <select name="interest" lay-filter="teacher"
+                                                            id="teacher">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                                                                                            </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                    <div class="layui-upload " id="curriculum_box">
+                                        <button type="button" class="layui-btn" id="curriculum">上传图片</button>
+                                        <div class="layui-upload-list">
+                                            <img class="layui-upload-img" id="curriculum_img">
+                                            <p id="demoText"></p>
+                                        </div>
+                                        <div style="width: 95px;">
+                                            <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                                                 lay-filter="curriculum">
+                                                <div class="layui-progress-bar" lay-percent=""></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                    <div class="layui-form-item tiem-box" id="release_time_box">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">发布时间</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" class="layui-input" id="release_time"
+                                                       placeholder="yyyy-MM-dd">
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                    <div class="layui-form-item tiem-box" id="course_selection_time_box">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">选课时间</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" class="layui-input" id="course_selection_time"
+                                                       placeholder="yyyy-MM-dd">
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                    <div class="layui-form-item number" id="course_quota_box">
+                                        <label class="layui-form-label">课程名额</label>
+                                        <div class="layui-input-block input-i block">
+                                            <input type="number" name="num" class="layui-input num" id="course_quota">
+                                        </div>
+                                    </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                                                            <div class="layui-form-item flie-box" id="course_attachments_box">
+                                            <label class="layui-form-label">课程附件</label>
+                                            <div class="layui-upload-drag" id="course_attachments">
+                                                <i class="layui-icon"></i>
+                                                <p>将文件拖到此处,或点击上传</p>
+                                                <div class="layui-hide">
+                                                    <hr>
+                                                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                                                            <div class="layui-form-item audio-box" id="course_audio_box">
+                                            <label class="layui-form-label">课程音频</label>
+                                            <div class="layui-upload-drag" id="course_audio">
+                                                <i class="layui-icon"></i>
+                                                <p>将音频拖到此处,或点击上传</p>
+                                                <div class="layui-hide">
+                                                    <hr>
+                                                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                                                            <div class="layui-form-item Video-box" id="course_video_box">
+                                            <label class="layui-form-label">课程视频</label>
+                                            <div class="layui-upload-drag" id="course_video">
+                                                <i class="layui-icon"></i>
+                                                <p>将视频拖到此处,或点击上传</p>
+                                                <div class="layui-hide">
+                                                    <hr>
+                                                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                                                            <div class="layui-form-item unique" id="course_website_box">
+                                            <label class="layui-form-label">课程网址</label>
+                                            <div class="layui-input-block input-i block">
+                                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                                       placeholder="请输入课程网址"
+                                                       class="layui-input" id="course_website">
+                                            </div>
+                                        </div>
+                                                                                                                                                                                  <div class="UIDItem">
+                                                                    <div class="layui-form-item select-box" id="course_type_box">
+                                        <label class="layui-form-label">课程类型</label>
+                                        <div class="layui-input-block input-i select" style="overflow: visible;">
+                                            <div id="course_type" class="lsa" style="width:100px"></div>
+                                        </div>
+                                    </div>
+                                                                                                                                              <div class="UIDItem">
+                                                                    <div class="layui-form-item layui-form-text" id="course_notes_box">
+                                        <label class="layui-form-label">课程备注</label>
+                                        <div class="layui-input-block text">
+                                            <textarea placeholder="请输入课程备注" class="layui-textarea"
+                                                      id="course_notes"></textarea>
+                                        </div>
+                                    </div>
+                                                                                                                                                <div class="layui-form-item edit">
+                                    <label class="layui-form-label">课程详情</label>
+                                    <div class="layui-input-block text">
+                                        <textarea id="demo" style="display: none;"></textarea>
+                                    </div>
+                                </div>
+                                                                            
+                                                                            <div class="layui-form-item scan">
+                                <div class="layui-upload">
+                                    <label class="layui-form-label">二维码图片</label>
+                                    <button type="button" class="layui-btn" id="qrcode_img">上传图片</button>
+                                    <div class="layui-upload-list">
+                                        <img class="layui-upload-img" id="qrcode_img1">
+                                        <p id="text"></p>
+                                    </div>
+                                    <div style="width: 95px;">
+                                        <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                                             lay-filter="qrcode_img">
+                                            <div class="layui-progress-bar" lay-percent=""></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px;"></div>
+                            </div>
+                            <!-- 上传图片结束 -->
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">二维码标题</label>
+                                <div class="layui-input-block input-i block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                           placeholder="请输入二维码标题"
+                                           class="layui-input" id="qrcode_title">
+                                </div>
+                            </div>
+                        
+                                                    <div class="layui-form-item">
+                                <label class="layui-form-label">计时器标题</label>
+                                <div class="layui-input-block input-i block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                           placeholder="请输入计时器标题"
+                                           class="layui-input" id="timer_title">
+                                </div>
+                            </div>
+                            <!--  选择时间开始  -->
+
+                                <div class="layui-form-item item-time-s">
+                                        <label class="layui-form-label">日期范围</label>
+                                        <div class="layui-inline" id="course_information_time">
+                                            <div class="layui-input-inline">
+                                                <input type="text" autocomplete="off" id="test-startDate"
+                                                       class="layui-input"
+                                                       placeholder="选择计时器开始时间">
+                                            </div>
+                                            <div class="layui-form-mid">-</div>
+                                            <div class="layui-input-inline">
+                                                <input type="text" autocomplete="off" id="test-endDate-1"
+                                                       class="layui-input"
+                                                       placeholder="选择计时器结束时间">
+                                            </div>
+                                        </div>
+                                </div>
+
+                        
+                        
+                                                    <div class="layui-form-item">
+                                <label class="layui-form-label">当前位置</label>
+                                <div class="layui-input-block input-i block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                           placeholder="当前位置"
+                                           class="layui-input" id="location_address">
+                                    <button type="button" class="layui-btn" id="location_address_button">定位</button>
+                                </div>
+                            </div>
+                        
+                        
+                                            
+                 </div>
+                </form>
+                <div class="layui-btn-container">
+                    <button type="button" class="layui-btn layui-btn-danger login" id="submit">确认</button>
+                    <button type="button" class="layui-btn layui-btn-danger login" id="cancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+</body>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../js/permissionSet.js"></script> 
+                                                            <script src="https://maplemei.gitee.io/xm-select/xm-select.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    var BaseUrl = baseUrl()
+    let cancel = document.querySelector("#cancel")
+    cancel.onclick = function () {
+      window.history.go(-1)
+    }
+     let course_information_id 
+     let source_table =$getUrlParams().source_table
+    if(source_table){
+        course_information_id = $getUrlParams().course_information_id
+    }else{
+        course_information_id= location.search.substring(1)
+    }
+    
+    layui.use(['upload', 'element', 'layer', 'laydate', 'layedit'], function () {
+        var $ = layui.jquery
+                , upload = layui.upload
+                , element = layui.element
+                , layer = layui.layer
+                , laydate = layui.laydate
+                , layedit = layui.layedit
+                , form = layui.form;
+
+        let url
+
+        let token = sessionStorage.token || null
+        let personInfo = JSON.parse(sessionStorage.personInfo)
+        let user_group = personInfo.user_group
+        let use_id = personInfo.user_id
+
+
+        function  $get_stamp() {
+            return new Date().getTime();
+        }
+
+        function  $get_rand(len) {
+            var rand = Math.random();
+            return Math.ceil(rand * 10 ** len);
+        }
+
+        
+                    layui.layedit.set({
+      uploadImage: {
+        url: BaseUrl + '/api/course_information/upload?' //接口url
+        , type: 'post' //默认post
+      }
+    });
+            var uploadInst = upload.render({
+                elem: '#qrcode_img'
+                , url: BaseUrl + '/api/course_information/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+                , headers: {
+                    'x-auth-token': token
+                }, before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $('#qrcode_img1').attr('src', fullUrl(BaseUrl,result)); //图片链接（base64）
+                    });
+
+                    element.progress('qrcode_img', '0%'); //进度条复位
+                    layer.msg('上传中', {icon: 16, time: 0});
+                }
+                , done: function (res) {
+                    //如果上传失败
+                    if (res.code > 0) {
+                        return layer.msg('上传失败');
+                    }
+                    //上传成功的一些操作
+                    //……
+                    form_data2.qrcode_img = res.result.url
+                    $('#demoText').html(''); //置空上传失败的状态
+                }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+                //进度条
+                , progress: function (n, elem, e) {
+                    element.progress('qrcode_img', n + '%'); //可配合 layui 进度条元素使用
+                    if (n == 100) {
+                        layer.msg('上传完毕', {icon: 1});
+                    }
+                }
+            })
+        
+            // 权限判断
+            /**
+             * 获取路径对应操作权限 鉴权
+             * @param {String} action 操作名
+             */
+            function $check_action(path1, action = "get") {
+                var o = $get_power(path1);
+                if (o && o[action] != 0 && o[action] != false) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * 是否有显示或操作字段的权限
+             * @param {String} action 操作名
+             * @param {String} field 查询的字段
+             */
+            function $check_field(action, field, path1) {
+                var o = $get_power(path1);
+                var auth;
+                if (o && o[action] != 0 && o[action] != false) {
+                    auth = o["field_" + action];
+                }
+                if (auth) {
+                    return auth.indexOf(field) !== -1;
+                }
+                return false;
+            }
+
+            /**
+             * 获取权限
+             * @param {String} path 路由路径
+             */
+            function $get_power(path) {
+                var list_data = JSON.parse(sessionStorage.list_data)
+                var list = list_data;
+                var obj;
+                for (var i = 0; i < list.length; i++) {
+                    var o = list[i];
+                    if (o.path === path) {
+                        obj = o;
+                        break;
+                    }
+                }
+                return obj;
+            }
+
+        let submit = document.querySelector('#submit')
+        // 提交按钮校验权限
+        if (   user_group == "管理员" ||$check_action('/course_information/view', 'add') || $check_action('/course_information/view', 'set')) {
+        }else {
+            $("#submit").hide()
+        }
+        // style="display: none"
+
+        
+            let field = "course_information_id";
+            let url_add = "course_information";
+            let url_set = "course_information";
+            let url_get_obj = "course_information";
+            let url_upload = "course_information"
+            let query = {
+                "course_information_id": 0,
+            }
+
+            let form_data2 = {
+                                                        "course_name":  '', // 课程名称
+                                                                            "course_id": $get_stamp(), // 课程编号
+                                                                                "teacher": 0, // 任课教师
+                                                                            "curriculum":  '', // 课程
+                                                                            "release_time":  '', // 发布时间
+                                                                            "course_selection_time":  '', // 选课时间
+                                                                            "course_quota":  0, // 课程名额
+                                                                            "course_attachments":  '', // 课程附件
+                                                                            "course_audio":  '', // 课程音频
+                                                                            "course_video":  '', // 课程视频
+                                                                            "course_website":  '', // 课程网址
+                                                                            "course_type":  '', // 课程类型
+                                                                            "course_notes":  '', // 课程备注
+                                                                            "course_details":  '', // 课程详情
+                                                                                                        "location_address": "",
+                    "location_lng": "",
+                    "location_lat": "",
+                                                "course_information_id": 0, // ID
+                                    "qrcode_img": '', // 图片
+                    "qrcode_title": '', // 二维码标题
+                                                                    "timer_title": '', // 计时器标题
+                    "timing_start_time": '', // 计时开始时间
+                    "timing_end_time": '', // 计时结束时间
+                                                            }
+
+            layui.layedit.set({
+      uploadImage: {
+        url: BaseUrl + '/api/course_information/upload?' //接口url
+        , type: 'post' //默认post
+      }
+    });
+
+
+            var path1
+
+            function getpath() {
+                var list_data = JSON.parse(sessionStorage.list_data)
+                for (var i = 0; i < list_data.length; i++) {
+                    var o = list_data[i];
+                    if (o.path === "/course_information/table") {
+                        path1 = o.path
+                            $get_power(o.path)
+                    }
+                }
+            }
+
+            getpath()
+
+            /**
+             * 注册时是否有显示或操作字段的权限
+             * @param {String} action 操作名
+             * @param {String} field 查询的字段
+             * @param {String} path 路径
+             */
+            function $check_register_field(action, field, path1) {
+                var o = $get_power(path1);
+                var auth;
+                if (o && o[action] != 0 && o[action] != false) {
+                    auth = o["field_" + action];
+                }
+                if (auth) {
+                    return auth.indexOf(field) !== -1;
+                }
+                return false;
+            }
+
+            /**
+             * 是否有显示或操作字段的权限
+             * @param {String} action 操作名
+             * @param {String} field 查询的字段
+             */
+            function $check_field(action, field) {
+                var o = $get_power("/course_information/view");
+                var auth;
+                if (o && o[action] != 0 && o[action] != false) {
+                    auth = o["field_" + action];
+                }
+                if (auth) {
+                    return auth.indexOf(field) !== -1;
+                }
+                return false;
+            }
+
+            /**
+             * 获取路径对应操作权限 鉴权
+             * @param {String} action 操作名
+             */
+            function $check_exam(path1, action = "get") {
+                var o = $get_power(path1);
+                if (o) {
+                    var option = JSON.parse(o.option);
+                    if (option[action])
+                        return true
+                }
+                return false;
+            }
+
+            /**
+             * 是否有审核字段的权限
+             */
+            function $check_examine() {
+                var url = window.location.href;
+                var url_ = url.split("/")
+                var pg_url = url_[url_.length - 2]
+                let path = "/"+ pg_url + "/table"
+                var o = $get_power(path);
+                if (o){
+                    var option = JSON.parse(o.option);
+                    if (option.examine)
+                        return true
+                }
+                return false;
+            }
+
+                            if (user_group === '管理员') {
+                    $("#course_name_box").show()
+                } else {
+                    if ($check_field('add', 'course_name')){
+                        $("#course_name_box").show()
+                    }else {
+                        $("#course_name_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_id_box").show()
+                } else {
+                    if ($check_field('add', 'course_id')){
+                        $("#course_id_box").show()
+                    }else {
+                        $("#course_id_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#teacher_box").show()
+                } else {
+                    if ($check_field('add', 'teacher')){
+                        $("#teacher_box").show()
+                    }else {
+                        $("#teacher_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#curriculum_box").show()
+                } else {
+                    if ($check_field('add', 'curriculum')){
+                        $("#curriculum_box").show()
+                    }else {
+                        $("#curriculum_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#release_time_box").show()
+                } else {
+                    if ($check_field('add', 'release_time')){
+                        $("#release_time_box").show()
+                    }else {
+                        $("#release_time_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_selection_time_box").show()
+                } else {
+                    if ($check_field('add', 'course_selection_time')){
+                        $("#course_selection_time_box").show()
+                    }else {
+                        $("#course_selection_time_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_quota_box").show()
+                } else {
+                    if ($check_field('add', 'course_quota')){
+                        $("#course_quota_box").show()
+                    }else {
+                        $("#course_quota_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_attachments_box").show()
+                } else {
+                    if ($check_field('add', 'course_attachments')){
+                        $("#course_attachments_box").show()
+                    }else {
+                        $("#course_attachments_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_audio_box").show()
+                } else {
+                    if ($check_field('add', 'course_audio')){
+                        $("#course_audio_box").show()
+                    }else {
+                        $("#course_audio_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_video_box").show()
+                } else {
+                    if ($check_field('add', 'course_video')){
+                        $("#course_video_box").show()
+                    }else {
+                        $("#course_video_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_website_box").show()
+                } else {
+                    if ($check_field('add', 'course_website')){
+                        $("#course_website_box").show()
+                    }else {
+                        $("#course_website_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_type_box").show()
+                } else {
+                    if ($check_field('add', 'course_type')){
+                        $("#course_type_box").show()
+                    }else {
+                        $("#course_type_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_notes_box").show()
+                } else {
+                    if ($check_field('add', 'course_notes')){
+                        $("#course_notes_box").show()
+                    }else {
+                        $("#course_notes_box").hide()
+                    }
+                }
+                            if (user_group === '管理员') {
+                    $("#course_details_box").show()
+                } else {
+                    if ($check_field('add', 'course_details')){
+                        $("#course_details_box").show()
+                    }else {
+                        $("#course_details_box").hide()
+                    }
+                }
+            
+                                                                                                                                                                                                                                                                                            //常规使用 - 普通图片上传
+                        var uploadInst = upload.render({
+                            elem: '#curriculum'
+                            , url: BaseUrl + '/api/course_information/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+                            , headers: {
+                                'x-auth-token': token
+                            }, before: function (obj) {
+                                //预读本地文件示例，不支持ie8
+                                obj.preview(function (index, file, result) {
+                                    $('#curriculum_img').attr('src', fullUrl(BaseUrl,result)); //图片链接（base64）
+                                });
+
+                                element.progress('curriculum', '0%'); //进度条复位
+                                layer.msg('上传中', {icon: 16, time: 0});
+                            }
+                            , done: function (res) {
+                                //如果上传失败
+                                if (res.code > 0) {
+                                    return layer.msg('上传失败');
+                                }
+                                //上传成功的一些操作
+                                //……
+                                form_data2.curriculum = res.result.url
+                                $('#demoText').html(''); //置空上传失败的状态
+                            }
+                            , error: function () {
+                                //演示失败状态，并实现重传
+                                var demoText = $('#demoText');
+                                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                                demoText.find('.demo-reload').on('click', function () {
+                                    uploadInst.upload();
+                                });
+                            }
+                            //进度条
+                            , progress: function (n, elem, e) {
+                                element.progress('curriculum', n + '%'); //可配合 layui 进度条元素使用
+                                if (n == 100) {
+                                    layer.msg('上传完毕', {icon: 1});
+                                }
+                            }
+                        });
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    var demo = layedit.build('demo', {
+                        tool: [
+                            'strong' //加粗
+                            , 'italic' //斜体
+                            , 'underline' //下划线
+                            , 'del' //删除/Del线
+                            , '|' //分割线
+                            , 'left' //左对齐
+                            , 'center' //居中对齐
+                            , 'right' //右对齐
+                            , 'link' //超链接
+                            , 'unlink' //清除链接
+                            , 'image' //插入图片
+                            , 'help' //帮助
+                        ]
+                    });
+                                        
+                                                                                                                                                                                                                                                                                        upload.render({
+                            elem: '#course_attachments'
+                            , url: BaseUrl + '/api/course_information/upload'
+                            , headers: {
+                                'x-auth-token': token
+                            } //此处配置你自己的上传接口即可
+                            , accept: 'file' //普通文件
+                            , done: function (res) {
+                                layer.msg('上传成功');
+                                form_data2.course_attachments = res.result.url
+                            }
+                        });
+                                                                                                            // 上传音频
+                        upload.render({
+                            elem: '#course_audio'
+                            , url: BaseUrl + '/api/course_information/upload'
+                            , headers: {
+                                'x-auth-token': token
+                            }
+                            , accept: 'audio' //音频
+                            , done: function (res) {
+                                layer.msg('上传成功');
+                                form_data2.course_audio = res.result.url
+                            }
+                        });
+                                                                                                            // 上传视频
+                        upload.render({
+                            elem: '#course_video'
+                            , url: BaseUrl + '/api/course_information/upload'
+                            , headers: {
+                                'x-auth-token': token
+                            } //此处配置你自己的上传接口即可
+                            , accept: 'video' //视频
+                            , done: function (res) {
+                                layer.msg('上传成功');
+                                form_data2.course_video = res.result.url
+                            }
+                        });
+                                                                                                                                                                                            
+                                                            
+                                                            
+                                                            
+                                                                                // 日期选择
+                    laydate.render({
+                        elem: '#release_time'
+                        , format: 'yyyy-MM-dd'
+                        , done: function (value) {
+                            form_data2.release_time = value + ' 00:00:00'
+                        }
+                    });
+                
+                                                            
+                                                    laydate.render({
+                        elem: '#course_selection_time'
+                        , type: 'datetime'
+                        , done: function (value) {
+                            console.log(value)
+                            form_data2.course_selection_time = value
+                        }
+                    });
+                                            
+                                                            
+                                                            
+                                                            
+                                                            
+                                                            
+                                                            
+                                                            
+                                            
+                            laydate.render({
+                    elem: '#course_information_time',
+                    type: 'datetime'
+                    , range: ['#test-startDate', '#test-endDate-1'],
+                    done: function (value, data, endData) {
+                        let i = value
+                        let k = i.substring(0, 20)
+                        let j = i.substring(21, 41)
+                        form_data2.timing_start_time = k
+                        form_data2.timing_end_time = j
+                    }
+                });
+            
+                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                    async function list_teacher() {
+                        var teacher = document.querySelector("#teacher")
+                        var op1 = document.createElement("option");
+                        op1.value = '0'
+                            teacher.appendChild(op1)
+                        // 收集数据 长度
+                        var count
+                        // 收集数据 数组
+                        var arr = []
+                        $.ajax({
+                            url: BaseUrl + '/api/user/get_list?user_group=教师用户',
+                            type: 'GET',
+                            contentType: 'application/json; charset=UTF-8',
+                            async: false,
+                            dataType: 'json',
+                            success: function (response) {
+                                count = response.result.count
+                                arr = response.result.list
+                            }
+                        })
+                        for (var i = 0; i < arr.length; i++) {
+                            var op = document.createElement("option");
+                            // 给节点赋值
+                            op.innerHTML = arr[i].username + "--" + arr[i].nickname
+                            op.value = arr[i].user_id
+                            // 新增/Add节点
+                            teacher.appendChild(op)
+                            if (form_data2.teacher==arr[i].teacher){
+                                op.selected = true
+                            }
+                            layui.form.render("select");
+                        }
+                    }
+
+                    layui.form.on('select(teacher)', function (data) {
+                        form_data2.teacher = Number(data.elem[data.elem.selectedIndex].value);
+                    })
+                    list_teacher()
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                            
+                                    var xm_select_course_type;
+                    async function list_course_type() {
+                        let options = {
+                            el: '#course_type',
+                            name: 'xmselect_course_type',//表单的name属性
+                            // layVerify: 'required',//必填项
+                            //layVerType: 'tips',//提示类型 同layui
+                            tips: '请选择',
+                            toolbar: {//工具条,全选,清空,反选,自定义
+                                show: true,
+                                list: []
+                            },
+                            data: [],
+                            on: function (v) {
+                                let result = []
+                                if (v.arr && v.arr.length>0){
+                                    for (let i=0;i<v.arr.length;i++){
+                                        result.push(v.arr[i].value);
+                                    }
+                                }
+                                form_data2.course_type = result.toString();
+                            }
+                        };
+                        xm_select_course_type = xmSelect.render(options)
+                        let {data: res} = await axios.get(BaseUrl + '/api/course_classification/get_list')
+                        let arr = res.result.list
+                        let data = [];
+                        for (let i = 0; i < arr.length; i++) {
+                            data.push({name: arr[i].course_type, value: arr[i].course_type})
+                        }
+                        xm_select_course_type.update({data: data})
+                    }
+
+                    list_course_type()
+                
+                
+                                            
+                
+                
+                                            
+                
+                
+                                                    
+                                                //文本
+                    let course_name = document.querySelector("#course_name")
+                        course_name.onkeyup = function (event) {
+                        form_data2.course_name = event.target.value
+                    }
+                    //文本
+                                                                                                                                //文本
+                    let course_id = document.querySelector("#course_id")
+                        course_id.onkeyup = function (event) {
+                        form_data2.course_id = event.target.value
+                    }
+                    //文本
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //数字
+                    let course_quota = document.querySelector("#course_quota")
+                        course_quota.onkeyup = function (event) {
+                        form_data2.course_quota = Number(event.target.value)
+                    }
+                    //数字
+                                                                                                                                                                                                                                                                                                                                                                                                    //文本
+                    let course_website = document.querySelector("#course_website")
+                        course_website.onkeyup = function (event) {
+                        form_data2.course_website = event.target.value
+                    }
+                    //文本
+                                                                                                                                                                                                                                                            //多文本
+                    let course_notes = document.querySelector("#course_notes")
+                    //多文本
+                                                                                                                                                                                                                                                                                    course_id.value = form_data2.course_id
+                        $("#course_id").attr("disabled", "disabled");
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        var data = sessionStorage.data || ''
+            if (data !== '') {
+                var data2 = JSON.parse(data)
+                Object.keys(form_data2).forEach(key => {
+                    Object.keys(data2).forEach(dbKey => {
+                        if (key === dbKey) {
+                            if (key!=='examine_state' && key!=='examine_reply'){
+                                $('#' + key).val(data2[key])
+                                form_data2[key] = data2[key]
+                                $('#' + key).attr('disabled', 'disabled')
+                                                                    
+                                                                
+                                                                                                    for (let key in form_data2) {
+                                        if (key == 'teacher') {
+                                            let alls = document.querySelector('#teacher').querySelectorAll('option')
+                                            let test = form_data2[key]
+                                            for (let i = 0; i < alls.length; i++) {
+                                                layui.form.render("select");
+                                                if (alls[i].value == test) {
+                                                    alls[i].selected = true
+                                                    form_data2.teacher = alls[i].value
+                                                    layui.form.render("select");
+                                                }
+                                            }
+                                        }
+                                    }
+                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                                                    for (let key in form_data2) {
+                                        if (key == 'course_type') {
+                                                                                if (form_data2[key]){
+                                                xm_select_course_type.setValue(form_data2[key].split(","))
+                                            }
+                                                                            }
+                                    }
+                                
+                                                                
+                                                                
+                                                        }
+                        }
+                    })
+                })
+                sessionStorage.removeItem("data");
+            }
+                                                                                                                                            async function axios_get_4() {
+                            if(user_group !='管理员'){
+                                const {data: rese} = await axios.get(BaseUrl + '/api/user/get_list?user_group=' + user_group)
+                                let data = rese.result.list
+
+                                const {data: ress} = await axios.get(BaseUrl + '/api/user_group/get_obj?name=' + user_group)
+                                const {data: res} = await axios.get(BaseUrl + '/api/' + ress.result.obj.source_table + '/get_obj?user_id=' + use_id)
+                                Object.keys(form_data2).forEach(key => {
+                                    Object.keys(res.result.obj).forEach(dbKey => {
+                                        if (key === dbKey) {
+                                            if (key!=='examine_state' && key!=='examine_reply'){
+                                                $('#' + key).val(res.result.obj[key])
+                                                form_data2[key] = res.result.obj[key]
+                                                $('#' + key).attr('disabled', 'disabled')
+                                            }
+                                        }
+                                    })
+                                })
+
+                                for (let key in res.result.obj) {
+                                    if (key == 'user_id') {
+                                        let alls = document.querySelector('#teacher').querySelectorAll('option')
+                                        let test = res.result.obj.user_id
+                                        for (let i = 0; i < alls.length; i++) {
+                                            if (alls[i].value == test) {
+                                                alls[i].selected = true
+                                                $('#teacher').attr('disabled', 'disabled')
+                                                form_data2.teacher = alls[i].value
+                                                layui.form.render("select");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        axios_get_4()
+                                                                                                                                                                                                                                                                                                                                                                    
+
+            if (course_information_id !== ''||source_table) {
+                async function axios_get_3() {
+                    let datajson
+                     if(source_table){
+                        datajson = JSON.parse(data)
+                        
+                    }else{
+                       const {data: rese} = await axios.get(BaseUrl + '/api/course_information/get_obj', {
+                            params: {
+                                    course_information_id: course_information_id
+                            }, headers: {
+                                'x-auth-token': token
+                            }
+                        })
+
+                     datajson = rese.result.obj
+                    }
+                    Object.keys(form_data2).forEach((key) => {
+                        if( datajson[key]){
+                          form_data2[key] = datajson[key];
+                        }
+                        $("#"+key).val(form_data2[key])
+                    });
+
+                                            qrcode_title.value = form_data2.qrcode_title
+                        qrcode_img1.src = BaseUrl + '' + form_data2.qrcode_img
+                    
+
+                                            
+                                            
+                                                                        for (let key in datajson) {
+                                if (key == 'teacher') {
+                                    let alls = document.querySelector('#teacher').querySelectorAll('option')
+                                    let test = datajson[key]
+                                    for (let i = 0; i < alls.length; i++) {
+                                        layui.form.render("select");
+                                        if (alls[i].value == test) {
+                                            alls[i].selected = true
+                                            form_data2.teacher = alls[i].value
+                                            layui.form.render("select");
+                                        }
+                                    }
+                                }
+                            }
+                        
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                                        for (let key in datajson) {
+                                if (key == 'course_type') {
+                                                                if (datajson[key]){
+                                        xm_select_course_type.setValue(datajson[key].split(","))
+                                    }
+                                                            }
+                            }
+                        
+                                            
+                                            
+                                                                                   if (user_group === '管理员') {
+                            $("#course_name_box").show()
+                        } else {
+                            if ($check_field('set', 'course_name') || $check_field('get', 'course_name')){
+                                $("#course_name_box").show()
+                            }else {
+                                $("#course_name_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_id_box").show()
+                        } else {
+                            if ($check_field('set', 'course_id') || $check_field('get', 'course_id')){
+                                $("#course_id_box").show()
+                            }else {
+                                $("#course_id_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#teacher_box").show()
+                        } else {
+                            if ($check_field('set', 'teacher') || $check_field('get', 'teacher')){
+                                $("#teacher_box").show()
+                            }else {
+                                $("#teacher_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#curriculum_box").show()
+                        } else {
+                            if ($check_field('set', 'curriculum') || $check_field('get', 'curriculum')){
+                                $("#curriculum_box").show()
+                            }else {
+                                $("#curriculum_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#release_time_box").show()
+                        } else {
+                            if ($check_field('set', 'release_time') || $check_field('get', 'release_time')){
+                                $("#release_time_box").show()
+                            }else {
+                                $("#release_time_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_selection_time_box").show()
+                        } else {
+                            if ($check_field('set', 'course_selection_time') || $check_field('get', 'course_selection_time')){
+                                $("#course_selection_time_box").show()
+                            }else {
+                                $("#course_selection_time_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_quota_box").show()
+                        } else {
+                            if ($check_field('set', 'course_quota') || $check_field('get', 'course_quota')){
+                                $("#course_quota_box").show()
+                            }else {
+                                $("#course_quota_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_attachments_box").show()
+                        } else {
+                            if ($check_field('set', 'course_attachments') || $check_field('get', 'course_attachments')){
+                                $("#course_attachments_box").show()
+                            }else {
+                                $("#course_attachments_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_audio_box").show()
+                        } else {
+                            if ($check_field('set', 'course_audio') || $check_field('get', 'course_audio')){
+                                $("#course_audio_box").show()
+                            }else {
+                                $("#course_audio_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_video_box").show()
+                        } else {
+                            if ($check_field('set', 'course_video') || $check_field('get', 'course_video')){
+                                $("#course_video_box").show()
+                            }else {
+                                $("#course_video_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_website_box").show()
+                        } else {
+                            if ($check_field('set', 'course_website') || $check_field('get', 'course_website')){
+                                $("#course_website_box").show()
+                            }else {
+                                $("#course_website_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_type_box").show()
+                        } else {
+                            if ($check_field('set', 'course_type') || $check_field('get', 'course_type')){
+                                $("#course_type_box").show()
+                            }else {
+                                $("#course_type_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_notes_box").show()
+                        } else {
+                            if ($check_field('set', 'course_notes') || $check_field('get', 'course_notes')){
+                                $("#course_notes_box").show()
+                            }else {
+                                $("#course_notes_box").hide()
+                            }
+                        }
+                                            if (user_group === '管理员') {
+                            $("#course_details_box").show()
+                        } else {
+                            if ($check_field('set', 'course_details') || $check_field('get', 'course_details')){
+                                $("#course_details_box").show()
+                            }else {
+                                $("#course_details_box").hide()
+                            }
+                        }
+                    
+                    // Array.prototype.slice.call(document.getElementsByTagName('input')).map(i => i.disabled = true)
+                    // Array.prototype.slice.call(document.getElementsByTagName('select')).map(i => i.disabled = true)
+                    // Array.prototype.slice.call(document.getElementsByTagName('textarea')).map(i => i.disabled = true)
+                                                                        //文本
+                                course_name.value = form_data2.course_name
+                            //文本
+                                                                        
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_name')) || (!form_data2['course_information_id'] && $check_field('add', 'course_name'))) {
+                            }else {
+                                $("#course_name").attr("disabled", true);
+                                $("#course_name > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                //文本
+                                course_id.value = form_data2.course_id
+                            //文本
+                                                                        
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_id')) || (!form_data2['course_information_id'] && $check_field('add', 'course_id'))) {
+                            }else {
+                                $("#course_id").attr("disabled", true);
+                                $("#course_id > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'teacher')) || (!form_data2['course_information_id'] && $check_field('add', 'teacher'))) {
+                            }else {
+                                $("#teacher").attr("disabled", true);
+                                $("#teacher > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'curriculum')) || (!form_data2['course_information_id'] && $check_field('add', 'curriculum'))) {
+                            }else {
+                                $("#curriculum").attr("disabled", true);
+                                $("#curriculum > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'release_time')) || (!form_data2['course_information_id'] && $check_field('add', 'release_time'))) {
+                            }else {
+                                $("#release_time").attr("disabled", true);
+                                $("#release_time > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_selection_time')) || (!form_data2['course_information_id'] && $check_field('add', 'course_selection_time'))) {
+                            }else {
+                                $("#course_selection_time").attr("disabled", true);
+                                $("#course_selection_time > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                        //数字
+                                course_quota.value = form_data2.course_quota
+                            //数字
+                                                
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_quota')) || (!form_data2['course_information_id'] && $check_field('add', 'course_quota'))) {
+                            }else {
+                                $("#course_quota").attr("disabled", true);
+                                $("#course_quota > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_attachments')) || (!form_data2['course_information_id'] && $check_field('add', 'course_attachments'))) {
+                            }else {
+                                document.getElementById("course_attachments").disabled = true;
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_audio')) || (!form_data2['course_information_id'] && $check_field('add', 'course_audio'))) {
+                            }else {
+                                document.getElementById("course_audio").disabled = true;
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_video')) || (!form_data2['course_information_id'] && $check_field('add', 'course_video'))) {
+                            }else {
+                                document.getElementById("course_video").disabled = true;
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_website')) || (!form_data2['course_information_id'] && $check_field('add', 'course_website'))) {
+                            }else {
+                                $("#course_website").attr("disabled", true);
+                                $("#course_website > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_type')) || (!form_data2['course_information_id'] && $check_field('add', 'course_type'))) {
+                            }else {
+                                $("#course_type").attr("disabled", true);
+                                $("#course_type > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                                                //多文本
+                                course_notes.value = form_data2.course_notes
+                            //多文本
+                        
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_notes')) || (!form_data2['course_information_id'] && $check_field('add', 'course_notes'))) {
+                            }else {
+                                $("#course_notes").attr("disabled", true);
+                                $("#course_notes > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                                    
+                                                    if (user_group === '管理员' || (form_data2['course_information_id'] && $check_field('set', 'course_details')) || (!form_data2['course_information_id'] && $check_field('add', 'course_details'))) {
+                            }else {
+                                $("#course_details").attr("disabled", true);
+                                $("#course_details > input[name='file']").attr('disabled', true);
+                            }
+                                                                                                            timer_title.value = form_data2.timer_title
+                        let test_startDate_1 = document.querySelector('#test-startDate')
+                        let test_startDate_2 = document.querySelector('#test-endDate-1')
+                        test_startDate_1.value = layui.util.toDateString(form_data2.timing_start_time, "yyyy-MM-dd HH:mm:ss")
+                        test_startDate_2.value = layui.util.toDateString(form_data2.timing_end_time, "yyyy-MM-dd HH:mm:ss")
+
+                        if (user_group == "管理员" || $check_action('/course_information/view', 'set') || $check_action('/course_information/view', 'add')) {
+                        }else {
+                            $("#timer_title").attr("disabled", true);
+                            $("#timer_title > input[name='file']").attr('disabled', true);
+                            $("#test-endDate-1").attr("disabled", true);
+                            $("#test-endDate-1 > input[name='file']").attr('disabled', true);
+                            $("#test-startDate").attr("disabled", true);
+                            $("#test-startDate > input[name='file']").attr('disabled', true);
+                        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            let curriculum_img = document.querySelector("#curriculum_img")
+                                    curriculum_img.src = fullUrl(BaseUrl,form_data2.curriculum)
+                                                                                                                                                                release_time.value = layui.util.toDateString(form_data2.release_time, "yyyy-MM-dd")
+                                                                                                                                                                course_selection_time.value = layui.util.toDateString(form_data2.course_selection_time, "yyyy-MM-dd HH:mm:ss")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            layedit.setContent(demo, form_data2.course_details)
+                                                                layui.form.render("select");
+
+                }
+                axios_get_3()
+            }
+
+
+                            let location_address_button = document.querySelector('#location_address_button')
+                location_address_button.onclick = async function () {
+                    form_data2.location_address = "广东省深圳市南山区科技园";
+                    form_data2.location_lng = "113.946782";
+                    form_data2.location_lat = "22.556481";
+                    let location_address = document.querySelector("#location_address")
+                    location_address.value = "广东省深圳市南山区科技园"
+                    //如果该对象存在，那么地理位置服务可用。
+                    if ('geolocation' in navigator) {
+                        /* 地理位置服务可用 */
+                        let options = {
+                            enableHighAccuracy: true, //布尔值，表示系统是否使用最高精度来表示结果，注意，这会导致较慢的响应时间或者增加电量消耗（比如对于支持gps的移动设备来说）。如果值为false ，设备会通过更快响应以及/或者使用更少的电量等方法来尽可能的节约资源。默认值fasle
+                            timeout: 5000, //它表明的是设备必须在多长时间（单位毫秒）内返回一个位置。默认直到获取到位置才会返回值。
+                            maximumAge: 0 //表明可以返回多长时间（即最长年龄，单位毫秒）内的可获取的缓存位置。如果设置为 0, 说明设备不能使用一个缓存位置，而且必须去获取一个真实的当前位置。默认0
+                        }
+                        function success(position) {
+                            //position.coords (只读) 返回一个定义了当前位置的Coordinates对象。
+                            //position.timestamp (只读) 返回一个时间戳DOMTimeStamp， 这个时间戳表示获取到的位置的时间。
+                            let lat = position.coords.latitude //当前位置的纬度
+                            let lng = position.coords.longitude //当前位置精度
+                            let location=lng+","+lat;
+                            let url = "http://restapi.amap.com/v3/geocode/regeo?key=b6eb2819a6ba4c5119591614272fe7ca&location="+location;
+                            $.ajax({
+                                url: url,
+                                type: "get",
+                                async: false,
+                                success: function (data) {
+                                    if (data.status === '1') {
+                                        form_data2.location_address = data.regeocode.formatted_address;
+                                        form_data2.location_lng = JSON.stringify(lng);
+                                        form_data2.location_lat = JSON.stringify(lat);
+                                        location_address.value = form_data2.location_address
+                                    } else {
+                                        console.log(data.info)
+                                    }
+                                }
+                            });
+                        }
+                        function error(err) {
+                            let errorType = ['您拒绝共享位置信息', '获取不到位置信息', '获取位置信息超时']
+                            console.log(errorType[err.code - 1])
+                        }
+                        navigator.geolocation.getCurrentPosition(success, error, options)
+                    } else {
+                        /* 地理位置服务不可用 */
+                        console.log('无法获取您的位置，请检查定位是否开启或刷新重试')
+                    }
+                }
+            
+            
+            submit.onclick = async function () {
+                try {
+                                                                                                                                                    //文本
+                            form_data2.course_name = course_name.value
+                            //文本
+                    																		                                                                                                                                                    //文本
+                            form_data2.course_id = course_id.value
+                            //文本
+                    														if (typeof(form_data2.course_id) != "undefined" && !form_data2.course_id){
+									layer.msg("课程编号不能为空")
+									return false
+								}
+																		                                                                                                                                                    																		                                                                                                                                                    																		                                                                                                        form_data2.release_time = layui.util.toDateString(form_data2.release_time, "yyyy-MM-dd")
+                                                                            																		                                                                                                        form_data2.course_selection_time = layui.util.toDateString(form_data2.course_selection_time, "yyyy-MM-dd HH:mm:ss")
+                                                                            																		                                                                                                                                                    //数字
+                            form_data2.course_quota = Number(course_quota.value)
+                            //数字
+                        																		                                                                                                                        																		                                                                                                                        																		                                                                                                                        																		                                                                                                                        																		                                                                                                                        																		                                                                                                                                                    //多文本
+                            form_data2.course_notes = course_notes.value
+                            //多文本
+                            																		                                                                        form_data2.course_details = layedit.getContent(demo)
+                                                																		                                    } catch (err) {
+                    console.log(err)
+                }
+                                                    let location_address = document.querySelector("#location_address")
+                    form_data2.location_address = location_address.value
+                                                    let qrcode_title = document.querySelector("#qrcode_title")
+                    form_data2.qrcode_title = qrcode_title.value
+                                
+                                                    let timer_title = document.querySelector("#timer_title")
+                    form_data2.timer_title = timer_title.value
+                    form_data2.timing_end_time = layui.util.toDateString(form_data2.timing_end_time, "yyyy-MM-dd HH:mm:ss")
+                    form_data2.timing_start_time = layui.util.toDateString(form_data2.timing_start_time, "yyyy-MM-dd HH:mm:ss")
+                                
+                let customize_field = []
+                                                            customize_field.push({"field_name": "课程名称", "field_value": form_data2.course_name});
+                                                                                customize_field.push({"field_name": "课程编号", "field_value": form_data2.course_id});
+                                                                                customize_field.push({"field_name": "任课教师", "field_value": form_data2.teacher});
+                                                                                customize_field.push({
+                            "field_name": "课程",
+                            "field_value": form_data2.curriculum,
+                            "type": "image"
+                        });
+                                                                                customize_field.push({
+                            "field_name": "发布时间",
+                            "field_value": form_data2.release_time,
+                            "type": "date"
+                        });
+                                                                                customize_field.push({
+                            "field_name": "选课时间",
+                            "field_value": form_data2.course_selection_time,
+                            "type": "datetime"
+                        });
+                                                                                customize_field.push({"field_name": "课程名额", "field_value": form_data2.course_quota});
+                                                                                customize_field.push({
+                            "field_name": "课程附件",
+                            "field_value": form_data2.course_attachments,
+                            "type": "file"
+                        });
+                                                                                customize_field.push({
+                            "field_name": "课程音频",
+                            "field_value": form_data2.course_audio,
+                            "type": "audio"
+                        });
+                                                                                customize_field.push({
+                            "field_name": "课程视频",
+                            "field_value": form_data2.course_video,
+                            "type": "video"
+                        });
+                                                                                customize_field.push({"field_name": "课程网址", "field_value": form_data2.course_website});
+                                                                                customize_field.push({"field_name": "课程类型", "field_value": form_data2.course_type});
+                                                                                customize_field.push({"field_name": "课程备注", "field_value": form_data2.course_notes});
+                                                                                customize_field.push({"field_name": "课程详情", "field_value": form_data2.course_details});
+                                    
+                
+                if (course_information_id == ''||source_table) {
+                                       console.log("新增/Add")
+                    const {data: res} = await axios.post(BaseUrl + '/api/course_information/add',
+                            form_data2, {
+                                headers: {
+                                    'x-auth-token': token,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                        if (res.result == 1) {
+                        layer.msg('确认完毕');
+                        let  tabNameText=localStorage.getItem("tabName")
+                             let source_table = $getUrlParams().source_table
+                             setTimeout(function () {
+                                if(source_table){
+                                  window.location.replace("../"+source_table+"/table.html?tabName="+tabNameText);
+                                }else{
+                                  window.location.replace("./table.html?tabName="+tabNameText);
+                                }        
+                            }, 1000)
+                    }else {
+              layer.msg(res.error.message);
+            }
+                              } else {
+                                        console.log("详情/Details")
+                    
+                    const {data: res} = await axios.post(BaseUrl + '/api/course_information/set?course_information_id=' + course_information_id,
+                            form_data2, {
+                                headers: {
+                                    'x-auth-token': token,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                    if (res.result == 1) {
+                        layer.msg('确认完毕');
+                        let  tabNameText=localStorage.getItem("tabName")
+                             let source_table = $getUrlParams().source_table
+                             setTimeout(function () {
+                                if(source_table){
+                                  window.location.replace("../"+source_table+"/table.html?tabName="+tabNameText);
+                                }else{
+                                  window.location.replace("./table.html?tabName="+tabNameText);
+                                }        
+                            }, 1000)
+                    }else {
+                      layer.msg(res.error.message);
+                    }
+                }
+            }
+        
+    })
+    ;
+</script>
+
+</html>

@@ -1,0 +1,1465 @@
+<!-- 首页 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>首页</title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="../js/index.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/diy.css">
+
+</head>
+<style>
+    canvas {
+        position: relative !important;
+    }
+
+    #test div::before {
+        content: '';
+        width: 100px;
+        position: absolute;
+        top: 154px;
+        right: 129px;
+        z-index: 999;
+        height: 20px;
+        background-color: #FFFFFF;
+    }
+
+    #i {
+        position: fixed;
+        top: 400px;
+        right: 100px;
+        z-index: 1000;
+    }
+
+    #outerdiv
+    {
+        margin: 0 auto;
+        width:1500px;
+        height:600px;
+        overflow:hidden;
+        position:relative;
+    }
+
+    #inneriframe
+    {
+        position:absolute;
+        top:-150px;
+        left:0px;
+        width:1300px;
+        height:450px;
+    }
+</style>
+
+<body>
+
+<!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div class="Echarts-box">
+                    <div class="box" id="shop_money" style="padding: 20px">
+                <div id="shop_money_loading">加载中...</div>
+                <div style="display: flex;flex-direction:row;justify-content: center;width: 600px;align-items: center">
+                    <div style="width: 100px;">选择日期：</div>
+                    <input style="width: 300px" type="text" class="layui-input" id="shop_money_input">
+                    <div style="width: 200px;margin-left: 20px;">总销售金额：<span id="shop_money_total">0</span></div>
+                </div>
+                <div id="shop_money_charts" style="width: 600px;height:340px;margin-top: 20px;"></div>
+            </div>
+            <div class="box" id="shop_num" style="padding: 20px">
+                <div id="shop_num_loading">加载中...</div>
+                <div style="display: flex;flex-direction:row;justify-content: center;width: 600px;align-items: center">
+                    <div style="width: 100px;">选择日期：</div>
+                    <input style="width: 300px" type="text" class="layui-input" id="shop_num_input">
+                    <div style="width: 200px;margin-left: 20px;">总销售数量：<span id="shop_num_total">0</span></div>
+                </div>
+                <div id="shop_num_charts" style="width: 600px;height:340px;margin-top: 20px;"></div>
+            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="box" id="course_information_box">
+                        <div id="course_information" style="width: 600px;height:400px; display: none"></div>
+                    </div>
+                                                                                                                                                                            <div class="box" id="student_course_selection_box">
+                <div id="student_course_selection" style="width: 600px;height:400px;display: none"></div>
+            </div>
+                                            <div class="box" id="course_grades_box">
+                <div id="course_grades" style="width: 600px;height:400px;display: none"></div>
+            </div>
+                                                                            <div class="box" id="subject_exam_charts_box" style="display: flex;flex-direction: column;align-items: center;justify-content: center">
+                    <div class="layui-tab" lay-filter="subject_exam_charts_tab">
+                        <ul class="layui-tab-title"></ul>
+                    </div>
+                    <div id="subject_exam_charts" style="width: 600px;height:400px;display: none"></div>
+                </div>
+                <div class="box" id="subject_exam_avg_box" style="display: flex;flex-direction: column;align-items: center;justify-content: center">
+                    <div class="layui-tab" lay-filter="subject_exam_avg_tab">
+                        <ul class="layui-tab-title"></ul>
+                    </div>
+                    <div id="subject_exam_avg" style="width: 600px;height:400px;display: none"></div>
+                </div>
+                <div id="all_table_box" style="background-color: #fff;margin-left: 30px;margin-bottom: 30px;width: 60%;padding: 20px;">
+                    <table id="all-table" lay-filter="all-table"></table>
+                </div>
+    </div>
+
+    
+        <div align="center" style="margin:0 auto;">
+        <div style="width:100%;height:370px;overflow:hidden;border:0px">
+            <div style="margin:-102px 0px 0px -10px;position:relative"> #这里的position = relative 是必须的
+                <iframe src="https://www.iciba.com/fy" id="ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                  width: 100%;
+                  height: 570px;
+                  display:block;
+                  left: 0;
+                  right:0;">
+                </iframe>
+            </div>
+        </div>
+    </div>
+    
+        <div id ="outerdiv">
+        <iframe src="https://cli.im/weixin" id ='inneriframe' scrolling="no"></iframe>
+    </div>
+    <script src="../js/base.js"></script>
+<script src="../layui/layui.js"></script>
+<script type="text/javascript">
+    var BaseUrl = baseUrl()
+    let personInfo = JSON.parse(sessionStorage.personInfo)
+
+    var permissions;
+    // 请求数据
+
+    async function get_list() {
+        let {data: ren} = await axios.get(BaseUrl + '/api/auth/get_list', {
+            params: {
+                user_group: personInfo.user_group
+            }
+        })
+        permissions = ren.result.list
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let course_information = document.querySelector('#course_information')
+                        let course_information_box = document.querySelector('#course_information_box')
+
+                        if (personInfo.user_group === '管理员' || $check_figure('/course_information/table')) {
+                                course_information.style.display = 'block'
+                                course_information_box.style.display = 'block'
+                        } else {
+                                course_information.style.display = 'none'
+                                course_information_box.style.display = 'none'
+                        }
+                                                                                                                                                                                let student_course_selection = document.querySelector('#student_course_selection')
+                let student_course_selection_box = document.querySelector('#student_course_selection_box')
+
+                if (personInfo.user_group === '管理员' || $check_figure('/student_course_selection/table')) {
+                        student_course_selection.style.display = 'block'
+                        student_course_selection_box.style.display = 'block'
+                } else {
+                        student_course_selection.style.display = 'none'
+                        student_course_selection_box.style.display = 'none'
+                }
+                                                let course_grades = document.querySelector('#course_grades')
+                let course_grades_box = document.querySelector('#course_grades_box')
+
+                if (personInfo.user_group === '管理员' || $check_figure('/course_grades/table')) {
+                        course_grades.style.display = 'block'
+                        course_grades_box.style.display = 'block'
+                } else {
+                        course_grades.style.display = 'none'
+                        course_grades_box.style.display = 'none'
+                }
+                                                                            let subject_exam_charts = document.querySelector('#subject_exam_charts')
+                let subject_exam_avg = document.querySelector('#subject_exam_avg')
+                let all_table = document.querySelector('#all-table')
+                let subject_exam_charts_box = document.querySelector('#subject_exam_charts_box')
+                let subject_exam_avg_box = document.querySelector('#subject_exam_avg_box')
+                let all_table_box = document.querySelector('#all_table_box')
+
+                if (personInfo.user_group !== '管理员' && !$check_option('/subject_exam/table','teacher') && $check_figure('/subject_exam/table')) {
+                    subject_exam_charts_box.style.display = 'block'
+                    subject_exam_charts.style.display = 'block'
+                } else {
+                    subject_exam_charts_box.style.display = 'none'
+                    subject_exam_charts.style.display = 'none'
+                }
+                if (personInfo.user_group === '管理员' || $check_figure('/subject_exam/table')) {
+                    subject_exam_avg_box.style.display = 'block'
+                    subject_exam_avg.style.display = 'block'
+                    all_table_box.style.display = 'block'
+                    all_table.style.display = 'block'
+                } else {
+                    subject_exam_avg_box.style.display = 'none'
+                    subject_exam_avg.style.display = 'none'
+                    all_table_box.style.display = 'none'
+                    all_table.style.display = 'none'
+                }
+                let shop_money = document.querySelector('#shop_money')
+                let shop_num = document.querySelector('#shop_num')
+                if (personInfo.user_group === '管理员' || $check_figure('/order/table')) {
+                    shop_money.style.display = 'block'
+                    shop_num.style.display = 'block'
+                } else {
+                    shop_money.style.display = 'none'
+                    shop_num.style.display = 'none'
+                }
+    }
+
+    get_list()
+
+    function $get_power(path) {
+        if (!permissions){
+            return null;
+        }
+        var list = permissions;
+        var obj;
+        for (var i = 0; i < list.length; i++) {
+            var o = list[i];
+            if (o.path === path) {
+                obj = o;
+                break;
+            }
+        }
+        return obj;
+    }
+
+    /**
+     * 是否有统计字段的权限
+     */
+    function $check_figure(path) {
+        var o = $get_power(path);
+        if (o) {
+            var option = JSON.parse(o.option);
+            if (option.figure)
+                return true
+        }
+        return false;
+    }
+
+    /**
+     * 获取路径对应操作权限 鉴权
+     * @param {String} action 操作名
+     */
+    function $check_option(path1, action = "get") {
+        var o = $get_power(path1);
+        if (o) {
+            var option = JSON.parse(o.option);
+            if (option[action])
+                return true
+        }
+        return false;
+    }
+
+    function $check_comment(path) {
+        var o = this.$get_power(path);
+        if (o) {
+            var option = JSON.parse(o.option);
+            if (option.can_show_comment)
+                return true
+        }
+        return false;
+    }
+
+    async function echartsFun(id, url, title, params) {
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById(id));
+
+        let user_group = personInfo.user_group
+        let user_id = personInfo.user_id
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if (user_group != '管理员') {
+                                                                    let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                if (user_group == "教师用户" && title == '课程信息') {
+                                                sqlwhere += "teacher = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (sqlwhere.length > 1) {
+                                        sqlwhere = sqlwhere.substr(0, sqlwhere.length - 4);
+                                        sqlwhere += ")";
+                                        url += "&sqlwhere=" + sqlwhere
+                                    }
+                                                            }
+                                                                                                                                                                                                                                                                                                
+        let {data: res} = await axios.get(url)
+
+        let arr = []
+
+        arr = res.result.list.map((o) => {
+            return {
+                name: o[1],
+                value: o[0]
+            };
+        });
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: title,
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    name: '参数',
+                    type: 'pie',
+                    radius: '50%',
+                    data: arr,
+                    ...params,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echartsFun('course_information', BaseUrl + '/api/course_information/list_group?groupby=course_type', '课程信息', { roseType: 'radius'})
+                                                                                                                                                                            function student_course_selection(type){
+
+                async function echartsFun2(id){
+                    let user_group = personInfo.user_group
+                    let user_id = personInfo.user_id
+                    let url = BaseUrl+'/api/student_course_selection/get_list?';
+                    var chartDom = document.getElementById(id);
+                    var myChart = echarts.init(chartDom);
+                    var option;
+                                                                        url += "groupby=course_name";
+                                                                                                                                                                                                                                                                                                                                                                                                            
+                                        if (user_group != '管理员') {
+                                                    let sqlwhere = "(";
+                                                                                                                                                                                                                        if (user_group == "教师用户") {
+                                        sqlwhere += "teacher = " + user_id + " or ";
+                                    }
+                                                                                                                                                                                                                                                                                                                    if (user_group == "学生用户") {
+                                        sqlwhere += "student_users = " + user_id + " or ";
+                                    }
+                                                                                                                                                                                                                if (sqlwhere.length > 1) {
+                                sqlwhere = sqlwhere.substr(0, sqlwhere.length - 4);
+                                sqlwhere += ")";
+                                url += "&sqlwhere=" + sqlwhere
+                            }
+                                            }
+                                        let {data: res} = await axios.get(url)
+
+                    let arr1 = []
+                    let jk = []
+                    let name = []
+                    for (let i = 0; i < res.result.list.length; i++) {
+                                                                    name.push(res.result.list[i].course_name)
+                                                if(type !== "gradient_stacked"){
+                            arr1.push({
+                                name:res.result.list[i].course_name,
+                                type: 'line',
+                                data: []
+                            })
+                        }else {
+                            arr1.push({
+                                name:res.result.list[i].course_name,
+                                areaStyle,
+                                smooth: true,
+                                stack: 'Total',
+                                lineStyle: {
+                                    width: 1
+                                },
+                                showSymbol: false,
+                                emphasis: {
+                                    focus: 'series'
+                                },
+                                type: 'line',
+                                data: []
+                            })
+                        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                    url = BaseUrl+'/api/student_course_selection/get_list?';
+                                                                                                                                                                                                                                                        url += "groupby=release_time";
+                                                            if (user_group != '管理员') {
+                                                                            let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                                            if (user_group == "教师用户") {
+                                                    sqlwhere += "teacher = " + user_id + " or ";
+                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            if (user_group == "学生用户") {
+                                                    sqlwhere += "student_users = " + user_id + " or ";
+                                                }
+                                                                                                                                                                                                                                                                                                    if (sqlwhere.length > 1) {
+                                            sqlwhere = sqlwhere.substr(0, sqlwhere.length - 4);
+                                            sqlwhere += ")";
+                                            url += "&sqlwhere=" + sqlwhere
+                                        }
+                                                                    }
+                                                                                                                                                                                                                                                                            let {data: res2} = await axios.get(url)
+                    for (let i = 0; i < res2.result.list.length; i++) {
+                                                                                                                                                                                                                                                                                                                                        jk.push(toTime(res2.result.list[i].release_time,"yyyy-MM-dd"))
+                                                                function unique(jk){
+                                    return Array.from(new Set(jk))
+                                }
+                                jk =  unique(jk)
+                                jk.sort(function(a, b) {
+                                    return b < a ? 1 : -1
+                                })
+                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                        for (let l = 0; l < name.length; l++){
+                        for (let j = 0; j < jk.length; j++){
+                            var {data: ress} = await axios.get(BaseUrl+'/api/student_course_selection/sum?field=number_of_people',{
+                                params: {
+                                                                                                                        course_name:name[l],
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    release_time : jk[j]
+                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                            })
+                            arr1[l].data.push(ress.result)
+                        }
+                    }
+                                    
+                if(type !== "gradient_stacked") {
+                    option = {
+                        title: {
+                            text: '学生选课',
+                            x: 'center',
+                            y: 'top'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: arr1.name,
+                            type: 'scroll',
+                            orient: 'horizontal',
+                            y: 'bottom'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '5%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: jk
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: arr1
+                    };
+                }else {
+                    option = {
+                        color: [
+                            '#80FFA5',
+                            '#00DDFF',
+                            '#37A2FF',
+                            '#FF0087',
+                            '#FFBF00',
+                            '#0519f6',
+                            '#9A60B4',
+                            '#ff0000'
+                        ],
+                        title: {
+                            text: '学生选课',
+                            x: 'center',
+                            y: 'top'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: arr1.name,
+                            type: 'scroll',
+                            orient: 'horizontal',
+                            y: 'bottom'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '5%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: jk
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: arr1
+                    };
+                }
+
+                    option && myChart.setOption(option);
+
+                }
+                    echartsFun2('student_course_selection')
+            }
+
+
+                                    student_course_selection()
+                
+                                            function course_grades(type){
+                let query_str = "";
+                let name_list = []
+                                                                                let group_by_value = "course_name";
+                                                                                                                                                                                                                                                        query_str = query_str+"exam_scores"+","
+                        name_list.push("考试成绩")
+                                                                                                    query_str = query_str+"average_score"+","
+                        name_list.push("平均分")
+                                                                                                    query_str = query_str+"maximum_score"+","
+                        name_list.push("最高分")
+                                                                                                    query_str = query_str+"lowest_score"+","
+                        name_list.push("最低分")
+                                                                        async function echartsFun1(id, url) {
+                    var app = {};
+
+                    var chartDom = document.getElementById(id);
+                    var myChart = echarts.init(chartDom);
+                    var option;
+
+                    let user_group = personInfo.user_group
+                    let user_id = personInfo.user_id
+
+                                                                                                        if (user_group != '管理员') {
+                                                                            let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                                            if (user_group == "教师用户") {
+                                                    sqlwhere += "teacher = " + user_id + " or ";
+                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (sqlwhere.length > 1) {
+                                            sqlwhere = sqlwhere.substr(0, sqlwhere.length - 4);
+                                            sqlwhere += ")";
+                                            url += "&sqlwhere=" + sqlwhere
+                                        }
+                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                            
+                    let {data: res} = await axios.get(url)
+                    let arr_name = []
+                                                                                                                                                                                                                                                                            let arr1 = []
+                                                                                                                            let arr2 = []
+                                                                                                                            let arr3 = []
+                                                                                                                            let arr4 = []
+                                                                                            for (let i = 0; i < res.result.list.length; i++) {
+                        arr_name.push(res.result.list[i][0])
+                                                                                                                                                                                                                                                                                                                            arr1.push(res.result.list[i][1])
+                                                                                                                                                arr2.push(res.result.list[i][2])
+                                                                                                                                                arr3.push(res.result.list[i][3])
+                                                                                                                                                arr4.push(res.result.list[i][4])
+                                                                                                        }
+
+                    const posList = [
+                        'left',
+                        'right',
+                        'top',
+                        'bottom',
+                        'inside',
+                        'insideTop',
+                        'insideLeft',
+                        'insideRight',
+                        'insideBottom',
+                        'insideTopLeft',
+                        'insideTopRight',
+                        'insideBottomLeft',
+                        'insideBottomRight'
+                    ];
+                    app.configParameters = {
+                        rotate: {
+                            min: -90,
+                            max: 90
+                        },
+                        align: {
+                            options: {
+                                left: 'left',
+                                center: 'center',
+                                right: 'right'
+                            }
+                        },
+                        verticalAlign: {
+                            options: {
+                                top: 'top',
+                                middle: 'middle',
+                                bottom: 'bottom'
+                            }
+                        },
+                        position: {
+                            options: posList.reduce(function (map, pos) {
+                                map[pos] = pos;
+                                return map;
+                            }, {})
+                        },
+                        distance: {
+                            min: 0,
+                            max: 100
+                        }
+                    };
+                    app.config = {
+                        rotate: 90,
+                        align: 'left',
+                        verticalAlign: 'middle',
+                        position: 'insideBottom',
+                        distance: 15,
+                        onChange: function () {
+                            const labelOption = {
+                                rotate: app.config.rotate,
+                                align: app.config.align,
+                                verticalAlign: app.config.verticalAlign,
+                                position: app.config.position,
+                                distance: app.config.distance
+                            };
+                            myChart.setOption({
+                                series: [
+                                    {
+                                        label: labelOption
+                                    },
+                                    {
+                                        label: labelOption
+                                    },
+                                    {
+                                        label: labelOption
+                                    },
+                                    {
+                                        label: labelOption
+                                    }
+                                ]
+                            });
+                        }
+                    };
+                    const labelOption = {
+                        show: true,
+                        position: app.config.position,
+                        distance: app.config.distance,
+                        align: app.config.align,
+                        verticalAlign: app.config.verticalAlign,
+                        rotate: type !== "stacked_horizontal" ? app.config.rotate : false,
+                        formatter: type !== "stacked_horizontal" ? '{c}  {name|{a}}' : '{c}',
+                        fontSize: 16,
+                        rich: {
+                            name: {}
+                        }
+                    };
+                    if(type !== "stacked_horizontal"){
+                        option = {
+                            title: {
+                                text: '课程成绩'
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            },
+                            legend: {
+                                data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+                            },
+                            toolbox: {
+                                show: true,
+                                orient: 'vertical',
+                                left: 'right',
+                                top: 'center',
+                                feature: {
+                                    mark: {show: true},
+                                    dataView: {show: true, readOnly: false},
+                                    magicType: {show: true, type: ['line', 'bar', 'stack']},
+                                    restore: {show: true},
+                                    saveAsImage: {show: true}
+                                }
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    axisTick: {show: false},
+                                    data: arr_name,
+                                    axisLabel: {
+                                        show: true,
+                                        interval: 0
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                                                                                                                                                                                                                                                                                                                                                                                                            {
+                                            name: name_list[0],
+                                            type: 'bar',
+                                            barGap: 0,
+                                            label: labelOption,
+                                            emphasis: {
+                                                focus: 'series'
+                                            },
+                                            data: arr1
+                                        },
+                                                                                                                                                                                        {
+                                            name: name_list[1],
+                                            type: 'bar',
+                                            barGap: 0,
+                                            label: labelOption,
+                                            emphasis: {
+                                                focus: 'series'
+                                            },
+                                            data: arr2
+                                        },
+                                                                                                                                                                                        {
+                                            name: name_list[2],
+                                            type: 'bar',
+                                            barGap: 0,
+                                            label: labelOption,
+                                            emphasis: {
+                                                focus: 'series'
+                                            },
+                                            data: arr3
+                                        },
+                                                                                                                                                                                        {
+                                            name: name_list[3],
+                                            type: 'bar',
+                                            barGap: 0,
+                                            label: labelOption,
+                                            emphasis: {
+                                                focus: 'series'
+                                            },
+                                            data: arr4
+                                        },
+                                                                                                                                        ]
+                        };
+                    }else {
+                        option = {
+                            title: {
+                                text: '课程成绩'
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            },
+                            legend: {
+                                data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+                            },
+                            toolbox: {
+                                show: true,
+                                orient: 'vertical',
+                                left: 'right',
+                                top: 'center',
+                                feature: {
+                                    mark: {show: true},
+                                    dataView: {show: true, readOnly: false},
+                                    magicType: {show: true, type: ['line', 'bar', 'stack']},
+                                    restore: {show: true},
+                                    saveAsImage: {show: true}
+                                }
+                            },
+                            xAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'category',
+                                    data: arr_name,
+                                }
+                            ],
+                            series: [
+                                                                                                                                                                                                                                                                                                                            {
+                                    name: name_list[0],
+                                    type: 'bar',
+                                    barGap: 0,
+                                    stack: 'total',
+                                    label: labelOption,
+                                    emphasis: {
+                                        focus: 'series'
+                                    },
+                                    data: arr1
+                                },
+                                                                                                                                                {
+                                    name: name_list[1],
+                                    type: 'bar',
+                                    barGap: 0,
+                                    stack: 'total',
+                                    label: labelOption,
+                                    emphasis: {
+                                        focus: 'series'
+                                    },
+                                    data: arr2
+                                },
+                                                                                                                                                {
+                                    name: name_list[2],
+                                    type: 'bar',
+                                    barGap: 0,
+                                    stack: 'total',
+                                    label: labelOption,
+                                    emphasis: {
+                                        focus: 'series'
+                                    },
+                                    data: arr3
+                                },
+                                                                                                                                                {
+                                    name: name_list[3],
+                                    type: 'bar',
+                                    barGap: 0,
+                                    stack: 'total',
+                                    label: labelOption,
+                                    emphasis: {
+                                        focus: 'series'
+                                    },
+                                    data: arr4
+                                },
+                                                                                                                ]
+                        };
+                    }
+                    if (arr_name.length>4){
+                        option.axisLabel= {
+                            interval: 0, //使x轴文字显示全
+                            formatter: function (params) {
+                                let newParamsName = '';
+                                const paramsNameNumber = params.length; // 文字总长度
+                                const provideNumber = 4; //一行显示几个字
+                                const rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                                if (paramsNameNumber > provideNumber) {
+                                    for (let p = 0; p < rowNumber; p++) {
+                                        const start = p * provideNumber;
+                                        const end = start + provideNumber;
+                                        const tempStr = p === rowNumber - 1 ? params.substring(start, paramsNameNumber) : params.substring(start, end) + '\n';
+                                        newParamsName += tempStr;
+                                    }
+                                } else {
+                                    newParamsName = params;
+                                }
+                                return newParamsName;
+                            },
+                        }
+                    }
+                    myChart.setOption(option);
+
+                }
+                query_str = query_str.substr(0,query_str.length-1);
+                if(type !== "stacked_horizontal"){
+                    echartsFun1('course_grades', BaseUrl + '/api/course_grades/bar_group?field='+query_str+"&groupby="+group_by_value, '课程成绩统计')
+                }else {
+                    echartsFun1('course_grades', BaseUrl + '/api/course_grades/bar_group?field='+query_str+"&groupby="+group_by_value, '课程成绩统计')
+                }
+            }
+                            course_grades()
+            
+                                                                    // 商城模块
+        const shop_money_option = {
+            title: {
+                text: '',
+                x: 'center',
+                y: 'top'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: null,
+                type: 'scroll',
+                orient: 'horizontal',
+                y: 'bottom'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '5%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: null
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: null
+        };
+        const shop_money = {
+            names: ["销售金额"],
+            month: [],
+            xAxis: [],
+            values: [],
+            loading: false,
+            type: "money"
+        }
+        const shop_num = {
+            names: ["销售数量"],
+            month: [],
+            xAxis: [],
+            values: [],
+            loading: false,
+            type: "num"
+        }
+
+        async function get_order_sum_price_sub(list, date, index, field) {
+            let time = new Date(date).getFullYear() + "-" + (new Date(date).getMonth() + 1) + "-" + new Date(date).getDate()
+            var $where = ""
+            if (personInfo.user_group !== "管理员")
+                    $where = '&merchant_id=' + personInfo.user_id
+            const json = await axios.get(
+                    BaseUrl + "/api/order/sum?field="+ field + "&create_time_min=" + time+" 00:00:00&create_time_max="+time+" 23:59:59&state=已付款" + $where,
+                    null,
+            );
+
+            if (json.data.result) {
+                list.total += json.data.result
+                list.result.push(json.data.result)
+            } else {
+                list.result.push(0)
+            }
+        }
+
+        async function get_order_month_some_price(date, params) {
+
+            function getDateBetween(start, end) {
+                var result = [];
+                //使用传入参数的时间
+                var startTime = new Date(start);
+                var endTime = new Date(end);
+                while (endTime - startTime >= 0) {
+                    let year = startTime.getFullYear();
+                    let month = startTime.getMonth();
+                    month = month < 9 ? '0' + (month + 1) : month + 1;
+                    let day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
+                    //加入数组
+                    result.push(year + "-" + month + "-" + day);
+                    //更新日期
+                    startTime.setDate(startTime.getDate() + 1);
+                }
+                return result;
+            }
+
+            const now = new Date();
+            const nowYear = now.getFullYear();
+            const nowMonth = now.getMonth() + 1;
+            const nowDate = now.getDate();
+            let days = []
+            if(date){
+                days = getDateBetween(date[0], date[1])
+            }else{
+                params.data.month[0] = new Date(nowYear, nowMonth - 1, 1, 0, 0, 0)
+                params.data.month[1] = new Date(nowYear, nowMonth - 1, nowDate, 23, 59, 59)
+                days = getDateBetween(params.data.month[0], params.data.month[1])
+            }
+
+            params.data.xAxis = []
+            params.data.values = []
+            document.getElementById(params.loadingId).style.display = "flex"
+            let list = {
+                result: [],
+                total: 0
+            }
+            let field = params.data.type === "money" ? "price_count" : "num"
+
+            for (let i = 0; i < days.length; i++) {
+                const t = new Date(days[i])
+                const time = t.getFullYear() + "-" + (t.getMonth()+1) + "-" + t.getDate()
+                params.data.xAxis.push((t.getMonth()+1) + "-" + t.getDate())
+                await this.get_order_sum_price_sub(list, time, i, field)
+            }
+
+            document.getElementById(params.loadingId).style.display = "none"
+            params.data.values = list.result
+            params.data.total = list.total
+            params.option.legend.data = params.data.names
+            params.option.xAxis.data = params.data.xAxis
+
+            let labelOption = {
+                show: true,
+                position: "insideBottom",
+                distance: 15,
+                align: 'left',
+                verticalAlign: 'middle',
+                formatter: '{c}',
+                fontSize: 16,
+            }
+            params.option.series = {
+                label:  params.data.type === "money" ? null : labelOption,
+                data: params.data.values,
+                type:  params.data.type === "money" ? "line" : "bar",
+                name: params.data.type === "money" ? "销售金额" : "销售数量",
+            }
+
+            if(params.data.type === "money"){
+                params.option.color = "#fff000"
+                params.option.title.text = "商品销售金额统计图"
+            }else {
+                delete params.option.color
+                params.option.title.text = "商品销售数量统计图"
+            }
+
+            var chartDom = document.getElementById(params.boxId);
+            var myChart = echarts.init(chartDom);
+            document.getElementById(params.totalId).innerText = params.data.total
+            params.option && myChart.setOption(params.option)
+        }
+
+        get_order_month_some_price(null, {
+            data: shop_money,
+            boxId: "shop_money_charts",
+            option: shop_money_option,
+            loadingId: "shop_money_loading",
+            totalId: "shop_money_total"
+        })
+
+        get_order_month_some_price(null, {
+            data: shop_num,
+            boxId: "shop_num_charts",
+            option: shop_money_option,
+            loadingId: "shop_num_loading",
+            totalId: "shop_num_total"
+        })
+
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            const startDate = shop_money.month[0].getFullYear() + "-" + (shop_money.month[0].getMonth() +1) + "-" + shop_money.month[0].getDate()
+            const endDate = shop_money.month[1].getFullYear() + "-" + (shop_money.month[1].getMonth() +1) + "-" + shop_money.month[1].getDate()
+
+            function  initInput(id, params) {
+                laydate.render({
+                    elem: id,
+                    range: true,
+                    value: startDate + " - " + endDate,
+                    done: (value, startDate, endDate)=>{
+                        const start = startDate.year+ "-" + startDate.month + "-" +　startDate.date
+                        const end = endDate.year　+ "-" + endDate.month + "-" + endDate.date
+                        get_order_month_some_price([start,end], params)
+                    }
+                });
+            }
+            initInput("#shop_money_input",{
+                data: shop_money,
+                boxId: "shop_money_charts",
+                option: shop_money_option,
+                loadingId: "shop_money_loading",
+                totalId: "shop_money_total"
+            })
+            initInput("#shop_num_input",{
+                data: shop_num,
+                boxId: "shop_num_charts",
+                option: shop_money_option,
+                loadingId: "shop_num_loading",
+                totalId: "shop_num_total"
+            })
+        });
+        function find_subject_item(arr, key, val) {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i][key] == val) {
+                    return i
+                }
+            }
+            return -1
+        }
+
+        async function get_subject_exam_data() {
+            const bar_obj_subject_exam = {
+                names: [],
+                xAxis: [],
+                values: [],
+                tabs: []
+            }
+
+            function init_subject_exam_echarts(xAxis, series) {
+
+                const option = {
+                    "title": {
+                        "text": "试卷平均分统计",
+                        "left": "center"
+                    },
+                    "tooltip": {
+                        "trigger": "axis"
+                    },
+                    "legend": {
+                        "type": "scroll",
+                        "orient": "horizontal",
+                        "y": "bottom"
+                    },
+                    "toolbox": {
+                        "feature": {
+                            "saveAsImage": {}
+                        }
+                    },
+                    "xAxis": [
+                        {
+                            "type": "category",
+                            "axisTick": {
+                                "show": false
+                            },
+                            "data": xAxis
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "type": "value"
+                        }
+                    ],
+                    "series": series
+                }
+                let myChart = echarts.init(document.getElementById("subject_exam_charts"));
+                option && myChart.setOption(option)
+            }
+
+            async function get_url_subject_exam_list(e) {
+                let url = "/api/subject_exam/get_list?subject_name=" + e;
+                if (personInfo.user_group!=='管理员' && $check_option("/subject_exam/table","teacher")){
+                    url = "/api/subject_exam/get_list?subject_name=" + e + "&user_id="+personInfo.user_id;
+                }
+                let json = await axios.get(BaseUrl + url)
+                json = json.data
+                const allResult = []
+                bar_obj_subject_exam.xAxis = []
+                for (let j = 0; j < json.result.list.length; j++) {
+                    bar_obj_subject_exam.xAxis.push(json.result.list[j].name)
+                    let params = {
+                        exam_id: json.result.list[j].exam_id,
+                        user_id: personInfo.user_id,
+                    }
+                    if (personInfo.user_group !== '管理员' && $check_option("/subject_exam/table", "teacher")) {
+                        params = {
+                            exam_id: json.result.list[j].exam_id,
+                        }
+                    }
+                    let value = await axios.get(BaseUrl + "/api/subject_user_answer/get_list", {
+                        params: params
+                    })
+                    value = value.data
+
+                    for (let k = 0; k < value.result.list.length; k++) {
+                        allResult.push([value.result.list[k].score])
+                    }
+                }
+                bar_obj_subject_exam.values = allResult
+                bar_obj_subject_exam.names = [e]
+
+                const xAxis = bar_obj_subject_exam.xAxis, series = []
+
+                for (let i = 0; i < bar_obj_subject_exam.names.length; i++) {
+                    let data = []
+                    for (let j = 0; j < bar_obj_subject_exam.values.length; j++) {
+                        data.push(bar_obj_subject_exam.values[j][i]);
+                    }
+                    let dict_type = {
+                        barMaxWidth: 50,
+                        name: bar_obj_subject_exam.names[i],
+                        type: 'bar',
+                        barGap: 0,
+                        label: {
+                            show: true,
+                            position: "insideBottom",
+                            distance: 15,
+                            align: 'left',
+                            verticalAlign: 'middle',
+                            rotate: 90,
+                            formatter: '{c}  {name|{a}}',
+                            fontSize: 16,
+                            rich: {
+                                name: {}
+                            }
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: data
+                    }
+                    series.push(dict_type)
+                }
+
+                init_subject_exam_echarts(xAxis, series)
+            }
+
+            let result = await axios.get(BaseUrl + "/api/subject/get_list");
+
+            result = result.data
+
+            if(result.result.list.length === 0){
+                document.getElementById("subject_exam_charts").innerHTML = '考试图表暂无数据'
+                document.getElementById("subject_exam_avg").innerHTML = '考试图表暂无数据'
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#all-table',
+                        cols: [[
+                            {field: 'exam', title: '考试科目'},
+                            {field: 'examName', title: '试卷名称' },
+                            {field: 'number', title: '参与人数'},
+                            {field: 'max', title: '最高分'},
+                            {field: 'min', title: '最低分'},
+                            {field: 'avg', title: '平均分'}]],
+                        data: []
+                    });
+                });
+                return
+            }
+
+            for (let i = 0; i < result.result.list.length; i++) {
+                bar_obj_subject_exam.tabs.push(result.result.list[i].name)
+            }
+
+            layui.use(function () {
+                let element = layui.element;
+                for (let j = 0; j < bar_obj_subject_exam.tabs.length; j++) {
+                    element.tabAdd('subject_exam_charts_tab', {
+                        title: bar_obj_subject_exam.tabs[j],
+                        id: j
+                    });
+                    element.tabAdd('subject_exam_avg_tab', {
+                        title: bar_obj_subject_exam.tabs[j],
+                        id: j
+                    });
+                }
+                element.tabChange('subject_exam_charts_tab', 0);
+                element.tabChange('subject_exam_avg_tab', 0);
+
+                element.on('tab(subject_exam_charts_tab)', async function () {
+                    await get_url_subject_exam_list(this.innerText)
+                });
+
+                element.on('tab(subject_exam_avg_tab)', async function () {
+                    await get_subject_average(this.innerText)
+                });
+            });
+
+            await get_url_subject_exam_list(bar_obj_subject_exam.tabs[0])
+            await get_subject_average(bar_obj_subject_exam.tabs[0])
+            bar_obj_subject_exam.names = [bar_obj_subject_exam.tabs[0]]
+        }
+
+        async function get_subject_average(e) {
+
+            function init_subject_exam_table(data) {
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#all-table',
+                        cols: [[
+                            {field: 'exam', title: '考试科目'},
+                            {field: 'examName', title: '试卷名称' },
+                            {field: 'number', title: '参与人数'},
+                            {field: 'max', title: '最高分'},
+                            {field: 'min', title: '最低分'},
+                            {field: 'avg', title: '平均分'}]],
+                        data: data
+                    });
+                });
+            }
+
+            function init_subject_exam_echarts(xAxis, series) {
+                const option = {
+                    "title": {
+                        "text": "用户考试科目数据统计",
+                        "left": "center"
+                    },
+                    "tooltip": {
+                        "trigger": "axis"
+                    },
+                    "legend": {
+                        "type": "scroll",
+                        "orient": "horizontal",
+                        "y": "bottom"
+                    },
+                    "toolbox": {
+                        "feature": {
+                            "saveAsImage": {}
+                        }
+                    },
+                    "xAxis": [
+                        {
+                            "type": "category",
+                            "axisTick": {
+                                "show": false
+                            },
+                            "data": xAxis
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "type": "value"
+                        }
+                    ],
+                    "series": series
+                }
+                let myChart = echarts.init(document.getElementById("subject_exam_avg"));
+                option && myChart.setOption(option)
+            }
+
+            const subject_name_list = []
+            const bar_obj_subject_exam_avg = {
+                names: [],
+                xAxis: [],
+                values: [],
+                tabs: []
+            }
+
+            let url = "/api/subject_exam/get_list";
+            if (this.user_group!=='管理员' && this.$check_option("/subject_exam/table","teacher")){
+                url = "/api/subject_exam/get_list?user_id="+personInfo.user_id;
+            }
+            let json = await axios.get(BaseUrl + url)
+            json = json.data
+
+            for (let i = 0; i < json.result.list.length; i++) {
+                const value = json.result.list[i].subject_name
+                const index = this.find_subject_item(subject_name_list, "name", value)
+                if (index === -1) {
+                    subject_name_list.push({
+                        name: json.result.list[i].subject_name,
+                        exam: [json.result.list[i].exam_id],
+                        examNames: [json.result.list[i].name],
+                        score: [],
+                        userList: [],
+                        min: [],
+                        max: [],
+                        avg: []
+                    })
+                } else {
+                    subject_name_list[index].exam.push(json.result.list[i].exam_id)
+                    subject_name_list[index].examNames.push(json.result.list[i].name)
+                }
+            }
+
+            let result = await axios.get(BaseUrl + "/api/subject_user_answer/get_list")
+            result = result.data
+
+            for (let i = 0; i < result.result.list.length; i++) {
+                for (let j = 0; j < subject_name_list.length; j++) {
+                    const exam_index = subject_name_list[j].exam.indexOf(result.result.list[i].exam_id)
+                    if (exam_index > -1) {
+                        if (!subject_name_list[j].score[exam_index]) {
+                            subject_name_list[j].score[exam_index] = []
+                            subject_name_list[j].userList[exam_index] = []
+                        }
+                        const user_index = subject_name_list[j].userList[exam_index].indexOf(result.result.list[i].user_id)
+                        if (user_index === -1) {
+                            subject_name_list[j].userList[exam_index].push(result.result.list[i].user_id)
+                        }
+                        subject_name_list[j].score[exam_index].push(result.result.list[i].score)
+                    }
+                }
+            }
+
+            bar_obj_subject_exam_avg.names = ["平均分", "最高分", "最低分"]
+            bar_obj_subject_exam_avg.values = [[], [], []]
+
+            for (let i = 0; i < subject_name_list.length; i++) {
+                for (let j = 0; j < subject_name_list[i].score.length; j++) {
+                    const max = Math.max.apply(Math, subject_name_list[i].score[j])
+                    const min = Math.min.apply(Math, subject_name_list[i].score[j])
+                    const avg = subject_name_list[i].score[j].reduce(function (a, b) {
+                        return a + b
+                    }) / subject_name_list[i].score[j].length
+                    if (subject_name_list[i].name === e) {
+                        bar_obj_subject_exam_avg.xAxis = subject_name_list[i].examNames
+                        bar_obj_subject_exam_avg.values[0].push(avg)
+                        bar_obj_subject_exam_avg.values[1].push(max)
+                        bar_obj_subject_exam_avg.values[2].push(min)
+                    }
+                    subject_name_list[i].avg.push(avg)
+                    subject_name_list[i].max.push(max)
+                    subject_name_list[i].min.push(min)
+                }
+            }
+
+            const xAxis = bar_obj_subject_exam_avg.xAxis, series = [], tableData = []
+            for (let i = 0; i < bar_obj_subject_exam_avg.names.length; i++) {
+                let data = bar_obj_subject_exam_avg.values[i]
+                let dict_type = {
+                    barMaxWidth: 50,
+                    name: bar_obj_subject_exam_avg.names[i],
+                    type: 'bar',
+                    barGap: 0,
+                    label: {
+                        show: true,
+                        position: "insideBottom",
+                        distance: 15,
+                        align: 'left',
+                        verticalAlign: 'middle',
+                        rotate: 90,
+                        formatter: '{c}  {name|{a}}',
+                        fontSize: 16,
+                        rich: {
+                            name: {}
+                        }
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: data
+                }
+                series.push(dict_type);
+            }
+
+            for (let i = 0; i < subject_name_list.length; i++) {
+                for (let j = 0; j < subject_name_list[i].examNames.length; j++) {
+                    try {
+                        tableData.push({
+                            exam: subject_name_list[i].name,
+                            examName: subject_name_list[i].examNames[j],
+                            number: subject_name_list[i].userList[j].length,
+                            max: subject_name_list[i].max[j],
+                            avg: subject_name_list[i].avg[j],
+                            min: subject_name_list[i].min[j]
+                        })
+                    }catch (e) {
+                        console.log("无数据")
+                        break;
+                    }
+                }
+            }
+            init_subject_exam_echarts(xAxis, series)
+            init_subject_exam_table(tableData)
+        }
+
+        get_subject_exam_data()
+
+
+    let ii = document.querySelector('#i')
+    let i
+
+    async function axioss() {
+        const {data: res} = await axios.get(BaseUrl + '/api/user/count')
+        i = res.result
+        ii.innerHTML = "用户数量" + i + "人"
+    }
+
+</script>
+</body>
+<style>
+    #shop_money, #shop_num{
+        position: relative;
+    }
+    #shop_money_loading, #shop_num_loading{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        background: rgba(255,255,255,0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+</html>

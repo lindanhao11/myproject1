@@ -1,0 +1,128 @@
+<!-- 题库详情/Details -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/diy.css">
+</head>
+
+<body>
+    <article class="sign_in">
+        <div class="warp exam">
+            <div class="layui-container">
+                <div class="layui-row">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">科目</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="subject_name" lay-verify="subject_name" autocomplete="off"
+                                    placeholder="请输入科目" class="layui-input" id="subject_name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">类型</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="questionType" lay-verify="subject_name" autocomplete="off"
+                                    placeholder="请输入类型" class="layui-input" id="questionType" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">题目</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                    placeholder="请输入题目" class="layui-input" id="title" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选项</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="输入问题选项.如：
+A:正确
+B:错误" class="layui-textarea" id="question_item" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">参考答案</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                    class="layui-input" id="answer" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">提交答案</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="输入问题选项.如：
+A:正确
+B:错误" class="layui-textarea" id="answers" readonly></textarea>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="layui-btn-container">
+                        <a type="button" class="layui-btn layui-btn-normal login" id="butt"><span>取消</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </article>
+</body>
+<script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+<script src="../../js/index.js"></script>
+
+<script>
+    var BaseUrl = baseUrl()
+    layui.use(['upload', 'element', 'layer'], async function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element
+            , form = layui.from
+            , layer = layui.layer
+            , $ = layui.$;
+
+        // 拿到传递过来的值
+        const url = new URLSearchParams(window.location.search);
+        const queryObj = Object.fromEntries(url);
+
+        var user_answer_id = queryObj.user_answer_id;
+        let token = localStorage.getItem('token') || null
+
+        // 发起请求获取数据
+        let { data: res } = await axios.get(BaseUrl + '/api/user_answer_wrong/get_obj', {
+            params: {
+                user_answer_id: user_answer_id
+            }
+        })
+
+        let request = res.result.obj
+        let id = res.result.obj.exam_id
+
+        // 数据渲染
+        title.value = request.title;
+
+        question_item.innerHTML = request.question_item;
+
+        answer.value = request.answer;
+
+        answers.value = request.answers;
+
+        subject_name.value = request.subject_name;
+
+        questionType.value=request.type;
+
+        let butt = document.querySelector('#butt')
+        butt.addEventListener('click', function () {
+            // window.history.back(-1);
+            colseLayer()
+        })
+    });
+</script>
+
+</html>

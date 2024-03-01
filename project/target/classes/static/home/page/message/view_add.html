@@ -1,0 +1,168 @@
+<!-- 管理员新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="stylesheet" href="../../layui/css/layui.css" />
+    <link rel="stylesheet" href="../../css/diy.css" />
+  </head>
+
+  <body>
+      <article class="sign_in">
+        <div class="warp user">
+          <div class="layui-container">
+            <div class="layui-row">
+              <form class="layui-form" action="">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">标题：</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="title"
+                      lay-verify="title"
+                      autocomplete="off"
+                      placeholder="请输入标题"
+                      class="layui-input"
+                      id="title"
+                    />
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">用户名：</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="title"
+                      lay-verify="title"
+                      autocomplete="off"
+                      placeholder="用户名"
+                      class="layui-input"
+                      id="username"
+                    />
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">留言内容：</label>
+                  <div class="layui-input-block">
+                    <textarea
+                      placeholder="请输入你的留言...."
+                      class="layui-textarea"
+                      name="content"
+                      id="content"
+                    ></textarea>
+                  </div>
+                </div>
+              </form>
+              <div class="layui-btn-container">
+                <button
+                  type="button"
+                  class="layui-btn layui-btn-danger login"
+                  id="submit"
+                >
+                  提交留言
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+  </body>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+    var BaseUrl = baseUrl();
+    layui.use(["upload", "element", "layer"], function () {
+      var $ = layui.jquery,
+        upload = layui.upload,
+        element = layui.element,
+        layer = layui.layer,
+        form = layui.form;
+        let nickname = JSON.parse(sessionStorage.personInfo).nickname;
+      // 拿到本地存储的token
+      let token = sessionStorage.token || null;
+      var from = {
+        title: "",
+        user_id: JSON.parse(sessionStorage.personInfo).user_id,
+        content: "",
+        nickname: nickname,
+       
+      };
+      let content = document.querySelector("#content");
+      let username = document.querySelector("#username");
+   
+      let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+      let avatar = JSON.parse(sessionStorage.personInfo).avatar;
+      username.value = nickname;
+      from.nickname = nickname;
+      from.avatar=avatar
+      username.disabled = true;
+      let title = document.querySelector("#title");
+      content.addEventListener("blur", function () {
+        if (content.value.length > 300 || content.value.length < 0) {
+          layer.msg("最多300个字符！");
+        } else if (content.value == "") {
+          layer.msg("留言内容不能为空");
+        } else {
+          from.content = content.value;
+        }
+      });
+
+      title.addEventListener("blur", function () {
+        if (
+          (title.value && title.value.length > 100) ||
+          title.value.length < 1
+        ) {
+          layer.msg("昵称长度应为1个字符到100个字符之间");
+        } else {
+          from.title = title.value;
+        }
+      });
+
+      username.addEventListener("blur", function () {
+        if (username.value.length > 25 || username.value.length < 5) {
+          layer.msg("昵称长度应为5个字符到25个字符之间");
+        } else if (username.value == "") {
+          layer.msg("用户名不能为空");
+        } else {
+          from.nickname = username.value;
+        }
+      });
+      let submit = document.querySelector("#submit");
+      submit.addEventListener("click", async function () {
+
+        var titleSensitiveWords = await filterSensitiveWords(from.title)
+        var contentSensitiveWords = await filterSensitiveWords(from.content)
+
+        if(titleSensitiveWords.length > 0){
+          layer.msg('标题不能包含敏感词:' + titleSensitiveWords.join(','))
+          return
+        }
+        if(contentSensitiveWords.length > 0){
+          layer.msg('正文不能包含敏感词:' + contentSensitiveWords.join(','))
+          return
+        }
+
+        const { data: res } = await axios.post(
+          BaseUrl + "/api/message/add",
+          from,
+          {
+            headers: {
+              "x-auth-token": token,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (res.result == 1) {
+          layer.msg("发布成功");
+          setTimeout(function () { window.location.replace("./list.html"); }, 1000)
+        }
+      });
+    });
+  </script>
+</html>

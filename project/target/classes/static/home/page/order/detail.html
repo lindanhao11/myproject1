@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+      .list-info-left p {
+        line-height: 15px;
+        font-size: 12px;
+        color: #999;
+      }
+      .list-info-child {
+        clear: both;
+        border-top: 1px dashed gray;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+        <div>
+        <div class="list_title"><p class="list_title_text">订单详情</p></div>
+        <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div>
+            <div id="t_list_box" class="orderDetail"></div>
+          </div>
+        </div>
+      </div>
+</body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+     var BaseUrl = baseUrl()
+    layui.use(["laypage", "layer", "dropdown", "jquery", "form"], function () {
+      var laypage = layui.laypage,
+        layer = layui.layer;
+      form = layui.form;
+      var dropdown = layui.dropdown;
+      var $ = layui.jquery;
+      let personInfo = JSON.parse(sessionStorage.personInfo);
+      let user_group = personInfo.user_group;
+      let user_id = personInfo.user_id;
+
+      // 商城中心
+      //#if($model.filter.message)
+      // check_action('/cart/edit', "add", "forumAdd");
+      // let btnMessageAdd = $check_action("/order/edit", "add");
+      // if (btnMessageAdd) {
+      // } else {
+      // }
+      // check_action("/order/list", "get", "messageList");
+      //let message = $check_action("/order/list", "get");
+      //if (message) {
+      //}
+      let pages = 1;
+      var laytpl = layui.laytpl;
+      let list_arr = [];
+      let type_arr = [];
+
+      //获取地址栏参数
+      function getUrlParams() {
+        let url = window.location.search; //获取url中"?"符后的字串
+        let paramsObj = new Object();
+        if (url.indexOf("?") != -1) {
+          let str = url.substr(1);
+          strs = str.split("&");
+          for (let i = 0; i < strs.length; i++) {
+            paramsObj[strs[i].split("=")[0]] = decodeURI(strs[i].split("=")[1]);
+          }
+        }
+        return paramsObj;
+      }
+      // 计算总价
+      function sum_price(o) {
+        var sum_price = o.price * o.num;
+
+        return sum_price.toFixed(2);
+      }
+      var sum_price = 0;
+      // 获取list数据
+      // message/forum/cart/order
+      var getTpl = null;
+      let order_number = $getUrlParams().order_number;
+      async function get_tpl_list() {
+        let params = {
+          order_number: order_number,
+        };
+        let { data: res } = await axios.get(
+          BaseUrl + `/api/order/get_list?order_number=`+order_number
+        );
+        if (res.result && res.result.list.length) {
+          list_arr = res.result;
+          var address = list_arr.list[0];
+          sum_price = 0;
+          var objecthtmls=""
+          // 列表--数据渲染
+          $("#t_list_box").empty();
+           objecthtmls += "<div class='detail-info'><div class='detail-info-left'><p class='title'><span class='contact_name'><i class='layui-icon layui-icon-location'></i>"+address.contact_name+"</span>"
+                +"<span  class='contact_phone'>"+address.contact_phone+"</span></p><p class='contact_address'>"+address.contact_address+"</p></div></div>"
+          for (var i = 0; i < list_arr.list.length; i++) {
+            var item = list_arr.list[i]
+            let str = JSON.stringify(item)
+            sum_price += item.price_count
+            objecthtmls += "<div class='detail-info'><div class='detail-info-left'>"
+              +"<img src='"+fullUrl(BaseUrl, item.img)+"'/></div><div class='detail-info-right'>"
+              +"<p class='title'>"+item.title+" <span class='record_creator order_opt_price'>￥"+item.price+"</span></p>"
+              +"<p class='time'>"+item.description+"<span class='record_creator order_opt_price'>X<span class='num'>"
+              +item.num+"</span></span></p></div></div>"
+          }
+          objecthtmls += "<div class='detail-info'>"
+            +"<div class='detail-info-right'>"
+              +"<p class='title'>需付款：<span class='y_price'>￥"+sum_price+"</span></p></div></div>"
+              +"<div class='detail-info'>"
+                +"<div class='detail-info-right'>"
+              +"<p class='order_title'>订单编号：<span class='order_number'>"+address.order_number+"</span></p><hr/>"
+              +"<p class=order_title'>下单时间：<span class='order_number'>"+$toTime(address.create_time,'yyyy-MM-dd hh:mm:ss')+"</span></p>"
+              if(address.state!=='已付款'){
+                objecthtmls +="<hr/>"
+                +"<p class='order_title'>下单备注：<textarea   id='remark' class='order_number' name='' placeholder='填写下单备注' class='layui-textarea'></textarea></p>"
+              } else{
+                objecthtmls +=  "<hr/><p class='order_title'>下单备注：<span class='order_number'>"+address.remark||'无'+"</span></p>"
+              }
+              objecthtmls += "</div></div><div id='goPay'>"
+            if(address.state!=='已付款'){
+              objecthtmls+="<a  data_url='../pay/detail.html?order_number="+address.order_number+"&sum_price="+sum_price+"&remark=' type='button' class='layui-btn layui-bg-red'  id='goto_pay'>去支付</a>"
+            }   
+            objecthtmls+="</div>"
+          $("#t_list_box").append(objecthtmls)
+        }
+      }
+      get_tpl_list();
+      $("#t_list_box").on("click", "#goto_pay", function () {
+       let remark= $("#remark").val()
+       let href= $(this).attr('data_url')
+        window.location.replace(href+remark)
+      })
+    });
+  </script>
+</html>

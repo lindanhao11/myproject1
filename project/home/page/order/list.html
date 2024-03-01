@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+      .list-info-left p {
+        line-height: 15px;
+        font-size: 12px;
+        color: #999;
+      }
+      .list-info-child {
+        clear: both;
+        border-top: 1px dashed gray;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+  <div id="orderList">
+        <div class="list_title"><p class="list_title_text">我的订单</p></div>
+        <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div>
+            <form class="layui-form diy_list_form_search">
+              <div class="diy_list_filter">
+                <div class="layui-form-item">
+                  <button
+                    class="layui-btn demo-dropdown-base layui-btn-danger"
+                    id="sort_list_box"
+                  >
+                    <span>排序</span>
+                    <i class="layui-icon layui-icon-down layui-font-12"></i>
+                  </button>
+                </div>
+                <div class="layui-form-item">
+                  <button
+                    class="layui-btn demo-dropdown-base layui-btn-danger"
+                    id="price_type_list"
+                  >
+                    <span id="search_text">订单状态</span>
+                    <i class="layui-icon layui-icon-down layui-font-12"></i>
+                  </button>
+                </div>
+            </form>
+            <ul id="t_list_box" class="cars"></ul>            
+          </div>
+        </div>
+      </div>
+</body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+    var BaseUrl = baseUrl()
+    layui.use(["laypage", "layer", "dropdown", "jquery", "form"], function () {
+      var laypage = layui.laypage,
+        layer = layui.layer;
+      form = layui.form;
+      var dropdown = layui.dropdown;
+      var $ = layui.jquery;
+      
+      let personInfo = JSON.parse(sessionStorage.personInfo);
+      let user_group = personInfo.user_group;
+      let user_id = personInfo.user_id;
+      let query= {};
+      // 商城中心
+      //#if($model.filter.message)
+      // check_action('/cart/edit', "add", "forumAdd");
+      let btnMessageAdd = $check_action("/order/edit", "add");
+      if (btnMessageAdd) {
+      } else {
+      }
+      // check_action("/order/list", "get", "messageList");
+      //let message = $check_action("/order/list", "get");
+      //if (message) {
+      //}
+      let pages = 1;
+      let sort_list= [
+      {
+        title: "价格从高到低",
+        value: "`price` desc",
+      },
+      {
+        title: "价格从低到高",
+        value: "`price` asc",
+      },
+        {
+          title: "更新时间从高到低",
+          value: "`create_time` desc",
+        },
+        {
+          title: "更新时间从低到高",
+          value: "`create_time` asc",
+        },
+      ];
+      let state_list= [
+      {
+        title: "全部",
+        value: "全部",
+      },
+      {
+        title: "待付款",
+        value: "待付款",
+      },
+      {
+        title: "已付款",
+        value: "已付款",
+      }];
+      var laytpl = layui.laytpl;
+      let list_arr = [];
+      let type_arr = [];
+      // 获取list数据
+      // message/forum/cart/order
+      var getTpl = null;
+      async function get_tpl_list(pagesNum, arr) {
+        let params1 = {
+          page: 1,
+          size: 10,
+          user_id: user_id,
+        };
+        let params;
+        if (arr) {
+          params = Object.assign({}, params1, arr);
+        } else {
+          params = params1;
+        }
+        let { data: res } = await axios.get(BaseUrl + "/api/order/get_list", {
+          params: params,
+        });
+        if (res.result && res.result.list) {
+          list_arr = res.result;
+          // 列表--数据渲染
+          //list_add_html();
+          $("#t_list_box").empty();
+          var objecthtmls = "";
+          for (var i = 0; i < list_arr.list.length; i++) {
+            var item = list_arr.list[i];
+            let str = JSON.stringify(item);
+            objecthtmls += "<li><div class='list-info'><a  href='./detail.html?order_number="+item.order_number+"'>"
+              +"<div class='list-info-left'>"
+              +"<img src='"+fullUrl(BaseUrl, item.img)+"' /></div><div class='list-info-right'>"
+              +"<p class='title'>"+item.title+"<span class='record_creator order_opt_price'>￥"+item.price+"</span></i></button></p>"
+              +"<p class='time'>"+item.description+"<span class='record_creator order_opt_price'>X<span class='num'>"+item.num+"</span></span></p></a>"
+              +"<p><span class='record_creator order_state'>"+item.state+"</span></p>"
+              +"<p class='record order_opt'>实付：￥"
+                +"<span  class='y_price'>"+item.price_count+"</span>"
+                +"<i class='layui-icon layui-icon-delete record_creator delCart' order_id='"+item.order_id+"' ></i>"
+                +"</p></div></div></li>"
+           
+          }
+          objecthtmls += ``;
+          $("#t_list_box").append(objecthtmls);
+        }
+      }
+      get_tpl_list(1);
+      
+      async function handleDelCart(id, index) {
+        let { data: res } = await axios.get(
+          BaseUrl + `/api/order/del?order_id=${id}`,
+          {}
+        );
+        if (res.result) {
+          list_arr.list.splice(index, 1);
+          layer.msg("删除成功"); 
+          get_tpl_list(1);
+        }
+      }
+      $(".cars").on("click", ".delCart", function () {
+        console.log(22);
+        var order_id = $(this).attr("order_id");
+        //2.把数量文本框里的数字+1
+        let list = list_arr.list;
+        for (let i = 0; i < list.length; i++) {
+          if (order_id == list[i].order_id) {
+            handleDelCart(order_id, i);
+          }
+        }
+      });
+      
+      // 订单状态--渲染数据
+      dropdown.render({
+        elem: "#price_type_list",
+        data: state_list,
+        click: function (obj) {
+          this.elem.find("span").text(obj.title);
+          if (obj.title == "全部") {
+            query["state"] = '';
+            get_tpl_list(1, query);
+          } else {
+            query["state"] = obj.title;
+            get_tpl_list(1, query);
+          }
+        },
+      });
+
+      // 排序--渲染数据
+      dropdown.render({
+        elem: "#sort_list_box",
+        data: sort_list,
+        click: function (obj) {
+          this.elem.find("span").text(obj.title);
+          query["orderby"] = obj.value;
+          get_tpl_list(1, query);
+        },
+      });
+    });
+  </script>
+</html>

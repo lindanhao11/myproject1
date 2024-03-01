@@ -1,0 +1,430 @@
+<!-- 物流 table 页面 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/diy.css">
+
+</head>
+
+<body>
+<div class="section1">
+    <!-- 内容主体区域 -->
+    <div class="manu manu-btns" style="padding: 15px;">
+        <div class="form-input-box-t layui-form-item">
+            <div class="input-box">
+                <label class="layui-form-label">商品名称</label>
+                <div class="layui-input-block block input-i">
+                    <input type="text" name="product_name" required lay-verify="required" autocomplete="off"
+                           lay-filter="product_name" id="product_name"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="input-box">
+                <label class="layui-form-label">配送状态</label>
+                <div class="layui-input-block block select">
+                    <select name="delivery_status" lay-filter="delivery_status" id="delivery_status">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-box">
+                <label class="layui-form-label">签收状态</label>
+                <div class="layui-input-block block select">
+                    <select name="signing_status" lay-filter="signing_status" id="signing_status">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="buts">
+            <button type="button" class="layui-btn layui-btn-normal" id="inquire"><span>查询</span></button>
+            <button type="button" class="layui-btn layui-btn-normal" id="reset"><span>重置</span></button>
+            <button type="button" class="layui-btn layui-btn-normal" id="delete" style="display: none"><span>删除</span></button>
+        </div>
+
+        <div class="Customize-the-box">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="card-inner"></div>
+        </div>
+</div>
+
+
+<div class="table">
+    <table class="layui-hide" id="logistics_delivery" lay-filter="logistics_delivery"></table>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+
+            {{# if(d.detail_flag){ }}
+            <button class="layui-btn layui-btn-sm" lay-event="detail">详情</button>
+            {{# } }}
+            {{# if(d.signing_status == "待签收" && d.sign_for){ }}
+            <button class="layui-btn layui-btn-sm" lay-event="sign_for">签收</button>
+            {{# } }}
+
+        </div>
+    </script>
+</div>
+</div>
+</body>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/axios.min.js"></script>
+<script>
+
+    var BaseUrl = baseUrl(), user_id
+
+    layui.use(['element', 'layer', 'util', "form"], function () {
+        var element = layui.element
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , $ = layui.$;
+
+        let personInfo = JSON.parse(sessionStorage.personInfo)
+        let user_group = personInfo.user_group
+        user_id = personInfo.user_id
+        let url = BaseUrl + '/api/logistics_delivery/get_list?like=0'
+
+        let deletes = document.querySelector('#delete')
+
+        let sqlwhere
+        let data_data = {size: 10, orderby: 'create_time desc'}
+        let detail_flag = false;
+        let sign_for = false;
+
+        // 获取路径权限
+        async function get_list() {
+            let {data: ren} = await axios.get(BaseUrl + '/api/auth/get_list', {
+                params: {
+                    user_group: personInfo.user_group
+                }
+            })
+        }
+
+        get_list()
+
+
+        // 权限判断
+        /**
+         * 获取路径对应操作权限 鉴权
+         * @param {String} action 操作名
+         */
+        function $check_action(path1, action = "get") {
+            var o = $get_power(path1);
+            if (o && o[action] != 0 && o[action] != false) {
+                return true;
+            }
+            return false;
+        }
+
+        if (user_group == "管理员" || $check_action('/logistics_delivery/table', 'del')) {
+            deletes.style.display = "block"
+        }
+
+        if (user_group == "管理员" || $check_action('/logistics_delivery/view', 'get') || $check_action('/logistics_delivery/view', 'set')) {
+            detail_flag = true;
+        }
+
+        if (user_group == "管理员" || $check_option('/logistics_delivery/table', 'sign_for')) {
+            sign_for = true
+        }
+
+        /**
+         * 获取权限
+         * @param {String} path 路由路径
+         */
+        function $get_power(path) {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            var list = list_data;
+            var obj;
+            for (var i = 0; i < list.length; i++) {
+                var o = list[i];
+                if (o.path === path) {
+                    obj = o;
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        var path1
+
+        function getpath() {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            for (var i = 0; i < list_data.length; i++) {
+                var o = list_data[i];
+                if (o.path === "/logistics_delivery/table") {
+                    console.log(o.path);
+                    path1 = o.path
+                    $get_power(o.path)
+                }
+            }
+        }
+
+        getpath()
+
+        function $check_option(path, op) {
+            var o = $get_power(path);
+            if (o) {
+                var option = JSON.parse(o.option);
+                if (option[op])
+                    return true
+            }
+            return false;
+        }
+
+        if (user_group != "管理员") {
+            if ($check_option('/goods/table', 'seller')){
+                data_data = {size: 10, orderby: 'create_time desc', merchant_id: user_id}
+            }else {
+                data_data = {size: 10, orderby: 'create_time desc', ordinary_users: user_id}
+            }
+        }
+
+        let token = sessionStorage.token || null
+        table.render({
+            elem: '#logistics_delivery'
+            , toolbar: true
+            , url: url
+            , headers: {
+                'x-auth-token': token,
+                'Content-Type': 'application/json'
+            }
+            , page: {
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                //,curr: 5
+                , groups: 1
+                , first: false
+                , last: false
+            }
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+
+                , {
+                    field: 'order_number', width: 180, title: '订单号', sort: true
+
+                }
+                , {
+                    field: 'product_name', width: 180, title: '商品名称', sort: true
+
+                }
+                , {
+                    field: 'purchase_quantity', width: 180, title: '购买数量', sort: true
+
+                }
+                , {
+                    field: 'total_transaction_amount', width: 180, title: '交易总额', sort: true
+
+                }
+                , {
+                    field: 'the_date_of_issuance', width: 180, title: '发货日期', sort: true
+                    , templet: "<div>{{layui.util.toDateString(d.the_date_of_issuance, 'yyyy-MM-dd')}}</div>"
+
+                }
+                , {
+                    field: 'contact_name', width: 180, title: '联系人', sort: true
+                }
+                , {
+                    field: 'delivery_number', width: 180, title: '配送单号', sort: true
+
+                }
+                , {
+                    field: 'shipping_address', width: 180, title: '收货地址', sort: true
+
+                }
+                , {
+                    field: 'delivery_status', width: 180, title: '配送状态', sort: true
+
+                }
+                , {
+                    field: 'signing_status', width: 180, title: '签收状态', sort: true
+
+                }
+                ,
+                {
+                    field: 'create_time',
+                    width: '20%',
+                    title: '新增时间',
+                    sort: true,
+                    templet: "<div>{{layui.util.toDateString(d.create_time, 'yyyy-MM-dd HH:mm:ss')}}</div>"
+                }
+                ,
+                {
+                    field: 'update_time',
+                    width: '20%',
+                    title: '更新时间',
+                    sort: true,
+                    templet: "<div>{{layui.util.toDateString(d.update_time, 'yyyy-MM-dd HH:mm:ss')}}</div>"
+                }
+                ,
+                {
+                    field: 'operate',
+                    title: '操作',
+                    sort: true,
+                    width: '20%',
+                    fixed: 'right',
+                    toolbar: "#toolbarDemo"
+                }
+            ]]
+            ,
+            page: true,
+            request:
+                {
+                    limitName: 'size'
+                }
+            ,
+            response: {
+                statusName: 'code', //规定返回/Back的状态码字段为code
+                statusCode: 200 //规定成功的状态码为200
+            }
+            ,
+            parseData: function (res) {
+                for (let i = 0; i < res.result.list.length; i++) {
+                    res.result.list[i].check_pay = true
+                }
+                for (let i = 0; i < res.result.list.length; i++) {
+                    res.result.list[i].detail_flag = detail_flag
+                    res.result.list[i].sign_for = sign_for
+                }
+                return {
+                    "code": 200,
+                    "msg": "",
+                    "count": res.result.count,
+                    "data": res.result.list
+                }
+            },
+            where: data_data
+        });
+
+
+        table.on('tool(logistics_delivery)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layopen_dateil("./view_add.html?" + data.logistics_delivery_id)
+            }else if (obj.event === 'sign_for') {
+                axios.post(BaseUrl + '/api/logistics_delivery/set?logistics_delivery_id=' + data.logistics_delivery_id, {
+                    signing_status: "已签收"
+                }).then((result) => {
+                    if (result.data.result) {
+                        location.reload()
+                    }
+                })
+            }
+
+
+        });
+
+        //下拉框
+        local("contact_name", "联系人", "contact_name")
+        let contact_name
+        layui.form.on('select(contact_name)', function (data) {
+            request['contact_name'] = Number(data.elem[data.elem.selectedIndex].value);
+        });
+        local("ordinary_users", "普通用户", "ordinary_users")
+        let ordinary_users
+        layui.form.on('select(ordinary_users)', function (data) {
+            request['ordinary_users'] = Number(data.elem[data.elem.selectedIndex].value);
+        });                                                                                                                                                                                                                                                                                                                                             // 配送状态选项列表
+        let delivery_status_data = ['待取货', '配送中', '已完成'];
+
+        async function delivery_status() {
+            var delivery_status = document.querySelector("#delivery_status")
+            var op1 = document.createElement("option");
+            delivery_status.appendChild(op1)
+            // 收集数据 长度
+            var count
+            // 收集数据 数组
+            var arr = []
+            count = delivery_status_data.length
+            arr = delivery_status_data
+            for (var i = 0; i < arr.length; i++) {
+                // 创建节点
+                var op = document.createElement("option");
+                // 给节点赋值
+                op.innerHTML = arr[i]
+                op.value = arr[i]
+                // 新增/Add节点
+                delivery_status.appendChild(op)
+                layui.form.render("select");
+            }
+        }
+
+        layui.form.on('select(delivery_status)', function (data) {
+            request.delivery_status = data.elem[data.elem.selectedIndex].text;
+        })
+        delivery_status()
+        // 签收状态选项列表
+        let signing_status_data = ['待签收', '已签收'];
+
+        async function signing_status() {
+            var signing_status = document.querySelector("#signing_status")
+            var op1 = document.createElement("option");
+            signing_status.appendChild(op1)
+            // 收集数据 长度
+            var count
+            // 收集数据 数组
+            var arr = []
+            count = signing_status_data.length
+            arr = signing_status_data
+            for (var i = 0; i < arr.length; i++) {
+                // 创建节点
+                var op = document.createElement("option");
+                // 给节点赋值
+                op.innerHTML = arr[i]
+                op.value = arr[i]
+                // 新增/Add节点
+                signing_status.appendChild(op)
+                layui.form.render("select");
+            }
+        }
+
+        layui.form.on('select(signing_status)', function (data) {
+            request.signing_status = data.elem[data.elem.selectedIndex].text;
+        })
+        signing_status()
+        // 请求参数：
+
+        if (user_group != "管理员") {
+            var request = {
+                like: 0, size: 10, page: 1,
+                'merchant_id': user_id,
+                'product_name': '',
+                'delivery_status': '',
+                'signing_status': '',
+            }
+            request['orderby'] = 'create_time desc'
+            if (sqlwhere) {
+                request['sqlwhere'] = sqlwhere
+            }
+        } else {
+            var request = {
+                like: 0, size: 10, page: 1,
+                'product_name': '',
+                'delivery_status': '',
+                'signing_status': '',
+            }
+        }
+        layui.form.on("blur(product_name)", (data) => {
+            console.log(data);
+        })
+        // <span>重置</span>/Reset参数
+        let resetName = data_data
+
+        // 下拉框的<span>重置</span>/Reset参数
+        let resetSelect = []
+        //下拉框<span>重置</span>/Reset参数
+        fun('logistics_delivery', BaseUrl + '/api/logistics_delivery/del', 'logistics_delivery_id', request, resetName, resetSelect)
+    })
+
+</script>
+
+</html>

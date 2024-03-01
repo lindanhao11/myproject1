@@ -1,0 +1,226 @@
+<!--
+ * @Author: zq
+ * @Date: 2023-09-25 17:29:38
+ * @LastEditTime: 2023-11-19 22:11:17
+ * @LastEditors: zq
+ * @Description: table模板
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      
+      img {
+          width:auto;
+          height: 200px;
+      }
+  </style>
+  </head>
+  <body>
+      <div id="readList">
+        <div class="tab" id='tab_content_box'>
+          <ul class="tab-nav" id='reading_list_box'>
+            <!--  <li class="tab-nav-item active">第一章 出狱</li>
+            <li class="tab-nav-item">第二章 入狱</li>
+            <li class="tab-nav-item">第二章 再出狱</li>-->
+          </ul>
+          
+        </div>
+    <div class='opt'>
+      <button type="button" class="layui-btn" id="toPrepage">
+        <i class="layui-icon layui-icon-left" ></i>上一章
+      </button>
+      <button type="button" class="layui-btn" id="toNextPage">
+        下一章<i class="layui-icon layui-icon-right"></i>
+      </button>
+    </div>
+  </div>
+  </body>
+    <!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+    <script src="../../js/jquery.2.1.1.min.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/axios.min.js"></script>
+    <script src="../../js/permissionSet.js"></script>
+    <script>
+
+var BaseUrl = baseUrl()
+  let novel_reading_id = $getUrlParams().novel_reading_id;
+let reading_list;
+getReadDetil()
+async  function getReadDetil(){
+  let {data: res} = await axios.get(
+    BaseUrl + "/api/novel_chapters/get_list?novel_reading_id="+novel_reading_id,
+          {}
+    );
+    if (res.result && res.result.list) {
+      let reading_list_box = document.getElementById("reading_list_box");
+          // let tab_content_box = document.getElementById("tab_content_box");
+          reading_list_box.innerHTML='';
+          reading_list = res.result;
+          var objecthtmls =''
+          var objecthtmls2 =''
+          let page=0
+          
+          objecthtmls +="<p class='read_nav'>小说目录</p>"
+          for (var i = 0; i < reading_list.list.length; i++) {
+            var item = reading_list.list[i];
+            console.log(item)
+            page=i+1
+            objecthtmls +="<li class='tab-nav-item' >第"+page+"章 "+item.chapter_name+"</li>"
+            objecthtmls2="<div class='tab-content'>"
+                        +"<h1 class='read_nav_title' >"+item.chapter_name+"</h1>"
+                        +"<div  class='tool'>字体大小<input type='number' lay-affix='number' placeholder='' value='16' class='layui-input fontSize'></div>"
+                        +"<div  class='content'>"+item.chapter_content+"</div>"
+                        +"</div>"
+                        
+            $("#tab_content_box").append(objecthtmls2)
+          
+          }
+          reading_list_box.innerHTML=objecthtmls;
+            //修改字体大小
+    $('.fontSize').change( function() {
+      var value = $(this).val();
+      console.log(value)
+      $(".content").css('fontSize',value+'px')
+    });
+            // 获取Tab和其它元素
+          var tab = document.querySelector('.tab');
+          var tabNavItems = tab.querySelectorAll('.tab-nav-item');
+          var tabContents = tab.querySelectorAll('.tab-content');
+          //  var content = tab_content_box.querySelectorAll('.content');
+          // console.log( content)
+          // 给第一个选项卡添加激活状态，显示对应的内容
+          tabNavItems[0].classList.add('active');
+          tabContents[0].classList.add('active');
+
+        // 绑定事件处理函数
+        tab.addEventListener('click', function (e) {
+          var target = e.target;
+          if (target.classList.contains('tab-nav-item')) {
+            // 切换选项卡和内容的激活状态
+            toggleTab(target, tabNavItems, tabContents);
+          }
+        });
+
+        // 切换选项卡和内容的激活状态
+        function toggleTab(target, tabNavItems, tabContents) {
+            // 获取选项卡和内容的索引值
+            var index = Array.from(tabNavItems).indexOf(target);
+
+            // 将所有选项卡和内容的激活状态移除
+            tabNavItems.forEach(function (item) {
+              item.classList.remove('active');
+            })
+            tabContents.forEach(function (item) {
+              item.classList.remove('active');
+            })
+
+            // 将当前点击的选项卡和内容添加激活状态
+            target.classList.add('active');
+            tabContents[index].classList.add('active');
+            //$(".content").html(reading_list.list[index].chapter_content)
+            //content[index].html(reading_list.list[index].chapter_content);
+        }
+          
+    }
+
+   //上一章
+    $("#toPrepage").on('click', function() {
+      let index= $('#reading_list_box .active').index()
+     var tab = document.querySelector('.tab');
+      var tabNavItems = tab.querySelectorAll('.tab-nav-item');
+      var tabContents = tab.querySelectorAll('.tab-content');
+        tabNavItems.forEach(function (item) {
+          item.classList.remove('active');
+        })
+        tabContents.forEach(function (item) {
+          item.classList.remove('active');
+        })
+        let pre=index-2>0?index-2:0
+        tabNavItems[pre].classList.add('active')
+        tabContents[pre].classList.add('active')
+    })
+    //下一章
+    $("#toNextPage").on('click', function() {
+      let index= $('#reading_list_box .active').index()
+      var tab = document.querySelector('.tab');
+      var tabNavItems = tab.querySelectorAll('.tab-nav-item');
+      var tabContents = tab.querySelectorAll('.tab-content');
+      tabNavItems.forEach(function (item) {
+          item.classList.remove('active');
+        })
+        tabContents.forEach(function (item) {
+          item.classList.remove('active');
+        })
+      let length=tabNavItems.length-1
+      let next=index<length?index:length
+      tabNavItems[next].classList.add('active')
+      tabContents[next].classList.add('active')
+
+    })
+}
+  
+    </script>
+       <style>
+        #readList  .tab {
+          display: flex;
+          align-items:center;
+          width: 80%;
+          margin: 0 auto;
+        }
+    .tab-nav {
+      width: 200px;
+      height:500px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .tab-nav-item {
+      margin-right: 20px;
+      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: 5px 5px 0 0;
+      background-color: #f0f0f0;
+    }
+    .tab-nav-item.active {
+      background-color: #fff;
+      font-weight: bold;
+      color:rgb(200, 0, 0);
+    }
+    .read_nav{
+      padding: 10px;
+      font-size:20px;
+      font-weight:700;
+    }
+    .read_nav_title{
+    text-align:center;
+    }
+    .fontSize{
+      margin: 8px;
+      width:50px;
+      display: inline-block;
+        vertical-align: middle
+    }
+    .tab-content {
+      flex:1;
+      height:500px;
+      display: none;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .opt{
+      text-align:center;
+    }
+      </style>
+
+</html>

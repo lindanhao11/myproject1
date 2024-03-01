@@ -1,0 +1,1777 @@
+<!-- 首页 -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="../../js/axios.min.js"></script>
+    <script src="../../js/echarts.js"></script>
+    <link rel="stylesheet" href="../../layui/css/layui.css" />
+    <link rel="stylesheet" href="../../css/diy.css" />
+  </head>
+  <style>
+    canvas {
+      position: relative !important;
+    }
+    .myDetail_dd{
+     visibility:hidden;
+    }
+    .myDetail .layui-tab-title li {
+    position: relative;
+    line-height: 40px;
+     min-width:auto;
+    padding: 0 10px;
+    text-align: center;
+    cursor: pointer;
+    }
+  </style>
+
+  <body>
+  <div id="personal_center">
+            <div class="list_title"><p class="list_title_text" id='list_title_text_t'>个人中心</p></div>
+            <div class="layui-fluid layadmin-cmdlist-fluid">
+              <div id="personal_center_warp">
+                <div id="t_list_box" class="myDetail">
+                    <div class="layui-tab layui-tab-card" lay-filter="tab-all">
+                        <ul class="layui-tab-title myDetail_dd">
+                        <li class="layui-this" data-table='index'>个人中心</li>
+                                                  <li id='student_users_title' data-table='student_users' data-text='学生用户' data-url='./student_users/table.html?tabName=学生用户'>
+                            学生用户
+                          </li>
+                                                  <li id='teacher_users_title' data-table='teacher_users' data-text='教师用户' data-url='./teacher_users/table.html?tabName=教师用户'>
+                            教师用户
+                          </li>
+                                                  <li id='course_information_title' data-table='course_information' data-text='课程信息' data-url='./course_information/table.html?tabName=课程信息'>
+                            课程信息
+                          </li>
+                                                  <li id='course_classification_title' data-table='course_classification' data-text='课程分类' data-url='./course_classification/table.html?tabName=课程分类'>
+                            课程分类
+                          </li>
+                                                  <li id='student_course_selection_title' data-table='student_course_selection' data-text='学生选课' data-url='./student_course_selection/table.html?tabName=学生选课'>
+                            学生选课
+                          </li>
+                                                  <li id='course_grades_title' data-table='course_grades' data-text='课程成绩' data-url='./course_grades/table.html?tabName=课程成绩'>
+                            课程成绩
+                          </li>
+                                                  <li id='course_mall_title' data-table='course_mall' data-text='课程商城' data-url='./course_mall/table.html?tabName=课程商城'>
+                            课程商城
+                          </li>
+                                                  <li id='notification_announcement_title' data-table='notification_announcement' data-text='通知公告' data-url='./notification_announcement/table.html?tabName=通知公告'>
+                            通知公告
+                          </li>
+                                                                        <li id='cart_title' data-table='cart' data-text='配送列表' data-url='./logistics_delivery/table.html?tabName=配送列表'>
+                           配送列表
+                        </li>
+                                                                        <li id='forum_title' data-table='forum' data-text='论坛' data-url='../forum/table.html?tabName=论坛'>论坛</li>
+                                                                        <li id='message_name' data-table='message' data-text='留言箱' data-url='../message/table.html?tabName=留言箱'>留言箱</li>
+                                                                        <li id='exam_name' data-table='exam' data-text='考试中心' data-url='../exam/table.html?tabName=考试中心'>考试中心</li>
+                                                                        <li id='collect' data-table='collect' data-text='收藏' data-url='../collect/list.htm?tabName=收藏'>收藏</li>
+                                                </ul>
+
+                        <div class="layui-tab-content" style="max-height:5000px">
+                         <div class="layui-tab-item layui-show">
+                                                    <div class="chart_box" id="shop_money" style="padding: 20px;">
+                                <div id="shop_money_loading">加载中...</div>
+                                <div style="display: flex;flex-direction:row;justify-content: center;width: 600px;align-items: center">
+                                    <div style="width: 100px;">选择日期：</div>
+                                    <input style="width: 300px" type="text" class="layui-input" id="shop_money_input">
+                                    <div style="width: 200px;margin-left: 20px;">总销售金额：<span id="shop_money_total">0</span></div>
+                                </div>
+                                <div id="shop_money_charts" style="width: 600px;height:370px;margin-top: 20px;"></div>
+                            </div>
+                            <div class="chart_box" id="shop_num" style="padding: 20px;">
+                                <div id="shop_num_loading">加载中...</div>
+                                <div style="display: flex;flex-direction:row;justify-content: center;width: 600px;align-items: center">
+                                    <div style="width: 100px;">选择日期：</div>
+                                    <input style="width: 300px" type="text" class="layui-input" id="shop_num_input">
+                                    <div style="width: 200px;margin-left: 20px;">总销售数量：<span id="shop_num_total">0</span></div>
+                                </div>
+                                <div id="shop_num_charts" style="width: 600px;height:370px;margin-top: 20px;"></div>
+                            </div>
+                                                 	                                                      	                                                      	                                                              <div class="chart_box chart_box_course_information">
+                                            <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="box">
+                                                        <div id="list_course_information" style="width: 600px; height: 400px"></div>
+                                                        </div>
+                                                        <div  id="list_course_information_none">课程信息没有符合条件的数据</div>
+                                                                                                                                                                                                                                                                                                                                                                                          </div>
+                                                            	                                                      	                                                              <div class="chart_box chart_box_student_course_selection">
+                                            <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+                                                                                            <div class="box">
+                                                  <div id="list_student_course_selection" style="width: 600px; height: 400px"></div>
+                                                 </div>
+                                                <div  id="list_student_course_selection_none">学生选课没有符合条件的数据</div>
+                                                                                </div>
+                                                            	                                                              <div class="chart_box chart_box_course_grades">
+                                            <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+                                                                                            <div class="box">
+                                                   <div id="list_course_grades" style="width: 600px; height: 400px"></div>
+                                                </div>
+                                                <div id="list_course_grades_none">课程成绩没有符合条件的数据</div>
+                                                                                </div>
+                                                            	                                                      	                                                                                                                  <div class="box" id="subject_exam_charts_box" style="display: flex;flex-direction: column;align-items: center;justify-content: center">
+                                    <div class="layui-tab" lay-filter="subject_exam_charts_tab">
+                                        <ul class="layui-tab-title"></ul>
+                                    </div>
+                                    <div id="subject_exam_charts" style="width: 600px;height:400px;"></div>
+                                </div>
+                                <div class="box" id="subject_exam_avg_box" style="display: flex;flex-direction: column;align-items: center;justify-content: center">
+                                    <div class="layui-tab" lay-filter="subject_exam_avg_tab">
+                                        <ul class="layui-tab-title"></ul>
+                                    </div>
+                                    <div id="subject_exam_avg" style="width: 600px;height:400px;"></div>
+                                </div>
+                                <div id="all-table_box" style="background-color: #fff;margin-left: 30px;margin-bottom: 30px;width: 60%;padding: 20px;">
+                                    <table id="all-table" lay-filter="all-table"></table>
+                                </div>
+                                                        </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../student_users/table.html?tabName='学生用户'" id="student_users_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../teacher_users/table.html?tabName='教师用户'" id="teacher_users_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../course_information/table.html?tabName='课程信息'" id="course_information_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../course_classification/table.html?tabName='课程分类'" id="course_classification_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../student_course_selection/table.html?tabName='学生选课'" id="student_course_selection_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../course_grades/table.html?tabName='课程成绩'" id="course_grades_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../course_mall/table.html?tabName='课程商城'" id="course_mall_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                        <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../notification_announcement/table.html?tabName='通知公告'" id="notification_announcement_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                                      <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                     <div style="width:100%;min-height:3000px;overflow:hidden;border:0px">
+                                         <div style="position:relative">
+                                         <iframe src="../logistics_delivery/table.html?tabName='配送列表'" id="cart_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                     width: 100%;
+                                                      min-height:3000px;
+                                                     display:block;
+                                                     left: 0;
+                                                     right:0;">
+                                         </iframe>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                                                                                    <div class="layui-tab-item">
+                                <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:2000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../forum/table.html?tabName='论坛'" id="forum_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 2000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                                    <div class="layui-tab-item">
+                               <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;height:2000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../message/table.html?tabName='留言箱'" id="message_name_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                    height: 2000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                                    <div class="layui-tab-item">
+                               <div align="center" style="margin:0 auto;">
+                                    <div style="width:100%;min-height:3000px;overflow:hidden;border:0px">
+                                        <div style="position:relative">
+                                        <iframe src="../exam/table.html?tabName='考试中心'" id="exam_name_ifyemian" scrolling="no" frameborder="0" style="position:absolute;
+                                                    width: 100%;
+                                                   min-height:3000px;
+                                                    display:block;
+                                                    left: 0;
+                                                    right:0;">
+                                        </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                                                        <div class="layui-tab-item">
+                               <ul id="collec_list_box" class="cars"></ul>
+                            </div>
+                                                    </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+</body>
+    <script src="../../js/axios.min.js"></script>
+    <script src="../../js/jquery.2.1.1.min.js"></script>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/permissionSet.js"></script>
+    <script>
+            let user_group = "";
+            let user_id = null;
+            var BaseUrl = baseUrl();
+            let token = sessionStorage.token;
+            // 查看登录与否
+            if (sessionStorage.token != undefined) {
+                user_group = JSON.parse(sessionStorage.personInfo).user_group;
+            user_id = JSON.parse(sessionStorage.personInfo).user_id;
+            nickname = JSON.parse(sessionStorage.personInfo).nickname;
+
+            } else {
+            user_group = "游客";
+            user_id = null;
+
+            }
+       async function  get_nickname(list,flag){
+            if (flag) {
+                for (let i=0;i<list.length;i++){
+                    let { data: json } = await axios.get(BaseUrl + "/api/user/get_obj?user_id="+list[i],
+                           null
+                         );
+                     if(json.result){
+                      list[i] = json.result.obj.nickname
+                     }
+                }
+            }else {
+                for (let i=0;i<list.length;i++){
+                let { data: json } = await axios.get(BaseUrl + "/api/user/get_obj?user_id="+list[i].name,
+                           null
+                         );
+                     if (json.result) {
+                        list[i].name = json.result.obj.nickname;
+                    }
+                }
+            }
+        }
+                                                                                                                                                                                                                                                                                                                                                                                                                         let list_course_information= []
+                    let option_pie_course_information={
+                        title: {
+                            text: "饼状图",
+                            left: "center",
+                        },
+                        tooltip: {
+                            trigger: "item",
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            orient: "vertical",
+                            left: "left",
+                        },
+                        series: [{
+                            name: "",
+                            type: "pie",
+                            radius: "50%",
+                            data: [],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: "rgba(0, 0, 0, 0.5)",
+                                },
+                            },
+                        } ]
+                    }
+                                                                                                                                      let  line_obj_student_course_selection={
+                names:[],
+                xAxis: [],
+                values:[]
+            }
+            let option_line_student_course_selection= {
+					title: {
+						text: "折线图",
+						left: "center",
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					legend: {
+						type: 'scroll',
+						orient: 'horizontal',
+						y: 'bottom'
+					},
+					grid: {
+						left: "3%",
+						right: "10%",
+						bottom: "14%",
+						containLabel: true,
+					},
+					toolbox: {
+						feature: {
+							saveAsImage: {},
+						},
+					},
+					xAxis: [{
+						type: 'category',
+						boundaryGap: false,
+						data: []
+					}],
+					yAxis: [{
+						type: 'value'
+					}],
+					series: [
+						// {
+						// 	name: 'Forest',
+						// 	type: 'bar',
+						// 	barGap: 0,
+						// 	emphasis: {
+						// 		focus: 'series'
+						// 	},
+						// 	data: [320, 332, 301, 334, 390]
+						// },
+					]
+				}
+                                let bar_obj_course_grades= {
+                names:[],
+                xAxis: [],
+                values:[]
+            }
+            let option_bar_course_grades= {
+                title: {
+                    text: "柱状图",
+                    left: "center",
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    type: 'scroll',
+                    orient: 'horizontal',
+                    y: 'bottom'
+                },
+                xAxis: [{
+                    type: 'category',
+                    axisTick: {
+                        show: false
+                    },
+                    data: []
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [
+                    // {
+                    // 	name: 'Forest',
+                    // 	type: 'bar',
+                    // 	barGap: 0,
+                    // 	emphasis: {
+                    // 		focus: 'series'
+                    // 	},
+                    // 	data: [320, 332, 301, 334, 390]
+                    // },
+                ]
+            }
+                                                        if(user_group == '管理员' || $check_figure('/order/table')){
+        $('#shop_money').css("display","block")
+        $('#shop_num').css("display","block")
+    }else{
+        $('#shop_money').css("display","none")
+        $('#shop_num').css("display","none")
+    }
+                                                                                                                                                                                                                                                                                                                                                                                                                       // 获取课程信息统计图数据
+                   async function get_list_course_information() {
+                       let data = {};
+                                                 let flag = false;
+                                                                           let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+                           let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+                           if (user_group!='管理员'){
+                                                                   let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                if (user_group=="教师用户"){
+                                                    sqlwhere+= "teacher = " + user_id + " or ";
+                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (sqlwhere.length>1){
+                                        sqlwhere = sqlwhere.substr(0,sqlwhere.length-4);
+                                        sqlwhere += ")";
+                                        data.sqlwhere = sqlwhere;
+                                    }
+                                                             }
+                                                let { data: ren_course_information } = await axios.get(BaseUrl + "/api/course_information/list_group?groupby=course_type",
+                             {params: data}
+                        );
+                        if(ren_course_information.result){
+                            var list = ren_course_information.result.list;
+                            list_course_information =list.map((o) => {
+                                return {
+                                                                            name: o[1],
+                                                                            value: o[0]
+                                }
+                            });
+                            if (flag){
+                                get_nickname(list_course_information,false);
+                            }
+                            if(user_group == '管理员' || $check_figure('/course_information/table')){
+                                                            init_pie_chart(option_pie_course_information,list_course_information,'课程信息统计','list_course_information',null,{ roseType: 'radius'})
+                                                          $('#list_course_information_none').css("display","none")
+                            }else{
+                             $('.chart_box_course_information').css("display","none")
+                            }
+                        }else{
+                              $('#list_course_information').css("display","none")
+                              $('#list_course_information_none').css("display","block")
+                        }
+
+                    }
+                                                                                    
+                                                    // 获取学生选课统计折线图
+            async function get_list_student_course_selection() {
+                			                                let group_by_value = "course_name";
+                        let data = {};
+                                                    let flag = false;
+                                                                            let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+                            let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+                            if (user_group!='管理员'){
+                                					                let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                if (user_group=="教师用户"){
+                                                sqlwhere+= "teacher = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                     if (user_group=="学生用户"){
+                                                sqlwhere+= "student_users = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                         if (sqlwhere.length>1){
+                                        sqlwhere = sqlwhere.substr(0,sqlwhere.length-4);
+                                        sqlwhere += ")";
+                                        data.sqlwhere = sqlwhere;
+                                    }
+                                                            }
+                                                let { data: ren_student_course_selection } = await axios.get(BaseUrl + "/api/student_course_selection/get_list?groupby="+group_by_value,
+                           {params: data}
+                         );
+                        if(ren_student_course_selection.result){
+                            let list = ren_student_course_selection.result.list;
+						    let name_list = [];
+							for (let i=0;i<list.length;i++){
+								name_list.push(list[i].course_name);
+							}
+							line_obj_student_course_selection.names = name_list;
+							get_list_student_course_selection_sub("course_name",flag);
+
+                          $('#list_student_course_selection_none').css("display","none")
+                        }else{
+                            $('#list_student_course_selection').css("display","none")
+                            $('#list_student_course_selection_none').css("display","block")
+                        }
+                                    			                        			                        			                        			                        			                        			                        			                        			                        
+            }
+            async function get_list_student_course_selection_sub(v1,names_flag) {
+                			                        			                        			                        			                        			                                let data = {};
+                                                    let flag = false;
+                                                                            let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+                            let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+                            if (user_group!='管理员'){
+                                                                    let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                if (user_group=="教师用户"){
+                                                sqlwhere+= "teacher = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                    if (user_group=="学生用户"){
+                                                sqlwhere+= "student_users = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                        if (sqlwhere.length>1){
+                                        sqlwhere = sqlwhere.substr(0,sqlwhere.length-4);
+                                        sqlwhere += ")";
+                                        data.sqlwhere = sqlwhere;
+                                    }
+                                                            }
+                                                  let { data: ren_student_course_selection } = await axios.get(BaseUrl + "/api/student_course_selection/get_list?groupby=release_time",
+                           {params: data}
+                         );
+                        if(ren_student_course_selection.result){
+                            let list = ren_student_course_selection.result.list;
+							let xAxis_list = [];
+                            for (let i=0;i<list.length;i++){
+                                                                    xAxis_list.push($toTime(list[i].release_time ,"yyyy-MM-dd"));
+                                							}
+							line_obj_student_course_selection.xAxis = xAxis_list;
+							get_list_student_course_selection_sub_sub(v1,"release_time",names_flag,flag);
+
+                        }
+
+                                    			                        			                        			                        			                        
+            }
+            async function get_list_student_course_selection_sub_sub(v1,v2,names_flag,xAxis_flag) {
+                                                                                                                                                                                                                                                                                                                                                            let data_str = "{\""+v1+"\":\"\",\""+v2+"\":\"\"}";
+				        let data = JSON.parse(data_str);
+                                                    let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+                            let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+                            if (user_group!='管理员'){
+                                                                    let sqlwhere = "(";
+                                                                                                                                                                                                                                                                                if (user_group=="教师用户"){
+                                                sqlwhere+= "teacher = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                    if (user_group=="学生用户"){
+                                                sqlwhere+= "student_users = " + user_id + " or ";
+                                            }
+                                                                                                                                                                                                                                                                        if (sqlwhere.length>1){
+                                        sqlwhere = sqlwhere.substr(0,sqlwhere.length-4);
+                                        sqlwhere += ")";
+                                        data.sqlwhere = sqlwhere;
+                                    }
+                                                            }
+                                                for (let i=0;i<line_obj_student_course_selection.xAxis.length;i++){
+                            let list = []
+                            for (let j=0;j<line_obj_student_course_selection.names.length;j++){
+                                data[v2] = line_obj_student_course_selection.xAxis[i];
+                                data[v1] = line_obj_student_course_selection.names[j];
+                                let { data: ren_student_course_selection } = await axios.get(BaseUrl + "/api/student_course_selection/sum?field=number_of_people",
+                                    {params: data}
+                                );
+                                if(ren_student_course_selection.result){
+                                    list[j] = ren_student_course_selection.result
+                                }else {
+									list[j] = 0;
+								}
+
+                            }
+                            line_obj_student_course_selection.values.push(list)
+                        }
+                        if (names_flag){
+                            get_nickname(line_obj_student_course_selection.names,true);
+                        }
+                        if (xAxis_flag){
+                            get_nickname(line_obj_student_course_selection.xAxis,true);
+                        }
+                                                    if(user_group == '管理员' || $check_figure('/student_course_selection/table')){
+                                            init_line_chart(option_line_student_course_selection,line_obj_student_course_selection,'学生选课统计','list_student_course_selection')
+                                        $('#list_student_course_selection_none').css("display","none")
+                }else{
+                    $('.chart_box_student_course_selection').css("display","none")
+                }
+
+            }
+                               // 获取课程成绩统计柱状图
+           async function get_list_course_grades() {
+                let name_list = [];
+				let query_str = "";
+                			                               let group_by_value = "course_name";
+                                                    let flag = false;
+                                                                             let date_flag = "其他"
+                                                                			    			                            			    			                            			    			                            			    			                                                    name_list.push("考试成绩");
+                        query_str = query_str+"exam_scores"+","
+                    			    			                                                    name_list.push("平均分");
+                        query_str = query_str+"average_score"+","
+                    			    			                                                    name_list.push("最高分");
+                        query_str = query_str+"maximum_score"+","
+                    			    			                                                    name_list.push("最低分");
+                        query_str = query_str+"lowest_score"+","
+                    			                    bar_obj_course_grades.names = name_list
+                query_str = query_str.substr(0,query_str.length-1);
+                let data = {};
+                                    let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+                    let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+                    if (user_group!='管理员'){
+                                                   let sqlwhere = "(";
+                                                                                                                                                                                                                        if (user_group=="教师用户"){
+                                        sqlwhere+= "teacher = " + user_id + " or ";
+                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                    if (sqlwhere.length>1){
+                                sqlwhere = sqlwhere.substr(0,sqlwhere.length-4);
+                                sqlwhere += ")";
+                                data.sqlwhere = sqlwhere;
+                            }
+                                            }
+                
+                let { data: ren_course_grades } = await axios.get(BaseUrl + "/api/course_grades/bar_group?field="+query_str+"&groupby="+group_by_value,
+                          {params: data}
+                    );
+                if(ren_course_grades.result){
+                    let xAxis = [];
+					let values = [];
+                    ren_course_grades.result.list.map((o) => {
+                        if (date_flag === "日期") {
+                            xAxis.push($toTime(o[0] ,"yyyy-MM-dd"));
+                        }else if (date_flag === "时间") {
+                            xAxis.push($toTime(o[0] ,"hh:mm:ss"));
+                        }else if (date_flag === "日长") {
+                            xAxis.push($toTime(o[0] ,"yyyy-MM-dd hh:mm:ss"));
+                        }else {
+                            xAxis.push(o[0]);
+                        }
+                        values.push(o.splice(1))
+                    });
+                    bar_obj_course_grades.xAxis = xAxis;
+					bar_obj_course_grades.values = values;
+                     if(user_group == '管理员' || $check_figure('/course_grades/table')){
+                                              init_bar_chart(option_bar_course_grades,bar_obj_course_grades,'课程成绩统计','list_course_grades')
+                                             $('#list_course_grades_none').css("display","none")
+                    }else{
+                       $('.chart_box_course_grades').css("display","none")
+
+                    }
+
+                }else{
+                   $('#list_course_grades').css("display","none")
+                    $('#list_course_grades_none').css("display","block")
+                }
+                if (flag){
+					get_nickname(bar_obj_course_grades.xAxis,true);
+				}
+
+
+
+            }
+                                                                                                           function init_pie_chart(option, list, title, id, type, params) {
+                // 标题
+                if (title) {
+                    option.title.text = title;
+                } else {
+                    option.title.text = "XXX饼状图";
+                }
+
+                // 分类名
+                if (type) {
+                    option.series[0].name = type;
+                } else {
+                    option.series[0].name = "参数";
+                }
+                // 参数
+                option.series[0].data = list;
+
+                option.series[0] = Object.assign(option.series[0],params)
+
+                let course_information_myChart = echarts.init(document.getElementById(id));
+                course_information_myChart.setOption(option);
+            }
+            
+                                                     function line_series(vm) {
+                    var list = vm.names;
+                    var values = vm.values;
+                    var series = [];
+                    for (let i=0;i<list.length;i++){
+                        let data = []
+                        for (let j=0;j<values.length;j++){
+                            data.push(values[j][i]);
+                        }
+                        let dict_type = {
+                                name: list[i],
+                                type: 'line',
+                                data: data
+                        }
+                        series.push(dict_type);
+                    }
+
+                    return series;
+                }
+            function init_line_chart(option, vm, title, id, type) {
+                if(!vm){
+                        vm= {
+                            type: Object,
+                            default: function() {
+                                return {
+                                    xAxis: "xAxis",
+                                    names: "names",
+                                    values: "values",
+                                };
+                            },
+                        }
+                    }
+                    // 标题
+                    if (title) {
+                        option.title.text = title;
+                    } else {
+                        option.title.text = "XXX折线图";
+                    }
+
+                var series =line_series(vm);
+                option.series = series;
+                var xAxis = option.xAxis[0];
+                    xAxis.data =vm.xAxis;
+                    if (xAxis.data.length>4){
+                        option.axisLabel= {
+                            interval: 0, //使x轴文字显示全
+                            formatter: function (params) {
+                            let newParamsName = '';
+                            const paramsNameNumber = params.length; // 文字总长度
+                            const provideNumber = 4; //一行显示几个字
+                            const rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                            if (paramsNameNumber > provideNumber) {
+                                for (let p = 0; p < rowNumber; p++) {
+                                const start = p * provideNumber;
+                                const end = start + provideNumber;
+                                const tempStr = p === rowNumber - 1 ? params.substring(start, paramsNameNumber) : params.substring(start, end) + '\n';
+                                newParamsName += tempStr;
+                                }
+                            } else {
+                                newParamsName = params;
+                            }
+                            return newParamsName;
+                            },
+                        }
+                    }
+                    if(type === "gradient_stacked_area"){
+                        option.series.forEach((value,index) => {
+                            value.areaStyle ={
+                                opacity: 1,
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                    {
+                                        offset: 0,
+                                        color: GRADIENTCOLOR[index][0]
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: GRADIENTCOLOR[index][1]
+                                    }
+                                ])
+                            }
+                            value.smooth = true
+                            value.stack = 'Total'
+                            value.lineStyle ={
+                                width: 1
+                            }
+                            value.showSymbol = false
+                            value.emphasis = {
+                                focus: 'series'
+                            }
+                        })
+                    }
+                    // 参数
+                    let student_course_selection_myChart = echarts.init(document.getElementById(id));
+                    student_course_selection_myChart.setOption(option);
+                }
+            
+                                               function bar_series(vm) {
+                        var list = vm.names;
+                        var values = vm.values;
+                        var series = [];
+                        let labelOption = {
+                            show: true,
+                            position: "insideBottom",
+                            distance: 15,
+                            align: 'left',
+                            verticalAlign: 'middle',
+                            rotate: 90,
+                            formatter: '{c}  {name|{a}}',
+                            fontSize: 16,
+                            rich: {
+                                name: {}
+                            }
+                        };
+                        for (let i=0;i<list.length;i++){
+                            let data = []
+                            for (let j=0;j<values.length;j++){
+                                data.push(values[j][i]);
+                            }
+                            let dict_type = {
+                                    name: list[i],
+                                    type: 'bar',
+                                    barGap: 0,
+                                    label: labelOption,
+                                    emphasis: {
+                                        focus: 'series'
+                                    },
+                                    data: data
+                            }
+                            series.push(dict_type);
+                        }
+                        return series;
+                    }
+                function init_bar_chart(option, vm, title, id, type) {
+                    if(!vm){
+                        vm= {
+                            type: Object,
+                            default: function() {
+                                return {
+                                    xAxis: "xAxis",
+                                    names: "names",
+                                    values: "values",
+                                };
+                            }
+                        }
+                    }
+                    // 标题
+                    if (title) {
+                        option.title.text = title;
+                    } else {
+                        option.title.text = "XXX条形图";
+                    }
+                    var series = bar_series(vm);
+                    option.series = series;
+
+                    var xAxis = null
+                    if(type === 'stacked_horizontal'){
+                        xAxis = option.yAxis[0];
+                    }else {
+                        xAxis = option.xAxis[0];
+                    }
+
+                    xAxis.data = vm.xAxis;
+                    if (xAxis.data.length>4){
+                        option.axisLabel= {
+                            interval: 0, //使x轴文字显示全
+                            formatter: function (params) {
+                            let newParamsName = '';
+                            const paramsNameNumber = params.length; // 文字总长度
+                            const provideNumber = 4; //一行显示几个字
+                            const rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                            if (paramsNameNumber > provideNumber) {
+                                for (let p = 0; p < rowNumber; p++) {
+                                const start = p * provideNumber;
+                                const end = start + provideNumber;
+                                const tempStr = p === rowNumber - 1 ? params.substring(start, paramsNameNumber) : params.substring(start, end) + '\n';
+                                newParamsName += tempStr;
+                                }
+                            } else {
+                                newParamsName = params;
+                            }
+                            return newParamsName;
+                            }
+                        }
+                    }
+
+                    if(type === 'stacked_horizontal'){
+                        option.series.forEach(value => {
+                            value.barGap = 0
+                            value.emphasis = {
+                                focus: 'series'
+                            }
+                            value.stack = 'total',
+                                    value.label = {
+                                        show: true,
+                                        position: 'insideBottom',
+                                        distance: 15,
+                                        align: 'left',
+                                        verticalAlign: 'middle',
+                                        rotate: false,
+                                        formatter: '{c}',
+                                        fontSize: 16,
+                                        rich: {
+                                            name: {}
+                                        }
+                                    }
+                        })
+                    }
+
+                    let course_grades_myChart = echarts.init(document.getElementById(id));
+                    course_grades_myChart.setOption(option);
+
+                }
+            
+                                     window.onload = function () {
+       let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+       layui.use('layer', function () {
+        var layer = layui.layer;
+        layer.load(); // 加载动画
+                   let forum_show_flag= $check_action('/forum/table','get')
+            if(user_group == '管理员' ||forum_show_flag){
+                let forum_title=$page_title("/forum/table")||"论坛"
+                $('#forum_title').text(forum_title)
+            }else{
+               $('#forum_title').css("display","none")
+            }
+                          let message_show_flag= $check_action('/message/table','get')
+            if(user_group == '管理员' ||message_show_flag){
+             let exam_title= $page_title('/message/table')
+                $('#message_name').text(exam_title)
+            }else{
+              $('#message_name').css("display","none")
+            }
+                           let exam_show_flag= $check_action('/exam/table','get')
+            if(user_group == '管理员' ||exam_show_flag){
+            }else{
+              $('#exam_name').css("display","none")
+            }
+                            let list_show_flag= $check_action('/collect/list','get')
+            if(user_group == '管理员' ||list_show_flag){
+            }else{
+              $('#collect').css("display","none")
+            }
+                            let student_users_show_flag= $check_action('/student_users/table','get')
+            if(user_group == '管理员' ||student_users_show_flag){
+            let student_users_title= $page_title('/student_users/table')
+              $('#student_users').text(student_users_title)
+            }else{
+                $('#student_users_title').css("display","none")
+            }
+
+                            let student_users_chart_box_flag=$check_figure('/student_users/table')
+
+                if(user_group == '管理员'||student_users_chart_box_flag){
+                 $('#list_student_users').css("display","none")
+                }
+
+                                let teacher_users_show_flag= $check_action('/teacher_users/table','get')
+            if(user_group == '管理员' ||teacher_users_show_flag){
+            let teacher_users_title= $page_title('/teacher_users/table')
+              $('#teacher_users').text(teacher_users_title)
+            }else{
+                $('#teacher_users_title').css("display","none")
+            }
+
+                            let teacher_users_chart_box_flag=$check_figure('/teacher_users/table')
+
+                if(user_group == '管理员'||teacher_users_chart_box_flag){
+                 $('#list_teacher_users').css("display","none")
+                }
+
+                                let course_information_show_flag= $check_action('/course_information/table','get')
+            if(user_group == '管理员' ||course_information_show_flag){
+            let course_information_title= $page_title('/course_information/table')
+              $('#course_information').text(course_information_title)
+            }else{
+                $('#course_information_title').css("display","none")
+            }
+
+                                // 执行课程信息数据获取
+                   get_list_course_information();
+                                let course_classification_show_flag= $check_action('/course_classification/table','get')
+            if(user_group == '管理员' ||course_classification_show_flag){
+            let course_classification_title= $page_title('/course_classification/table')
+              $('#course_classification').text(course_classification_title)
+            }else{
+                $('#course_classification_title').css("display","none")
+            }
+
+                            let course_classification_chart_box_flag=$check_figure('/course_classification/table')
+
+                if(user_group == '管理员'||course_classification_chart_box_flag){
+                 $('#list_course_classification').css("display","none")
+                }
+
+                                let student_course_selection_show_flag= $check_action('/student_course_selection/table','get')
+            if(user_group == '管理员' ||student_course_selection_show_flag){
+            let student_course_selection_title= $page_title('/student_course_selection/table')
+              $('#student_course_selection').text(student_course_selection_title)
+            }else{
+                $('#student_course_selection_title').css("display","none")
+            }
+
+                                // 执行学生选课数据获取
+                   get_list_student_course_selection();
+                                let course_grades_show_flag= $check_action('/course_grades/table','get')
+            if(user_group == '管理员' ||course_grades_show_flag){
+            let course_grades_title= $page_title('/course_grades/table')
+              $('#course_grades').text(course_grades_title)
+            }else{
+                $('#course_grades_title').css("display","none")
+            }
+
+                                // 执行课程成绩数据获取
+                   get_list_course_grades();
+                                let course_mall_show_flag= $check_action('/course_mall/table','get')
+            if(user_group == '管理员' ||course_mall_show_flag){
+            let course_mall_title= $page_title('/course_mall/table')
+              $('#course_mall').text(course_mall_title)
+            }else{
+                $('#course_mall_title').css("display","none")
+            }
+
+                            let course_mall_chart_box_flag=$check_figure('/course_mall/table')
+
+                if(user_group == '管理员'||course_mall_chart_box_flag){
+                 $('#list_course_mall').css("display","none")
+                }
+
+                                let notification_announcement_show_flag= $check_action('/notification_announcement/table','get')
+            if(user_group == '管理员' ||notification_announcement_show_flag){
+            let notification_announcement_title= $page_title('/notification_announcement/table')
+              $('#notification_announcement').text(notification_announcement_title)
+            }else{
+                $('#notification_announcement_title').css("display","none")
+            }
+
+                            let notification_announcement_chart_box_flag=$check_figure('/notification_announcement/table')
+
+                if(user_group == '管理员'||notification_announcement_chart_box_flag){
+                 $('#list_notification_announcement').css("display","none")
+                }
+
+                            $('.myDetail_dd').css('visibility','visible')
+          layer.closeAll('loading'); //关闭动画
+        });
+	  };
+        let list_arr = [];
+    async function get_tpl_list() {
+        let params = {
+        orderby: 'create_time asc',
+        user_id: user_id,
+        };
+        let { data: res } = await axios.get(BaseUrl + "/api/collect/get_list", {
+        params: params,
+        });
+        if (res.result && res.result.list) {
+            list_arr = res.result;
+            // 列表--数据渲染
+            $("#collec_list_box").empty();
+            var objecthtmls = "";
+            for (var i = 0; i < list_arr.list.length; i++) {
+                var item = list_arr.list[i];
+                let str = JSON.stringify(item);
+                objecthtmls += "<li>"
+                +"<div class='list-info'>"
+                +"<a  href='../"+item.source_table+"/detail.html?"+item.source_field+"="+item.source_id+"'>"
+                + "<div class='list-info-left'>"
+                +"<img src='"+fullUrl(BaseUrl, item.img)+"' />"
+                +"</div>"
+                +"</a>"
+                +"<div class='list-info-right'>"
+                +"<p>"+item.title+"<span class='record_creator order_state'>"+$toTime(item.create_time,"yyyy-MM-dd hh:mm:ss")+"</span></p>"
+                +"<p class='record'>"
+                +"<i class='layui-icon layui-icon-delete record_creator delCart' collect_id='"+item.collect_id+"'></i>"
+                +"</p>"
+                +"</div>"
+                 +"</div>"
+
+                +"</li>";
+            }
+            $("#collec_list_box").append(objecthtmls);
+        }
+    }
+    get_tpl_list();
+
+            async function handleDelCart(id, index) {
+                let { data: res } = await axios.get(
+                   BaseUrl + `/api/collect/del?collect_id=${id}`,
+                  {}
+                 );
+                if (res.result) {
+                    list_arr.list.splice(index, 1);
+                    layer.msg("删除成功");
+                    get_tpl_list();
+                }
+            }
+            $(".cars").on("click", ".delCart", function () {
+                var collect_id = $(this).attr("collect_id");
+                //2.把数量文本框里的数字+1
+                let list = list_arr.list;
+                for (let i = 0; i < list.length; i++) {
+                    if (collect_id == list[i].collect_id) {
+                        handleDelCart(collect_id, i);
+                    }
+                }
+            });
+           function findItem(arr, key, val) {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i][key] == val) {
+                    return i
+                }
+            }
+            return -1
+        }
+
+        async function get_subject_exam_charts_data() {
+            const bar_obj_data_account = {
+                names: [],
+                xAxis: [],
+                values: [],
+                tabs: []
+            }
+
+            function initEcharts(xAxis, series) {
+
+                const option = {
+                    "title": {
+                        "text": "用户考试科目数据统计",
+                        "left": "center"
+                    },
+                    "tooltip": {
+                        "trigger": "axis"
+                    },
+                    "legend": {
+                        "type": "scroll",
+                        "orient": "horizontal",
+                        "y": "bottom"
+                    },
+                    "toolbox": {
+                        "feature": {
+                            "saveAsImage": {}
+                        }
+                    },
+                    "xAxis": [
+                        {
+                            "type": "category",
+                            "axisTick": {
+                                "show": false
+                            },
+                            "data": xAxis
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "type": "value"
+                        }
+                    ],
+                    "series": series
+                }
+                let myChart = echarts.init(document.getElementById("subject_exam_charts"));
+                option && myChart.setOption(option)
+            }
+
+            async function get_url_subject_exam_list(e) {
+                let json = await axios.get(BaseUrl + "/api/subject_exam/get_list?subject_name=" + e)
+                json = json.data
+                let personInfo = JSON.parse(sessionStorage.personInfo);
+                const allResult = []
+                bar_obj_data_account.xAxis = []
+                for (let j = 0; j < json.result.list.length; j++) {
+                    bar_obj_data_account.xAxis.push(json.result.list[j].name)
+                    let value = await axios.get(BaseUrl + "/api/subject_user_answer/get_list", {
+                        params: {
+                            user_id: personInfo.user_id,
+                            exam_id: json.result.list[j].exam_id,
+                        }
+                    })
+                    value = value.data
+
+                    for (let k = 0; k < value.result.list.length; k++) {
+                        allResult.push([value.result.list[k].score])
+                    }
+                }
+                bar_obj_data_account.values = allResult
+                bar_obj_data_account.names = [e]
+
+                const xAxis = bar_obj_data_account.xAxis, series = []
+
+                for (let i = 0; i < bar_obj_data_account.names.length; i++) {
+                    let data = []
+                    for (let j = 0; j < bar_obj_data_account.values.length; j++) {
+                        data.push(bar_obj_data_account.values[j][i]);
+                    }
+                    let dict_type = {
+                        barMaxWidth: 50,
+                        name: bar_obj_data_account.names[i],
+                        type: 'bar',
+                        barGap: 0,
+                        label: {
+                            show: true,
+                            position: "insideBottom",
+                            distance: 15,
+                            align: 'left',
+                            verticalAlign: 'middle',
+                            rotate: 90,
+                            formatter: '{c}  {name|{a}}',
+                            fontSize: 16,
+                            rich: {
+                                name: {}
+                            }
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: data
+                    }
+                    series.push(dict_type)
+                }
+
+                initEcharts(xAxis, series)
+            }
+
+            let result = await axios.get(BaseUrl + "/api/subject/get_list");
+
+            result = result.data
+
+            if(result.result.list.length === 0){
+                document.getElementById("subject_exam_charts").innerHTML = '考试图表暂无数据'
+                document.getElementById("subject_exam_avg").innerHTML = '考试图表暂无数据'
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#all-table',
+                        cols: [[
+                            {field: 'exam', title: '考试科目'},
+                            {field: 'examName', title: '试卷名称' },
+                            {field: 'number', title: '参与人数'},
+                            {field: 'max', title: '最高分'},
+                            {field: 'min', title: '最低分'},
+                            {field: 'avg', title: '平均分'}]],
+                        data: []
+                    });
+                });
+                return
+            }
+
+            for (let i = 0; i < result.result.list.length; i++) {
+                bar_obj_data_account.tabs.push(result.result.list[i].name)
+            }
+
+            layui.use(function () {
+                let element = layui.element;
+                for (let j = 0; j < bar_obj_data_account.tabs.length; j++) {
+                    element.tabAdd('subject_exam_charts_tab', {
+                        title: bar_obj_data_account.tabs[j],
+                        id: j
+                    });
+                    element.tabAdd('subject_exam_avg_tab', {
+                        title: bar_obj_data_account.tabs[j],
+                        id: j
+                    });
+                }
+                element.tabChange('subject_exam_charts_tab', 0);
+                element.tabChange('subject_exam_avg_tab', 0);
+
+                element.on('tab(subject_exam_charts_tab)', async function () {
+                    await get_url_subject_exam_list(this.innerText)
+                });
+
+                element.on('tab(subject_exam_avg_tab)', async function () {
+                    await get_subject_average(this.innerText)
+                });
+            });
+
+            await get_url_subject_exam_list(bar_obj_data_account.tabs[0])
+            await get_subject_average(bar_obj_data_account.tabs[0])
+            bar_obj_data_account.names = [bar_obj_data_account.tabs[0]]
+        }
+
+        async function get_subject_average(e) {
+
+            function initTable(data) {
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#all-table',
+                        cols: [[
+                            {field: 'exam', title: '考试科目'},
+                            {field: 'examName', title: '试卷名称' },
+                            {field: 'number', title: '参与人数'},
+                            {field: 'max', title: '最高分'},
+                            {field: 'min', title: '最低分'},
+                            {field: 'avg', title: '平均分'}]],
+                        data: data
+                    });
+                });
+            }
+
+            function initEcharts(xAxis, series) {
+                const option = {
+                    "title": {
+                        "text": "用户考试科目数据统计",
+                        "left": "center"
+                    },
+                    "tooltip": {
+                        "trigger": "axis"
+                    },
+                    "legend": {
+                        "type": "scroll",
+                        "orient": "horizontal",
+                        "y": "bottom"
+                    },
+                    "toolbox": {
+                        "feature": {
+                            "saveAsImage": {}
+                        }
+                    },
+                    "xAxis": [
+                        {
+                            "type": "category",
+                            "axisTick": {
+                                "show": false
+                            },
+                            "data": xAxis
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "type": "value"
+                        }
+                    ],
+                    "series": series
+                }
+                let myChart = echarts.init(document.getElementById("subject_exam_avg"));
+                option && myChart.setOption(option)
+            }
+
+            const subject_names = []
+            const bar_obj_data_avg = {
+                names: [],
+                xAxis: [],
+                values: [],
+                tabs: []
+            }
+
+            let json = await axios.get(BaseUrl + "/api/subject_exam/get_list")
+            json = json.data
+
+            for (let i = 0; i < json.result.list.length; i++) {
+                const value = json.result.list[i].subject_name
+                const index = this.findItem(subject_names, "name", value)
+                if (index === -1) {
+                    subject_names.push({
+                        name: json.result.list[i].subject_name,
+                        exam: [json.result.list[i].exam_id],
+                        examNames: [json.result.list[i].name],
+                        score: [],
+                        userList: [],
+                        min: [],
+                        max: [],
+                        avg: []
+                    })
+                } else {
+                    subject_names[index].exam.push(json.result.list[i].exam_id)
+                    subject_names[index].examNames.push(json.result.list[i].name)
+                }
+            }
+
+            let result = await axios.get(BaseUrl + "/api/subject_user_answer/get_list")
+            result = result.data
+
+            for (let i = 0; i < result.result.list.length; i++) {
+                for (let j = 0; j < subject_names.length; j++) {
+                    const exam_index = subject_names[j].exam.indexOf(result.result.list[i].exam_id)
+                    if (exam_index > -1) {
+                        if (!subject_names[j].score[exam_index]) {
+                            subject_names[j].score[exam_index] = []
+                            subject_names[j].userList[exam_index] = []
+                        }
+                        const user_index = subject_names[j].userList[exam_index].indexOf(result.result.list[i].user_id)
+                        if (user_index === -1) {
+                            subject_names[j].userList[exam_index].push(result.result.list[i].user_id)
+                        }
+                        subject_names[j].score[exam_index].push(result.result.list[i].score)
+                    }
+                }
+            }
+
+            bar_obj_data_avg.names = ["平均分", "最高分", "最低分"]
+            bar_obj_data_avg.values = [[], [], []]
+
+            for (let i = 0; i < subject_names.length; i++) {
+                for (let j = 0; j < subject_names[i].score.length; j++) {
+                    const max = Math.max.apply(Math, subject_names[i].score[j])
+                    const min = Math.min.apply(Math, subject_names[i].score[j])
+                    const avg = subject_names[i].score[j].reduce(function (a, b) {
+                        return a + b
+                    }) / subject_names[i].score[j].length
+                    if (subject_names[i].name === e) {
+                        bar_obj_data_avg.xAxis = subject_names[i].examNames
+                        bar_obj_data_avg.values[0].push(avg)
+                        bar_obj_data_avg.values[1].push(max)
+                        bar_obj_data_avg.values[2].push(min)
+                    }
+                    subject_names[i].avg.push(avg)
+                    subject_names[i].max.push(max)
+                    subject_names[i].min.push(min)
+                }
+            }
+
+            const xAxis = bar_obj_data_avg.xAxis, series = [], tableData = []
+            for (let i = 0; i < bar_obj_data_avg.names.length; i++) {
+                let data = bar_obj_data_avg.values[i]
+                let dict_type = {
+                    barMaxWidth: 50,
+                    name: bar_obj_data_avg.names[i],
+                    type: 'bar',
+                    barGap: 0,
+                    label: {
+                        show: true,
+                        position: "insideBottom",
+                        distance: 15,
+                        align: 'left',
+                        verticalAlign: 'middle',
+                        rotate: 90,
+                        formatter: '{c}  {name|{a}}',
+                        fontSize: 16,
+                        rich: {
+                            name: {}
+                        }
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: data
+                }
+                series.push(dict_type);
+            }
+
+            for (let i = 0; i < subject_names.length; i++) {
+                for (let j = 0; j < subject_names[i].examNames.length; j++) {
+                    try {
+                        tableData.push({
+                            exam: subject_names[i].name,
+                            examName: subject_names[i].examNames[j],
+                            number: subject_names[i].userList[j].length,
+                            max: subject_names[i].max[j],
+                            avg: subject_names[i].avg[j],
+                            min: subject_names[i].min[j]
+                        })
+                    }catch (e) {
+                        console.log("无数据")
+                        break;
+                    }
+                }
+            }
+            initEcharts(xAxis, series)
+            initTable(tableData)
+        }
+
+        get_subject_exam_charts_data()
+
+        if (user_group != '管理员' && !$check_option('/subject_exam/table','teacher') && $check_figure('/subject_exam/table')) {
+            $('#subject_exam_charts_box').css("display","block")
+            $('#subject_exam_charts').css("display","block")
+        } else {
+            $('#subject_exam_charts_box').css("display","none")
+            $('#subject_exam_charts').css("display","none")
+        }
+
+        if (user_group == '管理员' || $check_figure('/subject_exam/table')) {
+            $('#subject_exam_avg_box').css("display","block")
+            $('#subject_exam_avg').css("display","block")
+            $('#all-table_box').css("display","block")
+            $('#all-table').css("display","block")
+        }else{
+            $('#subject_exam_avg_box').css("display","none")
+            $('#subject_exam_avg').css("display","none")
+            $('#all-table_box').css("display","none")
+            $('#all-table').css("display","none")
+        }
+        // 商城模块
+       const shop_money_option = {
+           title: {
+               text: '',
+               x: 'center',
+               y: 'top'
+           },
+           tooltip: {
+               trigger: 'axis'
+           },
+           legend: {
+               data: null,
+               type: 'scroll',
+               orient: 'horizontal',
+               y: 'bottom'
+           },
+           grid: {
+               left: '3%',
+               right: '4%',
+               bottom: '5%',
+               containLabel: true
+           },
+           toolbox: {
+               feature: {
+                   saveAsImage: {}
+               }
+           },
+           xAxis: {
+               type: 'category',
+               boundaryGap: false,
+               data: null
+           },
+           yAxis: {
+               type: 'value'
+           },
+           series: null
+       };
+       const shop_money = {
+           names: ["销售金额"],
+           month: [],
+           xAxis: [],
+           values: [],
+           loading: false,
+           type: "money"
+       }
+       const shop_num = {
+           names: ["销售数量"],
+           month: [],
+           xAxis: [],
+           values: [],
+           loading: false,
+           type: "num"
+       }
+
+       async function get_order_sum_price_sub(list, date, index, field) {
+           let time = new Date(date).getFullYear() + "-" + (new Date(date).getMonth() + 1) + "-" + new Date(date).getDate()
+           var $where = ""
+           let user_group = JSON.parse(sessionStorage.personInfo).user_group;
+           let user_id = JSON.parse(sessionStorage.personInfo).user_id;
+           if (user_group !== "管理员")
+                   $where = '&merchant_id=' + user_id
+           const json = await axios.get(
+                   BaseUrl + "/api/order/sum?field="+ field + "&create_time_min=" + time+" 00:00:00&create_time_max="+time+" 23:59:59&state=已付款" + $where,
+                   null,
+           );
+
+           if (json.data.result) {
+               list.total += json.data.result
+               list.result.push(json.data.result)
+           } else {
+               list.result.push(0)
+           }
+       }
+
+       async function get_order_month_some_price(date, params) {
+
+           function getDateBetween(start, end) {
+               var result = [];
+               //使用传入参数的时间
+               var startTime = new Date(start);
+               var endTime = new Date(end);
+               while (endTime - startTime >= 0) {
+                   let year = startTime.getFullYear();
+                   let month = startTime.getMonth();
+                   month = month < 9 ? '0' + (month + 1) : month + 1;
+                   let day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
+                   //加入数组
+                   result.push(year + "-" + month + "-" + day);
+                   //更新日期
+                   startTime.setDate(startTime.getDate() + 1);
+               }
+               return result;
+           }
+
+           const now = new Date();
+           const nowYear = now.getFullYear();
+           const nowMonth = now.getMonth() + 1;
+           const nowDate = now.getDate();
+           let days = []
+           if(date){
+               days = getDateBetween(date[0], date[1])
+           }else{
+               params.data.month[0] = new Date(nowYear, nowMonth - 1, 1, 0, 0, 0)
+               params.data.month[1] = new Date(nowYear, nowMonth - 1, nowDate, 23, 59, 59)
+               days = getDateBetween(params.data.month[0], params.data.month[1])
+           }
+
+           params.data.xAxis = []
+           params.data.values = []
+           document.getElementById(params.loadingId).style.display = "flex"
+           let list = {
+               result: [],
+               total: 0
+           }
+           let field = params.data.type === "money" ? "price_count" : "num"
+
+           for (let i = 0; i < days.length; i++) {
+               const t = new Date(days[i])
+               const time = t.getFullYear() + "-" + (t.getMonth()+1) + "-" + t.getDate()
+               params.data.xAxis.push((t.getMonth()+1) + "-" + t.getDate())
+               await this.get_order_sum_price_sub(list, time, i, field)
+           }
+
+           document.getElementById(params.loadingId).style.display = "none"
+           params.data.values = list.result
+           params.data.total = list.total
+           params.option.legend.data = params.data.names
+           params.option.xAxis.data = params.data.xAxis
+
+           let labelOption = {
+               show: true,
+               position: "insideBottom",
+               distance: 15,
+               align: 'left',
+               verticalAlign: 'middle',
+               formatter: '{c}',
+               fontSize: 16,
+           }
+           params.option.series = {
+               label:  params.data.type === "money" ? null : labelOption,
+               data: params.data.values,
+               type:  params.data.type === "money" ? "line" : "bar",
+               name: params.data.type === "money" ? "销售金额" : "销售数量",
+           }
+
+           if(params.data.type === "money"){
+               params.option.color = "#fff000"
+               params.option.title.text = "商品销售金额统计图"
+           }else {
+               delete params.option.color
+               params.option.title.text = "商品销售数量统计图"
+           }
+
+           var chartDom = document.getElementById(params.boxId);
+           var myChart = echarts.init(chartDom);
+           document.getElementById(params.totalId).innerText = params.data.total
+           params.option && myChart.setOption(params.option)
+       }
+
+       get_order_month_some_price(null, {
+           data: shop_money,
+           boxId: "shop_money_charts",
+           option: shop_money_option,
+           loadingId: "shop_money_loading",
+           totalId: "shop_money_total"
+       })
+
+       get_order_month_some_price(null, {
+           data: shop_num,
+           boxId: "shop_num_charts",
+           option: shop_money_option,
+           loadingId: "shop_num_loading",
+           totalId: "shop_num_total"
+       })
+
+       layui.use('laydate', function(){
+           var laydate = layui.laydate;
+           const startDate = shop_money.month[0].getFullYear() + "-" + (shop_money.month[0].getMonth() +1) + "-" + shop_money.month[0].getDate()
+           const endDate = shop_money.month[1].getFullYear() + "-" + (shop_money.month[1].getMonth() +1) + "-" + shop_money.month[1].getDate()
+
+           function  initInput(id, params) {
+               laydate.render({
+                   elem: id,
+                   range: true,
+                   value: startDate + " - " + endDate,
+                   done: (value, startDate, endDate)=>{
+                       const start = startDate.year+ "-" + startDate.month + "-" +　startDate.date
+                       const end = endDate.year　+ "-" + endDate.month + "-" + endDate.date
+                       get_order_month_some_price([start,end], params)
+                   }
+               });
+           }
+           initInput("#shop_money_input",{
+               data: shop_money,
+               boxId: "shop_money_charts",
+               option: shop_money_option,
+               loadingId: "shop_money_loading",
+               totalId: "shop_money_total"
+           })
+           initInput("#shop_num_input",{
+               data: shop_num,
+               boxId: "shop_num_charts",
+               option: shop_money_option,
+               loadingId: "shop_num_loading",
+               totalId: "shop_num_total"
+           })
+       });
+        layui.use(['element', "layer", "jquery"], function () {
+            var $ = layui.jquery, element = layui.element;
+            let personInfo = JSON.parse(sessionStorage.personInfo);
+            let user_group = personInfo.user_group;
+            let user_id = personInfo.user_id;
+            element.on('tab(tab-all)', function (data) {
+            localStorage.setItem("tabName", data.elem.context.outerText);
+             var id = $(this).attr('data-table')
+             if(id){
+                document.getElementById(id+'_ifyemian').contentWindow.location.reload()
+             }
+                //var id = $(this).attr('data-table')
+                //if(id!=='index'||id!=='collect'){
+                //    var url = $(this).attr('data-url')
+                //    $('#'+id+'_ifyemian').attr('src',url)
+                //}
+            })
+
+        });
+    </script>
+  <style>
+      #shop_money, #shop_num{
+          position: relative;
+      }
+      #shop_money_loading, #shop_num_loading{
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 600px;
+          bottom: 0;
+          z-index: 0;
+          background: rgba(255,255,255,0.8);
+          display: none;
+          justify-content: center;
+          align-items: center;
+      }
+  </style>
+</html>

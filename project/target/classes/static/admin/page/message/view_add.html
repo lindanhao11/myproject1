@@ -1,0 +1,217 @@
+<!-- 留言板新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../../layui/css/layui.css">
+  <link rel="stylesheet" href="../../css/diy.css">
+</head>
+
+<body>
+  <article class="sign_in">
+    <div class="warp message">
+      <div class="layui-container">
+        <div class="layui-row">
+          <form class="layui-form" action="">
+            <div class="layui-upload">
+              <button type="button" class="layui-btn" id="avatar">上传头像</button>
+              <div class="layui-upload-list">
+                <img class="layui-upload-img" id="avatar_img">
+                <p id="avatar_p"></p>
+              </div>
+              <div style="width: 95px;">
+                <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                     lay-filter="avatar_progress">
+                  <div class="layui-progress-bar" lay-percent=""></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-input-box">
+              <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                  <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                         class="layui-input" id="title">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">昵称</label>
+                <div class="layui-input-block">
+                  <input type="text" name="nickname" lay-verify="nickname" autocomplete="off" placeholder="请输入昵称"
+                         class="layui-input" id="nickname">
+                </div>
+              </div>
+<!--              <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">留言手机号</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                  <input type="text" name="phone" lay-verify="phone" autocomplete="off" placeholder="请输入手机号码"-->
+<!--                         class="layui-input" id="phone">-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">留言邮箱</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                  <input type="text" name="email" lay-verify="email" autocomplete="off" placeholder="请输入留言邮箱"-->
+<!--                         class="layui-input" id="email" >-->
+<!--                </div>-->
+<!--              </div>-->
+              <div class="layui-form-item">
+                <label class="layui-form-label">内容</label>
+                <div class="layui-input-block">
+                  <textarea id="content" disabled="disabled"></textarea>
+                </div>
+              </div>
+            </div>
+            
+          </form>
+          <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-normal" id="submit"><span>确认</span></button>
+            <a href="./table.html" type="button" class="layui-btn layui-btn-normal"
+              target="main_self_frame">取消</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</body>
+
+<script src="../../js/index.js"></script>
+<script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+
+<script>
+  var BaseUrl = baseUrl()
+  layui.use(['element', 'layer', 'layedit'], function () {
+    var element = layui.element
+      , layer = layui.layer
+      , upload = layui.upload
+      , layedit = layui.layedit
+      , $ = layui.$;
+
+    layui.layedit.set({
+      uploadImage: {
+        url: BaseUrl + '/api/message/upload?' //接口url
+        , type: 'post' //默认post
+      }
+    });
+
+    // let editor = layedit.build('content', {
+    //   tool: [
+    //     'strong' //加粗
+    //     , 'italic' //斜体
+    //     , 'underline' //下划线
+    //     , 'del' //删除/Del线
+    //     , '|' //分割线
+    //     , 'left' //左对齐
+    //     , 'center' //居中对齐
+    //     , 'right' //右对齐
+    //     , 'link' //超链接
+    //     , 'unlink' //清除链接
+    //     , 'image' //插入图片
+    //     , 'help' //帮助
+    //   ]
+    // });
+
+    // 拿到本地存储的token
+    let token = sessionStorage.token
+    let user = sessionStorage.personInfo;
+
+    let avatar = "";
+
+    let uploadInst = upload.render({
+      elem: '#avatar'
+      , url: BaseUrl + '/api/message/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+      , headers: {
+        'x-auth-token': token
+      }, before: function (obj) {
+        //预读本地文件示例，不支持ie8
+        obj.preview(function (index, file, result) {
+          $('#avatar_img').attr('src', fullUrl(BaseUrl,result)); //图片链接（base64）
+        });
+
+        element.progress('avatar_progress', '0%'); //进度条复位
+        layer.msg('上传中', { icon: 16, time: 0 });
+      }
+      , done: function (res) {
+        //如果上传失败
+        if (res.code > 0) {
+          return layer.msg('上传失败');
+        }
+        //上传成功的一些操作
+        avatar = res.result.url;
+        $('#avatar_p').html(''); //置空上传失败的状态
+      }
+      , error: function () {
+        //演示失败状态，并实现重传
+        let avatar_p = $('#avatar_p');
+        avatar_p.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs avatar-reload">重试</a>');
+        avatar_p.find('.avatar-reload').on('click', function () {
+          uploadInst.upload();
+        });
+      }
+      //进度条
+      , progress: function (n, elem, e) {
+        element.progress('avatar_progress', n + '%'); //可配合 layui 进度条元素使用
+        if (n == 100) {
+          layer.msg('上传完毕', { icon: 1 });
+        }
+      }
+    });
+
+
+    let title = document.querySelector('#title')
+    let nickname = document.querySelector('#nickname')
+    let content = document.querySelector('#content')
+    // let phone = document.querySelector('#phone')
+    // let email = document.querySelector('#email')
+
+    let submit = document.querySelector('#submit')
+    if (user){
+      if (typeof user == "string")
+      user = JSON.parse(user)
+      nickname.value = user.nickname
+      nickname.disabled = true;
+      if (user.avatar){
+        $('#avatar_img').attr('src', fullUrl(BaseUrl,user.avatar));
+      }
+      // if (user.phone){
+      //   phone.value = user.phone
+      //   phone.disabled = true;
+      // }
+      // if (user.email){
+      //   email.value = email.phone
+      //   email.disabled = true;
+      // }
+    }
+    submit.onclick = async function () {
+      let { data: res } = await axios.post(BaseUrl + '/api/message/add', {
+        message_id: 0,
+        avatar: avatar,
+        title: title.value,
+        nickname: nickname.value,
+        // phone: phone.value,
+        // email: email.value,
+        reply_state: 0,
+        content: content.value
+      }, {
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (res.result == 1) {
+        layer.msg('新增成功')
+        setTimeout(function () {
+          window.location.replace("./table.html");
+        }, 1000)
+      }
+    }
+  });
+</script>
+
+</html>

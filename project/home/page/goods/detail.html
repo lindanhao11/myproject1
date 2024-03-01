@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>样式开发测试测试测试测试单</title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../css/diy.css" />
+    <style type="text/css">
+      .detail_opt>a{
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+ <div class="goods_detail">
+      <div class="layui-row">
+        <div class="layui-col-md10">
+          <div class="detail_content_box" class="layui-row">
+            <div class="detail_slider layui-col-xs6 layui-col-md6">
+              <div class="layui-carousel" id="detail_carousel">
+                <div carousel-item id="detail_carousel_list"></div>
+              </div>
+              <div class="detail_slider_img">
+                <ul id="detail_slider_list"></ul>
+              </div>
+            </div>
+            <div class="detail_content layui-col-xs6 layui-col-md6">
+              <h2 class="detail_content_title"></h2>
+              <h3 class="detail_content_description"></h3>
+              <div class="detail_price">
+                <div class="detail_price_item">
+                  <span class="color">售价</span>
+                  <span class="prices">￥</span>
+                  <span class="shic"
+                    >市场价<span class="prices_age">￥</span></span
+                  >
+                  <span class="yis"
+                    ><i class="layui-icon layui-icon-heart" id="detail_collect"></i
+                  ></span>
+                </div>
+                <div class="detail_delivery">
+                  <span class="layui-badge goods_type"></span>
+                </div>
+              </div>
+              <div class="detail_introduct">
+                <div class="add_sum">
+                  <span class="record_creator layui-btn-group">
+                    <button
+                      type="button"
+                      class="layui-btn jian layui-btn-sm layui-btn-primary"
+                    >
+                      <i class="layui-icon layui-icon-subtraction"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="layui-btn layui-btn-primary layui-btn-sm num"
+                    >
+                      1
+                    </button>
+
+                    <button
+                      type="button"
+                      class="layui-btn add layui-btn-primary layui-btn-sm"
+                    >
+                      <i class="layui-icon layui-icon-addition"></i>
+                    </button>
+                  </span>
+                </div>
+
+                <div id="goods_rate"></div>
+              </div>
+              <div class="detail_opt">
+                <a href="javascript:;"
+                  ><button class="a25color1" id="add_cart">加入购物车</button></a
+                >
+                <a href="javascript:;"
+                  ><button class="a25color2" id="toMyorder">立即购买</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="novel_details">
+            <p class="novel_details_title">详情</p>
+             <div class="novel_details_wrap" id="t_detail"></div>
+            <div class="comment_editor" id="t_comment_list">
+              <p class="novel_details_title">评论区</p>
+              <div class="comment_editor" id="t_comment"></div>
+              <!-- 分页器--开始-->
+              <div id="cont" class="layui-row layui-col-space30"></div>
+              <div id="pageSum"></div>
+              <!-- 分页器--结束 -->
+              <form
+                class="layui-form"
+                action=""
+                lay-filter="addGoodsForm"
+                id="addGoodsForm"
+              >
+                <p class="replyToSb">
+                  对<span id="replyToSbName">XX</span>回复
+                  <button
+                    class="layui-btn layui-btn-sm layui-btn-primary"
+                    onclick="(form_comment.reply_to_id = 0)"
+                    id="resetReplySb"
+                  >
+                    重置回复人
+                  </button>
+                </p>
+                <div class="layui-form-item">
+                  <textarea
+                    class="layui-textarea"
+                    id="comment_detail"
+                    placeholder="请输入内容"
+                    style="display: none"
+                    name="comment_detail"
+                    autocomplete="off"
+                  ></textarea>
+                </div>
+                <div class="layui-form-item publish_comment">
+                  <button
+                    type="button"
+                    class="layui-btn"
+                    data-type="text"
+                    id="fileNotifySubmit"
+                  >
+                    发 表
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      <div class="layui-col-md3 hot_goods_wrap">
+        <h4 class='hot_goods_wrap_list'>今日推荐  
+        </h4>
+        <div class="list_goods_hot"></div>
+      </div>
+    </div>
+    </div>
+  </body>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+          let user_id = null;
+          var BaseUrl = baseUrl();
+          let token = sessionStorage.token;
+          // 查看登录与否
+          if (sessionStorage.token != undefined) {
+              user_group = JSON.parse(sessionStorage.personInfo).user_group;
+            user_id = JSON.parse(sessionStorage.personInfo).user_id;
+            nickname = JSON.parse(sessionStorage.personInfo).nickname;
+
+          } else {
+            user_group = "游客";
+            user_id = null;
+
+          }
+    layui.use(
+      ["rate", "carousel", "jquery", "layedit", "laypage"],
+      function () {
+        var carousel = layui.carousel,
+          layedit = layui.layedit,
+          laypage = layui.laypage,
+          $ = layui.jquery,
+          rate = layui.rate;
+
+        let avatar;
+        if (token) {
+          user_id = JSON.parse(sessionStorage.personInfo).user_id;
+          avatar = JSON.parse(sessionStorage.personInfo).avatar;
+          nickname = JSON.parse(sessionStorage.personInfo).nickname;
+        }
+        let goods_detail = {}; //存放详情数据
+     
+        // 获取地址栏参数
+        let goods_id = $getUrlParams().goods_id;
+        // 渲染富文本编辑器
+        layui.layedit.set({
+          uploadImage: {
+            url: BaseUrl + "/api/comment/upload", //接口url
+            type: "post", //默认post
+          },
+        });
+
+        var comment_detail = layui.layedit.build("comment_detail", {
+          tool: [
+            "strong", //加粗
+            "italic", //斜体
+            "underline", //下划线
+            "del", //删除/Del线
+            "|", //分割线
+            "left", //左对齐
+            "center", //居中对齐
+            "right", //右对齐
+            "link", //超链接
+            "unlink", //清除链接
+            //"face", //表情
+            //"image", //插入图片
+            //"help", //帮助
+          ],
+        });
+        layedit.sync(comment_detail);
+        // 获得图片轮播/列表--渲染
+        let list_img = [];
+        function get_list_img(obj) {
+          list_img = [];
+          var { img_1, img_2, img_3, img_4 } = obj;
+          var list_img = [];
+          if (img_1) {
+            list_img.push(img_1);
+          }
+          if (img_2) {
+            list_img.push(img_2);
+          }
+          if (img_3) {
+            list_img.push(img_3);
+          }
+          if (img_4) {
+            list_img.push(img_4);
+          }
+          $("#detail_carousel_list").empty();
+          $("#detail_slider_list").empty();
+          for (var i = 0; i < list_img.length; i++) {
+            var item = list_img[i];
+            //src 为你的图片地址
+            $("#detail_carousel_list").append(
+              `<div><img class="big" src="${BaseUrl}${item}"></div>`
+            );
+            $("#detail_slider_list").append(
+              "<li class='img_index' ><img  src=" + BaseUrl + item + " /></li>"
+            );
+          }
+          var switchPlayInit = carousel.render({
+            elem: "#detail_carousel",
+            width: "100%",
+            height: "435px",
+            interval: 3000,
+          });
+          // 点击图片切换轮播下标
+          $("#detail_slider_list").on("click", ".img_index", function () {
+            $("#detail_carousel_list").children().removeClass("layui-this");
+            var index = $(this).index();
+            switchPlayInit.reload({
+              elem: "#detail_carousel",
+              width: "100%",
+              height: "435px",
+              interval: 3000,
+              index: index,
+            });
+          });
+        }
+        let customize_field = [];
+        let hot_list_arr=[]
+     // 获取今日推荐列表
+     async function get_hot_goods_list() {
+        let params = {
+          page: 1,
+          size: 5,
+          orderby:'hits'
+        };
+        let { data: res } = await axios.get(
+          BaseUrl + "/api/goods/get_list",
+          {params:params}
+        );
+        if (res.result && res.result.list) {
+          hot_list_arr = res.result;
+          // 热门新闻列表--数据渲染
+          $(".list_goods_hot").empty();
+          for (var i = 0; i <hot_list_arr.list.length; i++) {
+            var item = hot_list_arr.list[i];
+            let url = "./detail.html";
+            var objecthtmls = "<div class='card_goods_list list list-x'>"
+                +"<div class='hot_goods'  goods_hits='"+item.hits+"'  goods_id='"+item.goods_id+"'>"
+                 +"<div   class='goods_nav'>"
+                        +"<div class='goods_media'>"
+                           +"<img  src='"+BaseUrl+item.img+"' alt='图片丢失' />"
+                        +"</div>"
+                        +"<div class='good_bottom'>"
+                            +"<div class='title'>"+ item.title+"</div>"
+                            +"<div class='price_block'>"
+                                +"<span class='price'>￥"+item.price+"</span>"
+                                +"<span class='price_ago'>"+ item.price_ago+"</span>"
+                            +"</div>"
+                        +"</div>"
+                    +"</div>"
+                +"</div>"
+           +"</div>"
+            $(".list_goods_hot").append(objecthtmls);
+          
+          }
+          $('.hot_goods').click(function(){
+            let id=$(this).attr('goods_id')
+            let hits=$(this).attr('goods_hits')
+            goodsClickFn(id,hits)
+           })
+
+           async function goodsClickFn(id,hits) {
+                let { data: res } = await axios.post(BaseUrl+"/api/goods/set?goods_id="+id,{
+                    hits:parseInt(hits) + 1}, 
+                )
+                if(res.result) {
+                    window.location.replace("./detail.html?goods_id="+id);
+                } else {
+                    layer.msg(res.error.message);
+                }
+                
+            }
+        }
+    }
+   
+    get_hot_goods_list()
+        // 获取订单详情
+        async function get_goods_detail() {
+          let { data: res } = await axios.get(
+            BaseUrl + "/api/goods/get_obj?goods_id=" + goods_id
+          );
+          if (res.result) {
+            goods_detail = res.result.obj;
+            // 渲染 -获得商品轮播图
+            get_list_img(res.result.obj);
+            // 渲染 -价格数据
+            $(".detail_content_title").text(goods_detail.title);
+            $(".detail_content_description").text(goods_detail.description);
+            $(".goods_type").text(goods_detail.type);
+            $(".prices").text("￥" + goods_detail.price);
+            $(".prices_age").text("￥" + goods_detail.price_ago);
+            $(".prices_age").text("￥" + goods_detail.price_ago);
+            // 渲染 -评分
+            rate.render({
+              elem: "#goods_rate",
+              value: 4.5,
+              half: true,
+              readonly: true,
+              theme: "rgb(200, 0, 0)",
+            });
+            // 是否被收藏
+            check_collect();
+            //详情模块数据渲染
+            customize_field_list();
+             get_obj_after(res);
+          }
+        }
+        // 根据当前时间和随机数生成流水号
+        function order_code() {
+          var orderCode = "";
+          for (
+            var i = 0;
+            i < 6;
+            i++ //6位随机数，用以加在时间戳后面。
+          ) {
+            orderCode += Math.floor(Math.random() * 10);
+          }
+          orderCode = new Date().getTime() + orderCode; //时间戳，用来生成订单号。
+          return orderCode;
+        }
+        // 添加跳转到订单详情
+        $("#toMyorder").click(function () {
+          add_order();
+        });
+        async function add_order() {
+          var num_buy = Number($(".num").text());
+          //库存不足直接返回
+          if (num_buy > goods_detail.inventory) {
+            layer.msg("库存不足");
+            return;
+          }
+          var {
+            title,
+            img,
+            price,
+            price_ago,
+            description,
+            goods_id,
+            type,
+            num_buy: num_buy,
+          } = goods_detail;
+          //获取用户地址数据
+          let { data: res } = await axios.get(
+            BaseUrl + "/api/address/get_obj",
+            {
+              params: {
+                user_id,
+                default: 1,
+              },
+            }
+          );
+          if (res.result&&res.result.obj) {
+            var num_buy = Number($(".num").text());
+            //生成订单号
+            var order_number = order_code();
+            var body = {
+              order_number,
+              goods_id,
+              type,
+              num: num_buy,
+              title,
+              img,
+              price,
+              price_ago,
+              price_count: price * num_buy,
+              contact_name: res.result.obj.name,
+              contact_phone: res.result.obj.phone,
+              contact_address: res.result.obj.address,
+              postal_code: res.result.obj.postcode,
+              user_id,
+              description,
+              merchant_id: goods_detail.user_id
+            };
+            let { data: json } = await axios.post(
+              BaseUrl + `/api/order/add`,
+              body
+            );
+            if (json) {
+              layer.msg("加入订单成功");
+              window.location.replace(
+                "../../page/order/detail.html?order_number=" + order_number
+              );
+            }
+          } else {
+            layer.msg("地址未添加");
+            return;
+          }
+        }
+        console.log(!goods_detail.source_table)
+        // 是否有购物车/立即购买按钮权限cart_page
+        if (user_id && (!goods_detail.source_table||$check_cart_page("/goods/details"))) {
+          $("#add_cart").css("display", "block");
+          $("#toMyorder").css("display", "block");
+        }else{
+          $("#add_cart").css("display", "none");
+          $("#toMyorder").css("display", "none");
+        }
+        //添加购物车
+        $("#add_cart").click(function () {
+          add_cart_opt();
+        });
+        let numSum = $(".num").text();
+        async function add_cart_opt() {
+          console.log(111);
+          var num_buys = Number($(".num").text());
+          var {
+            title,
+            img,
+            price,
+            price_ago,
+            num_buy,
+            description,
+            goods_id,
+            type,
+          } = goods_detail;
+          var body = {
+            title,
+            img,
+            price,
+            price_ago,
+            num:num_buys,
+            price_count: price*num_buys,
+            description,
+            goods_id,
+            type,
+            user_id: user_id,
+          };
+          let { data: res } = await axios.get(BaseUrl + "/api/cart/get_list", {
+            params: {
+              goods_id: goods_detail.goods_id,
+              user_id: user_id,
+            },
+          });
+         
+          if (res.result.count) {
+            var { cart_id, num, price, price_count } = res.result.list[0];
+            num+=num_buys;
+            price_count=num*price;
+            let { data: resCart } = await axios.post(
+              BaseUrl + `/api/cart/set?cart_id=${cart_id}`,
+              {
+                num,
+                price,
+                price_count,
+              }
+            );
+            if (resCart) {
+              layer.msg("已加入购物车");
+              console.log("更改值");
+            }
+          } else {
+            let { data: resCartAdd } = await axios.post(
+              BaseUrl + `/api/cart/add`,
+              body
+            );
+            if (resCartAdd) {
+              layer.msg("已加入购物车");
+            }
+          }
+        }
+        get_goods_detail();
+
+        // 点击数量减少
+        $(".add_sum").on("click", ".jian", function () {
+          var num = $(this).next().text();
+          //2.判断 当num=大于0时，才减-1
+          if (num > 0) {
+            //3.把数量文本框里的数字-1
+            $(this)
+              .next()
+              .text(num - 1);
+          }
+        });
+        // 点击数量添加
+        $(".add_sum").on("click", ".add", function () {
+          var num = $(this).prev().text();
+          //2.把数量文本框里的数字+1
+          var n = parseInt(num); //把num变成int类型
+          $(this)
+            .prev()
+            .text(n + 1);
+        });
+        // 是否被收藏
+        let check_collected = false;
+        async function check_collect() {
+          var goods_id = goods_detail.goods_id;
+          let { data: res } = await axios.get(BaseUrl + "/api/collect/count", {
+            params: {
+              user_id,
+              source_field: "goods_id",
+              source_id: goods_id,
+            },
+          });
+          if (res.result) {
+            check_collected = true;
+            $("#detail_collect")
+              .removeClass("layui-icon-heart")
+              .addClass("layui-icon-heart-fill");
+          } else {
+            check_collected = false;
+            $("#detail_collect")
+              .removeClass("layui-icon-heart-fill")
+              .addClass("layui-icon-heart");
+          }
+        }
+        // 添加收藏
+        $("#detail_collect").click(function () {
+          add_collect_opt();
+        });
+        async function add_collect_opt() {
+          var { title, img, goods_id } = goods_detail;
+          var body = {
+            title,
+            img,
+            source_table: "goods",
+            source_field: "goods_id",
+            source_id: goods_id,
+            user_id: user_id,
+          };
+          if (!check_collected) {
+            check_collected = true;
+            let { data: resCollect } = await axios.post(
+              BaseUrl + `/api/collect/add`,
+              body
+            );
+            if (resCollect) {
+              $("#detail_collect")
+                .removeClass("layui-icon-heart")
+                .addClass("layui-icon-heart-fill");
+              layer.msg("收藏成功");
+            }
+          } else {
+            check_collected = false;
+            let { data: resCollect } = await axios.get(
+              BaseUrl + "/api/collect/del",
+              {
+                params: {
+                  user_id: user_id,
+                  source_id: goods_id,
+                },
+              }
+            );
+            if (resCollect) {
+              layer.msg("取消收藏");
+              $("#detail_collect")
+                .removeClass("layui-icon-heart-fill")
+                .addClass("layui-icon-heart");
+            }
+          }
+        }
+        // 拆解详情模块字段
+        function customize_field_list() {
+          if (goods_detail.customize_field) {
+            let list_fields = JSON.parse(goods_detail.customize_field);
+            console.log(list_fields);
+            $("#t_detail").empty();
+            let objhtml = "";
+            for (var i = 0; i < list_fields.length; i++) {
+              var item = list_fields[i];
+              objhtml +=
+                "<p class='t_detail_content'><label>" +
+                item.field_name +
+                ":</label>";
+              if (item.type === "image") {
+                objhtml +=
+                  "<span><img style='height: 150px' src=" +
+                  BaseUrl +
+                  item.field_value +
+                  " /></span>";
+              } else if (item.type === "video") {
+                objhtml +=
+                  "<a href='../media/video?filename='" +
+                  BaseUrl +
+                  item.field_value +
+                  "><span>查看视频</span></a>";
+              } else if (item.type === "audio") {
+                objhtml +=
+                  "<span><a :href=" +
+                  BaseUrl +
+                  item.field_value +
+                  "  target='_blank' style='color: rgb(64, 158, 255);>点击下载</a></span>";
+              } else if (item.type === "date") {
+                objhtml +=
+                  "<span>" +
+                  $toTime(item.field_value, "yyyy-MM-dd") +
+                  "</span>";
+              } else if (item.type === "time") {
+                objhtml +=
+                  "<span>" +
+                  $toTime(item.field_value, "yyyy-MM-dd hh:mm:ss") +
+                  "</span>";
+              } else {
+                objhtml += "<span>" + item.field_value + "</span></p>";
+              }
+            }
+            objhtml +=
+              "<div class='goods_detail_editor'>" +
+              goods_detail.content +
+              "</div>";
+            $("#t_detail").append(objhtml);
+          } else {
+            $("#t_detail").text("暂无数据");
+          }
+        }
+        /**
+         * 获取评论
+         * @param { Object } obj 文章对象
+         * @param { Number } page 分页数
+         * @param { Number } size 评论显示条数
+         */
+        let form_comment = {
+          content: "",
+          source_table: "goods",
+          source_field: "goods_id",
+          source_id: goods_id,
+          reply_to_id: 0,
+        };
+        let list_comment_list = [];
+        let count_pages = 0;
+        let pages = 1;
+        async function get_comment(page = 1, size = 3) {
+          let { data: res } = await axios.get(
+            BaseUrl + `/api/comment/get_list`,
+            {
+              params: {
+                source_table: "goods",
+                source_field: "goods_id",
+                source_id: goods_detail.goods_id,
+                page,
+                size,
+                reply_to_id: "0",
+                orderby: "create_time desc",
+              },
+            }
+          );
+          if (res.result) {
+            var list_comment = res.result.list;
+            list_comment.map((o) => {
+              o.list_reply = [];
+            });
+            add_reply(list_comment);
+            count_pages = res.result.count;
+            // 分页---总页数低于页码总数
+            laypage.render({
+              elem: "pageSum",
+              curr: pages,
+              count: Number(count_pages), //数据总数
+              limit: 3,
+              layout: ["prev", "page", "next"],
+              jump: function (obj, first) {
+                // 首次不执行
+                if (!first) {
+                  // 点击其他页码跳转
+                  pages = obj.curr;
+                  get_comment(obj.curr);
+                  // layer.msg("第 " + obj.curr + " 页");
+                }
+              },
+            });
+          }
+        }
+        /**
+         * @param { Array } list 评论列表
+         * 添加回复到评论列表
+         */
+        async function add_reply(list) {
+          list_comment_list = list;
+          for (let idx = 0; idx < list.length; idx++) {
+            const obj = list[idx];
+
+            console.log("obj.comment_id" + obj.comment_id);
+            let { data: res } = await axios.get(
+              BaseUrl + `/api/comment/get_list`,
+              {
+                params: {
+                  source_table: "goods",
+                  source_field: "goods_id",
+                  source_id: obj.goods_id,
+                  orderby: "create_time desc",
+                  reply_to_id: obj.comment_id,
+                },
+              }
+            );
+            if (res.result) {
+              list_comment_list[idx].list_reply = list;
+              obj.list_reply = res.result.list;
+            }
+            let t_comment = document.getElementById("t_comment");
+            t_comment.innerHTML = "";
+            var objecthtmls = "";
+            for (let idx = 0; idx < list_comment_list.length; idx++) {
+              const item = list_comment_list[idx];
+              let childItem = item.list_reply;
+              objecthtmls += "<div class='comment_area'>"
+              +"<div class='comment_area_wrap'>"
+               +"<div class='comment_area_left'>"
+                +"<img src='"+fullUrl(BaseUrl,item.avatar)+"' />"
+                +"</div>"
+                +"<div class='comment_area_right'>"
+                 + "<p class='title'>"
+                   +"<span>"+item.nickname+"</span>"
+                    +"<span class='time'>"+$toTime(item.create_time, "yyyy-MM-dd hh:mm:ss")+"</span>"
+                  +"</p>"
+                  +"<p class='record'>"
+                   +"<span>"+item.content+"</span>"
+                   +"<button class='layui-btn layui-btn-sm layui-btn-primary' id='responden' comment_id="+item.comment_id+">回复</button>"
+                  
+                  +"</p>"
+                +"</div>"
+              +"</div>";
+
+              if (childItem.length) {
+                for (
+                  let idxChild = 0;
+                  idxChild < childItem.length;
+                  idxChild++
+                ) {
+                  let childItemObj = childItem[idxChild];
+
+                  objecthtmls += "<div class='comment_area_child comment_area_wrap'>"
+                  +"<div class='comment_area_left'>"
+                  +"<img src='"+fullUrl(BaseUrl,childItemObj.avatar)+"' /></div>"
+                  +"<div class='comment_area_right'>"
+                  +"<p class='title'>"
+                  +"<span>"+childItemObj.nickname+"</span>"
+                  +"<span class='time'>"+$toTime(childItemObj.create_time, "yyyy-MM-dd hh:mm:ss")+"</span>"
+                    +"</p>"
+                     +"<p class='record'>"
+                     +"<span>"+childItemObj.content+"</span>"
+                    +"</p>"
+                  +"</div>"
+               +"</div>";
+                }
+              }
+            }
+            t_comment.innerHTML = objecthtmls;
+          }
+        }
+        // 获取回复人
+        $("#t_comment").on("click", "#responden", function () {
+          var comment_id = $(this).attr("comment_id");
+          //console.log(comment_id);
+          let replyToSbName = document.getElementById("replyToSbName");
+          form_comment.reply_to_id = comment_id;
+          var reply_to_id = form_comment.reply_to_id;
+          list_comment_list.map((o) => {
+            if (o.comment_id == reply_to_id) {
+             // console.log(o.nickname);
+              replyToSbName.innerHTML = o.nickname;
+              //respondent = o.nickname;
+            }
+          });
+        });
+
+        /**
+         * 发表评论
+         */
+        let postUrl;
+        async function publish() {
+          if (!user_id) {
+            window.location.replace("../../login.html");
+            return;
+          }
+          form_comment["content"] = layui.layedit.getContent(comment_detail);
+          var form = form_comment;
+          form = Object.assign(form, {
+            user_id: user_id,
+            avatar: avatar,
+            nickname: nickname,
+          });
+          if (!form.content) {
+            layer.msg("输入内容不能为空");
+            return;
+          }
+          var post_url = postUrl;
+          if (!post_url) {
+            post_url = "/api/comment/add";
+          }
+          let { data: res } = await axios.post(BaseUrl + post_url, form, {
+            headers: {
+              "x-auth-token": token,
+              "Content-Type": "application/json",
+            },
+          });
+          let returnContent = "";
+          if (res.result) {
+            await get_comment();
+            $("#addGoodsForm")[0].reset();
+            layui.form.render();
+            form_comment.content = "";
+          } else if (res.error) {
+            layer.msg(res.error.message);
+          }
+        }
+        $("#fileNotifySubmit").on("click", function () {
+          // layedit.sync(comment_detail);
+          publish();
+        });
+       /**
+         * 获取评论后
+         * @param {Object} json 响应对象
+         */
+        async function get_obj_after(json) {
+          var obj = json.result.obj;
+          get_comment();
+          obj.num_buy = 1;
+          form_comment.source_id = obj.goods_id;
+          let { data: res } = await axios.get(BaseUrl + `/api/order/get_obj`, {
+            params: {
+              goods_id: obj.goods_id,
+              user_id: user_id,
+              state: "已付款",
+            },
+          });
+          if (res.result && res.result.obj) {
+            $("#t_comment_list").css("display", "block");
+          } else {
+            $("#t_comment_list").css("display", "none");
+          }
+        }
+      }
+    );
+  </script>
+</html>

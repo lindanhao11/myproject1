@@ -1,0 +1,726 @@
+<!--
+* @Description:全局搜索列表
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>样式开发测试测试测试测试单</title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="page_search search_index">  
+          <div class="title">搜索结果</div>
+            <div id='search_wrap'></div>
+            <!-- 商品搜索结果
+            <list_result_search
+            :list="result_goods"
+            title="商城中心"
+            source_table="goods"
+            ></list_result_search>
+             -->
+          </div>
+      </div>
+</body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+  var BaseUrl = baseUrl();
+      // 获取地址栏参数
+      let wordTxet = $getUrlParams().word;
+      $("#search_wrap").empty();
+      // 填充参数
+      $('#search_val').val(wordTxet)
+      //渲染数据
+            let result_goods=[]
+                  let result_article=[]
+                   let result_forum=[]
+                                                          let result_student_users_name=[]
+                                                              let result_student_users_number=[]
+                                                                                          let result_student_users_product_number=[]
+                                                              let result_student_users_gender=[]
+                                                                                                                                                                    let result_teacher_users_teacher_id=[]
+                                                              let result_teacher_users_teachers_name=[]
+                                                                                let result_course_information_course_name=[]
+                                                              let result_course_information_course_id=[]
+                                                                                                                                                                                                                                                                                                                          let result_course_information_course_type=[]
+                                                                                                                                        let result_course_classification_type_number=[]
+                                                              let result_course_classification_type_name=[]
+                                                              let result_course_classification_course_type=[]
+                                                                                                                                                                                                                                                                                                                                                                                                    let result_student_course_selection_course_name=[]
+                                                              let result_student_course_selection_course_id=[]
+                                                                                                                                                                                                                                                                                    let result_course_grades_course_name=[]
+                                                              let result_course_grades_course_id=[]
+                                                                                                                                                                                                                                                        let result_course_mall_brand=[]
+                                                              let result_course_mall_specifications=[]
+                                                                                                            let result_notification_announcement_announcement_title=[]
+                                                                                                      /**
+	 * 获取商品
+	 */
+      get_goods()
+      async function get_goods() {
+        let { data: json } =await axios.get(BaseUrl + "/api/goods/get_list?like=0",
+            { params: { page: 1, size: 10, title: wordTxet } }
+          );
+          if (json.result) {
+            result_goods = json.result.list;
+            list_add_goods_html();
+          }
+      }
+      // 列表--数据渲染
+      function list_add_goods_html() {
+        var objecthtmls =''
+         objecthtmls +="<div class='list_result_search'><div class='title_type'>测试购物车</div>"
+         if( result_goods.length){
+          objecthtmls +="<div class='list_result'>"
+          for (var i = 0; i < result_goods.length; i++) {
+            var item =result_goods[i];
+            var index =i+1;
+            objecthtmls += "<div class='list_result_search'><a  href='../goods/detail.html?goods_id='"+item.goods_id+" class='item'>"
+            objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+          }
+        }else{
+          objecthtmls += "<div class='no_result'>没有找到测试购物车相关内容</div></div>"
+        }
+        $("#search_wrap").append(objecthtmls);
+      }
+                  /**
+	 * 获取文章
+	 */
+      get_article()
+      async function get_article() {
+        let { data: json } =await axios.get(BaseUrl + "/api/article/get_list?like=0",
+            { params: { page: 1, size: 10, title: wordTxet } }
+          );
+          if (json.result) {
+            result_article = json.result.list;
+            list_add_article_html();
+          }
+      }
+      // 列表--数据渲染
+      function list_add_article_html() {
+        var objecthtmls =''
+        objecthtmls +="<div class='list_result_search'><div class='title_type'>新闻资讯</div>"
+         if( result_article.length){
+          objecthtmls +="<div class='list_result'>"
+          for (var i = 0; i < result_article.length; i++) {
+            var item =result_article[i];
+            var index =i+1;
+            objecthtmls += "<div class='list_result_search'><a  href='../article/detail.html?article_id='"+item.article_id+" class='item'>"
+            objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+          }
+        }else{
+          objecthtmls += "<div class='no_result'>没有找到新闻资讯相关内容</div></div>"
+        }
+        $("#search_wrap").append(objecthtmls);
+      }
+                  /**
+	 * 获取论坛
+	 */
+      get_forum()
+      async function get_forum() {
+        let { data: json } =await axios.get(BaseUrl + "/api/forum/get_list?like=0",
+            { params: { page: 1, size: 10, title: wordTxet } }
+          );
+          if (json.result) {
+            result_forum = json.result.list;
+            list_add_forum_html();
+          }
+      }
+      // 列表--数据渲染
+      function list_add_forum_html() {
+        var objecthtmls =''
+        objecthtmls +="<div class='list_result_search'><div class='title_type'>交流社区</div>"
+         if( result_forum.length){
+          objecthtmls +="<div class='list_result'>"
+          for (var i = 0; i < result_forum.length; i++) {
+            var item =result_forum[i];
+            var index =i+1;
+            objecthtmls += "<div class='list_result_search'> <a  href='../forum/detail.html?forum_id='"+item.forum_id+" class='item'>"
+            objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+          }
+        }else{
+          objecthtmls += "<div class='no_result'>没有找到交流社区相关内容</div></div>"
+        }
+        $("#search_wrap").append(objecthtmls);
+      }
+      			            get_student_users_name()
+            async function get_student_users_name() {
+                let url = "/api/student_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "name": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_users_name = json.result.list;
+                    if($check_action('/student_users/list', 'get')){
+                     list_add_student_users_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_users_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生用户姓名</div>"
+                if( result_student_users_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_users_name.length; i++) {
+                    var item =result_student_users_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_users/detail.html?student_users_id='"+item[student_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生用户姓名相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_student_users_number()
+            async function get_student_users_number() {
+                let url = "/api/student_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "number": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_users_number = json.result.list;
+                    if($check_action('/student_users/list', 'get')){
+                     list_add_student_users_number_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_users_number_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生用户编号</div>"
+                if( result_student_users_number.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_users_number.length; i++) {
+                    var item =result_student_users_number[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_users/detail.html?student_users_id='"+item[student_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生用户编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+								            get_student_users_product_number()
+            async function get_student_users_product_number() {
+                let url = "/api/student_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "product_number": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_users_product_number = json.result.list;
+                    if($check_action('/student_users/list', 'get')){
+                     list_add_student_users_product_number_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_users_product_number_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生用户商品编号</div>"
+                if( result_student_users_product_number.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_users_product_number.length; i++) {
+                    var item =result_student_users_product_number[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_users/detail.html?student_users_id='"+item[student_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生用户商品编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_student_users_gender()
+            async function get_student_users_gender() {
+                let url = "/api/student_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "gender": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_users_gender = json.result.list;
+                    if($check_action('/student_users/list', 'get')){
+                     list_add_student_users_gender_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_users_gender_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生用户性别</div>"
+                if( result_student_users_gender.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_users_gender.length; i++) {
+                    var item =result_student_users_gender[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_users/detail.html?student_users_id='"+item[student_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生用户性别相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+															            get_teacher_users_teacher_id()
+            async function get_teacher_users_teacher_id() {
+                let url = "/api/teacher_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "teacher_id": wordTxet } }
+                );
+                if (json.result) {
+                    result_teacher_users_teacher_id = json.result.list;
+                    if($check_action('/teacher_users/list', 'get')){
+                     list_add_teacher_users_teacher_id_html();
+                    }
+                   
+                }
+            }
+             function list_add_teacher_users_teacher_id_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>教师用户教师工号</div>"
+                if( result_teacher_users_teacher_id.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_teacher_users_teacher_id.length; i++) {
+                    var item =result_teacher_users_teacher_id[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../teacher_users/detail.html?teacher_users_id='"+item[teacher_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到教师用户教师工号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_teacher_users_teachers_name()
+            async function get_teacher_users_teachers_name() {
+                let url = "/api/teacher_users/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "teachers_name": wordTxet } }
+                );
+                if (json.result) {
+                    result_teacher_users_teachers_name = json.result.list;
+                    if($check_action('/teacher_users/list', 'get')){
+                     list_add_teacher_users_teachers_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_teacher_users_teachers_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>教师用户教师姓名</div>"
+                if( result_teacher_users_teachers_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_teacher_users_teachers_name.length; i++) {
+                    var item =result_teacher_users_teachers_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../teacher_users/detail.html?teacher_users_id='"+item[teacher_users_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到教师用户教师姓名相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+						            get_course_information_course_name()
+            async function get_course_information_course_name() {
+                let url = "/api/course_information/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_name": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_information_course_name = json.result.list;
+                    if($check_action('/course_information/list', 'get')){
+                     list_add_course_information_course_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_information_course_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程信息课程名称</div>"
+                if( result_course_information_course_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_information_course_name.length; i++) {
+                    var item =result_course_information_course_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_information/detail.html?course_information_id='"+item[course_information_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程信息课程名称相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_course_information_course_id()
+            async function get_course_information_course_id() {
+                let url = "/api/course_information/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_id": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_information_course_id = json.result.list;
+                    if($check_action('/course_information/list', 'get')){
+                     list_add_course_information_course_id_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_information_course_id_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程信息课程编号</div>"
+                if( result_course_information_course_id.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_information_course_id.length; i++) {
+                    var item =result_course_information_course_id[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_information/detail.html?course_information_id='"+item[course_information_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程信息课程编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+																																            get_course_information_course_type()
+            async function get_course_information_course_type() {
+                let url = "/api/course_information/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_type": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_information_course_type = json.result.list;
+                    if($check_action('/course_information/list', 'get')){
+                     list_add_course_information_course_type_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_information_course_type_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程信息课程类型</div>"
+                if( result_course_information_course_type.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_information_course_type.length; i++) {
+                    var item =result_course_information_course_type[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_information/detail.html?course_information_id='"+item[course_information_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程信息课程类型相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+												            get_course_classification_type_number()
+            async function get_course_classification_type_number() {
+                let url = "/api/course_classification/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "type_number": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_classification_type_number = json.result.list;
+                    if($check_action('/course_classification/list', 'get')){
+                     list_add_course_classification_type_number_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_classification_type_number_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程分类类型编号</div>"
+                if( result_course_classification_type_number.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_classification_type_number.length; i++) {
+                    var item =result_course_classification_type_number[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_classification/detail.html?course_classification_id='"+item[course_classification_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程分类类型编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_course_classification_type_name()
+            async function get_course_classification_type_name() {
+                let url = "/api/course_classification/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "type_name": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_classification_type_name = json.result.list;
+                    if($check_action('/course_classification/list', 'get')){
+                     list_add_course_classification_type_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_classification_type_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程分类类型名称</div>"
+                if( result_course_classification_type_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_classification_type_name.length; i++) {
+                    var item =result_course_classification_type_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_classification/detail.html?course_classification_id='"+item[course_classification_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程分类类型名称相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_course_classification_course_type()
+            async function get_course_classification_course_type() {
+                let url = "/api/course_classification/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_type": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_classification_course_type = json.result.list;
+                    if($check_action('/course_classification/list', 'get')){
+                     list_add_course_classification_course_type_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_classification_course_type_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程分类课程类型</div>"
+                if( result_course_classification_course_type.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_classification_course_type.length; i++) {
+                    var item =result_course_classification_course_type[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_classification/detail.html?course_classification_id='"+item[course_classification_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程分类课程类型相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+																																							            get_student_course_selection_course_name()
+            async function get_student_course_selection_course_name() {
+                let url = "/api/student_course_selection/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_name": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_course_selection_course_name = json.result.list;
+                    if($check_action('/student_course_selection/list', 'get')){
+                     list_add_student_course_selection_course_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_course_selection_course_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生选课课程名称</div>"
+                if( result_student_course_selection_course_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_course_selection_course_name.length; i++) {
+                    var item =result_student_course_selection_course_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_course_selection/detail.html?student_course_selection_id='"+item[student_course_selection_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生选课课程名称相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_student_course_selection_course_id()
+            async function get_student_course_selection_course_id() {
+                let url = "/api/student_course_selection/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_id": wordTxet } }
+                );
+                if (json.result) {
+                    result_student_course_selection_course_id = json.result.list;
+                    if($check_action('/student_course_selection/list', 'get')){
+                     list_add_student_course_selection_course_id_html();
+                    }
+                   
+                }
+            }
+             function list_add_student_course_selection_course_id_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>学生选课课程编号</div>"
+                if( result_student_course_selection_course_id.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_student_course_selection_course_id.length; i++) {
+                    var item =result_student_course_selection_course_id[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../student_course_selection/detail.html?student_course_selection_id='"+item[student_course_selection_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到学生选课课程编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+																											            get_course_grades_course_name()
+            async function get_course_grades_course_name() {
+                let url = "/api/course_grades/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_name": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_grades_course_name = json.result.list;
+                    if($check_action('/course_grades/list', 'get')){
+                     list_add_course_grades_course_name_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_grades_course_name_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程成绩课程名称</div>"
+                if( result_course_grades_course_name.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_grades_course_name.length; i++) {
+                    var item =result_course_grades_course_name[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_grades/detail.html?course_grades_id='"+item[course_grades_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程成绩课程名称相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_course_grades_course_id()
+            async function get_course_grades_course_id() {
+                let url = "/api/course_grades/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "course_id": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_grades_course_id = json.result.list;
+                    if($check_action('/course_grades/list', 'get')){
+                     list_add_course_grades_course_id_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_grades_course_id_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程成绩课程编号</div>"
+                if( result_course_grades_course_id.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_grades_course_id.length; i++) {
+                    var item =result_course_grades_course_id[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_grades/detail.html?course_grades_id='"+item[course_grades_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程成绩课程编号相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+																								            get_course_mall_brand()
+            async function get_course_mall_brand() {
+                let url = "/api/course_mall/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "brand": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_mall_brand = json.result.list;
+                    if($check_action('/course_mall/list', 'get')){
+                     list_add_course_mall_brand_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_mall_brand_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程商城品牌</div>"
+                if( result_course_mall_brand.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_mall_brand.length; i++) {
+                    var item =result_course_mall_brand[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_mall/detail.html?course_mall_id='"+item[course_mall_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程商城品牌相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+					            get_course_mall_specifications()
+            async function get_course_mall_specifications() {
+                let url = "/api/course_mall/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "specifications": wordTxet } }
+                );
+                if (json.result) {
+                    result_course_mall_specifications = json.result.list;
+                    if($check_action('/course_mall/list', 'get')){
+                     list_add_course_mall_specifications_html();
+                    }
+                   
+                }
+            }
+             function list_add_course_mall_specifications_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>课程商城规格</div>"
+                if( result_course_mall_specifications.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_course_mall_specifications.length; i++) {
+                    var item =result_course_mall_specifications[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../course_mall/detail.html?course_mall_id='"+item[course_mall_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到课程商城规格相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+									            get_notification_announcement_announcement_title()
+            async function get_notification_announcement_announcement_title() {
+                let url = "/api/notification_announcement/get_list?like=0";
+                                let { data: json } =await axios.get(BaseUrl + url,
+                    { params: { page: 1, size: 10, "announcement_title": wordTxet } }
+                );
+                if (json.result) {
+                    result_notification_announcement_announcement_title = json.result.list;
+                    if($check_action('/notification_announcement/list', 'get')){
+                     list_add_notification_announcement_announcement_title_html();
+                    }
+                   
+                }
+            }
+             function list_add_notification_announcement_announcement_title_html() {
+                var objecthtmls =''
+                objecthtmls +="<div class='list_result_search'><div class='title_type'>通知公告公告标题</div>"
+                if( result_notification_announcement_announcement_title.length){
+                objecthtmls +="<div class='list_result'>"
+                for (var i = 0; i < result_notification_announcement_announcement_title.length; i++) {
+                    var item =result_notification_announcement_announcement_title[i];
+                    var index =i+1;
+                    objecthtmls += "<div class='list_result_search'><a  href='../notification_announcement/detail.html?notification_announcement_id='"+item[notification_announcement_id]+" class='item'>"
+                    objecthtmls += "<div class='title'>"+index+" ."+item.title+"</div></a></div>"
+                }
+                }else{
+                objecthtmls += "<div class='no_result'>没有找到通知公告公告标题相关内容</div></div>"
+                }
+                $("#search_wrap").append(objecthtmls);
+            }
+									  </script>
+</html>

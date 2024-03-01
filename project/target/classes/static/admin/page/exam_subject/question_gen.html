@@ -1,0 +1,186 @@
+<!-- 生成试题 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../../js/axios.min.js"></script>
+  <link rel="stylesheet" href="../../layui/css/layui.css">
+  <link rel="stylesheet" href="../../css/diy.css">
+</head>
+
+<body>
+  <article class="sign_in">
+    <div class="warp exam_sybject">
+      <div class="layui-container">
+        <div class="layui-row">
+          <form class="layui-form" action="">
+            <div class="from-input-box">
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">单选题数目</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="danxuanti_count" class="layui-input num" id="danxuanti_count" value="0">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">多选题数目</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="danxuanti_count" class="layui-input num" id="duoxuanti_count" value="0">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">判断题数目</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="panduanti_count" class="layui-input num" id="panduanti_count" value="0">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">填空题数目</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="tiankongti_count" class="layui-input num" id="tiankongti_count" value="0">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">主观题数目</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="zhuguanti_count" class="layui-input num" id="zhuguanti_count" value="0">
+                </div>
+              </div>
+            </div>
+            
+          </form>
+          <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-normal login" id="submit"><span>确认</span></button>
+            <button  type="button" class="layui-btn layui-btn-normal login" id="cancel"><span>取消</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</body>
+<script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+<script src="../../js/index.js"></script>
+
+<script>
+  var BaseUrl = baseUrl()
+
+  layui.use(['upload', 'element', 'layer'], function () {
+    var $ = layui.jquery
+      , upload = layui.upload
+      , element = layui.element
+      , form = layui.from
+      , layer = layui.layer
+      , $ = layui.$;
+
+    let token = localStorage.getItem('token') || null
+
+    let cancel = document.querySelector('#cancel')
+    cancel.addEventListener('click',function(){
+      colseLayer()
+    })
+    let submit = document.querySelector('#submit')
+    
+    const url = new URLSearchParams(window.location.search);
+    const queryObj = Object.fromEntries(url);
+
+    var exam_id = queryObj.exam_id;
+    var subject_name = queryObj.subject_name;
+
+    let from = { exam_question_id: 0 }
+
+    //生成试卷题目列表
+    let gen_exam_question_list = async function () {
+      // 发起请求获取数据
+      let { data: list } = axios.get(BaseUrl + '/api/subject_exam_question/get_obj', {
+        params: {
+          exam_id: exam_id
+        }
+      })
+
+      let _this = this;
+      //题目类型
+      let typeArry = [
+        { type: "单选题" },
+        { type: "多选题" },
+        { type: "判断题" },
+        { type: "填空题" },
+        { type: "主观题" },
+      ];
+      //题目类型条数
+      let sizeArry = [
+        danxuanti_count.value,
+        duoxuanti_count.value,
+        panduanti_count.value,
+        tiankongti_count.value,
+        zhuguanti_count.value,
+      ];
+
+      let { data: res } = axios.get(BaseUrl + '/api/subject_exam_question/del', {
+        params: {
+          exam_id: exam_id
+        }
+      })
+
+      let order = 0;
+      for (let i = 0; i < typeArry.length; i++) {
+        let query = typeArry[i];
+        query.subject_name = subject_name;
+        let size = sizeArry[i];
+
+        //从试卷题库中获取题库列表
+        await axios.get(BaseUrl + '/api/exam_question_database/get_list', {
+          params: query
+        }).then(json => {
+          let result = json.data.result;
+          if (result) {
+            //打乱顺序
+            let list = result.list.sort(() => Math.random() - 0.5);
+
+            if (size > list.length) {
+              size = list.length;
+            }
+            for (let j = 0; j < size; j++) {
+              order++;
+              let exam = list[j];
+
+              delete exam.update_time;
+              delete exam.create_time;
+              delete exam.exam_question_id;
+
+              exam.exam_id = exam_id;
+              exam.subject_name = subject_name;
+              exam.question_order = order;
+
+              //添加到试卷题库中
+              axios.post(BaseUrl + "/api/subject_exam_question/add", exam).then(response => {
+                console.log(response);
+              })
+            }
+          } else if (json.error) {
+            console.error(json.error);
+          }
+        })
+
+
+      }
+    }
+
+    submit.addEventListener('click', async function () {
+      gen_exam_question_list();
+      layer.msg('操作成功', {
+        icon: 1,
+        time: 2000 // 设置 2 秒后自动关闭
+      }, function () {
+        // window.location.href = "./../subject_exam/table.html";
+        colseLayer()
+      });
+    })
+  });
+</script>
+
+</html>

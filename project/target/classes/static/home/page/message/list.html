@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+      .list-info-left img {
+        width: 60px;
+        height: 60px;
+      }
+      .list-info-left p {
+        line-height: 15px;
+        font-size: 12px;
+        color: #999;
+      }
+      .list-info-child{
+        clear:both;
+        border-top: 1px dashed gray;
+        padding:20px 0;
+      }
+    </style>
+  </head>
+  <body>
+   <div id="messageList">
+        <div class="list_title"><p class="list_title_text" id="list_title_text_t"></p></div>
+        <form class="layui-form diy_list_form_search">
+          <div class="layui-row diy_list_search">
+                  <div class="layui-col-md8">
+                    <!-- <div class="layui-form-item">
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="局部检索"
+                        autocomplete="off"
+                        class="layui-input"
+                        id="password"
+                      />
+                    </div> -->
+                  </div>
+                  <div class="layui-col-md2">
+                    <!-- <div class="layui-form-item">
+                      <select name="interest" placeholder="全部" lay-filter="aihao">
+                        <option value="">全部</option>
+                        <option value="0">写作</option>
+                        <option value="1">阅读</option>
+                        <option value="2">游戏</option>
+                        <option value="3">音乐</option>
+                        <option value="4">旅行</option>
+                      </select>
+                    </div> -->
+                  </div>
+                  <div class="layui-col-md2">
+                    <!-- <button
+                      type="button"
+                      class="layui-btn layui-btn-sm layui-btn-danger"
+                    >
+                      <i class="layui-icon layui-icon-search"></i>
+                    </button> view_add.html-->
+                    <button type="button" class="layui-btn  layui-btn-danger" id='messageAdd'>
+                      发布内容
+                    </button>
+                  </div>
+                </div>
+        </form>
+        <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div id="messageList">
+            <ul id="t_list_box">
+            </ul>
+          </div>
+          <!-- 分页器--开始-->
+          <div id="cont" class="layui-row layui-col-space30"></div>
+          <div id="pageSum"></div>
+          <!-- 分页器--结束 -->
+        </div>
+      </div>
+  </body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+
+  <script>
+      var BaseUrl = baseUrl()
+    layui.use(["laypage", "layer", "dropdown", "jquery"], function () {
+      var laypage = layui.laypage,
+        layer = layui.layer;
+      var dropdown = layui.dropdown;
+      var $ = layui.jquery;
+      let vm = {
+        img: "avatar",
+        message_id: "message_id",
+        title: "title",
+        nickname: "nickname",
+        create_time: "create_time",
+        content: "content",
+        user_id: "user_id",
+        // email: "email",
+        // phone: "phone",
+        reply_state: "reply_state",
+        reply: "reply",
+      };
+      let keywords = document.getElementById("keywords");
+      let messageAdd = document.getElementById("messageAdd");
+      
+      // 商城中心
+      //#if($model.filter.message)
+      // check_action('/message/edit', "add", "messageAdd");
+      let btnMessageAdd=$check_action('/message/edit', "add");
+      if(btnMessageAdd){
+        messageAdd.style.display = "block"
+        messageAdd.onclick = function () {
+          window.location.replace("./view_add.html");
+        }
+      }else{
+        messageAdd.style.display='none'
+      }
+      check_action("/message/list", "get", "messageList");
+      //let message = $check_action("/message/list", "get");
+      //if (message) {
+      //}
+      let pages = 1;
+      var laytpl = layui.laytpl;
+      let list_arr = [];
+      let type_arr = [];
+      
+      // 获取list数据
+      // message
+      var getTpl = null;
+      async function get_tpl_list(pagesNum, arr) {
+        let params1 = {
+          page: pagesNum,
+          size: 8,
+          orderby: "create_time desc",
+        };
+        let params;
+        if (arr) {
+          params = Object.assign({}, params1, arr);
+        } else {
+          params = params1;
+        }
+        let { data: res } = await axios.get(
+          BaseUrl + "/api/message/get_list",
+          {
+            params: params,
+          }
+        );
+        if (res.result && res.result.list) {
+          list_arr = res.result;
+          // 列表--数据渲染
+         if(list_arr.list.length){
+          $("#t_list_box").empty();
+          // reply_state
+          var objecthtmls=''
+          for (var i = 0; i < list_arr.list.length; i++) {
+            var item = list_arr.list[i];
+            // list_arr.list[i][vm.reply_state]=1
+            // list_arr.list[i][vm.reply]="<p>111</p><p>222</p>"
+            let str = JSON.stringify(item)
+            sessionStorage.setItem("vm", [str]);
+             // <p class="content">${item[vm.email]}</p>
+                    // <p class="content">${item[vm.phone]}</p>
+            objecthtmls += `<li class="list-info">
+                <div class="list-info-left">
+                    <img src="${fullUrl(BaseUrl, item[vm.img])}" />
+                    <p class="content">${item[vm.nickname]}</p>
+                   
+                </div>
+                <div class="list-info-right">
+                  <p class="title">${item[vm.title]}</p>
+                  <p class="content">${item[vm.content]}</p>`
+                  if(item[vm.reply_state]){
+                   objecthtmls += `<div><span>回复</span></div>
+                      <div class="message_content">${item[vm.reply]}</div> `    
+                  }
+                  objecthtmls += `<p class="record">
+                    <span class="record_creator">
+                      ${toTime(item[vm.create_time],"yyyy-MM-dd hh:mm:ss")}
+                    </span>
+                  </p>
+                </div></li>`;
+            //src 为你的图片地址
+            $("#t_list_box").append(objecthtmls);
+          }
+          
+        }else{
+          $("#t_list_box").append('暂无数据');
+        }
+          // 分页---总页数低于页码总数
+          laypage.render({
+            elem: "pageSum",
+            curr: pages,
+            count: Number(list_arr.count), //数据总数
+            limit: 8,
+            layout: ["prev", "page", "next"],
+            jump: function (obj, first) {
+              // 首次不执行
+              if (!first) {
+                // 点击其他页码跳转
+                pages = obj.curr;
+                get_tpl_list(obj.curr, {});
+                // layer.msg("第 " + obj.curr + " 页");
+              }
+            },
+          });
+        }
+      }
+      get_tpl_list(1);
+
+      // 将一个对象拼接在url的后面:   createURL(url, linkObj)
+      function createURL(url, param) {
+        var urlLink = "";
+        $.each(param, function (item, key) {
+          var link = "&" + item + "=" + encodeURI(encodeURI(key));
+          urlLink += link;
+        });
+        urlLink = url + "?" + urlLink.substr(1);
+        return urlLink.replace(" ", "");
+      }
+    });
+  </script>
+</html>

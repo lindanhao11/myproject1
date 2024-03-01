@@ -1,0 +1,208 @@
+<!-- 题库详情/Details -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/diy.css">
+</head>
+
+<body>
+    <article class="sign_in">
+        <div class="warp exam">
+            <div class="layui-container">
+                <div class="layui-row">
+                    <form class="layui-form" action="">
+                        <div class="form-input-box">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">科目名称</label>
+                                <div class="layui-input-block">
+                                    <select name="subject_name" lay-filter="select" id="subject_name_select">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+    
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">类型</label>
+                                <div class="layui-input-block">
+                                    <select name="questionType" lay-filter="questionType" id="questionType">
+                                        <option value="0"></option>
+                                        <option value="1">单选题</option>
+                                        <option value="2">多选题</option>
+                                        <option value="3">判断题</option>
+                                        <option value="4">填空题</option>
+                                        <option value="5">主观题</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">题目</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                        placeholder="请输入题目" class="layui-input" id="title">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选项</label>
+                                <div class="layui-input-block">
+                                    <textarea placeholder="输入问题选项.如：
+    A:正确
+    B:错误" class="layui-textarea" id="question_item"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">参考答案</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                        class="layui-input" id="answer">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">分值</label>
+                                <div class="layui-input-block">
+                                    <input type="number" name="num" class="layui-input num" id="score">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </form>
+                    <div class="layui-btn-container">
+                        <button  type="button" class="layui-btn layui-btn-normal login" id="submit">确认</button>
+                        <button type="button" class="layui-btn layui-btn-normal login" id="butt">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </article>
+</body>
+<script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+<script src="../../js/index.js"></script>
+
+<script>
+    var BaseUrl = baseUrl()
+    layui.use('form', function () {
+        var form = layui.form;
+    })
+
+    layui.use(['upload', 'element', 'layer'], async function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element
+            , form = layui.from
+            , layer = layui.layer
+            , $ = layui.$;
+
+        // 拿到传递过来的值
+        const url = new URLSearchParams(window.location.search);
+        const queryObj = Object.fromEntries(url);
+
+        var exam_question_id = queryObj.exam_question_id;
+        let token = localStorage.getItem('token') || null
+
+        // 发起请求获取数据
+        let { data: res } = await axios.get(BaseUrl + '/api/exam_question_database/get_obj', {
+            params: {
+                exam_question_id: exam_question_id
+            }
+        })
+
+        let request = res.result.obj
+        let id = res.result.obj.exam_id
+        let from = {
+            answer: "",
+            subject_name: request.subject_name,
+            exam_question_id: exam_question_id,
+            question_item: "",
+            score: 5,
+            title: "",
+            type: ""
+        }
+
+        // 数据渲染
+        title.value = request.title
+
+        question_item.innerHTML = request.question_item
+
+        answer.value = request.answer
+
+        score.value = request.score
+
+        console.log(from)
+
+        let questionType = document.querySelector('#questionType')
+        for (var i = 0; i < questionType.children.length; i++) {
+            if (questionType.children[i].text == request.type) {
+                questionType.children[i].setAttribute("selected", '1')
+                from.type = request.type
+            }
+        }
+        layui.form.on('select(questionType)', function (data) {
+            from['type'] = data.elem[data.elem.selectedIndex].text;
+        })
+        layui.form.render("select");
+
+        //初始化科目名称选择框数据
+        let init_subject_name_select_data = async function () {
+            let { data: res } = await axios.get(BaseUrl + '/api/subject/get_list', {})
+
+            let subject_name_select = document.querySelector('#subject_name_select')
+
+            res.result.list.forEach(subject_obj => {
+                subject_name_select.append(new Option(subject_obj.name, subject_obj.name))
+            });
+
+            for (var i = 0; i < subject_name_select.children.length; i++) {
+                if (subject_name_select.children[i].text == request.subject_name) {
+                    subject_name_select.children[i].setAttribute("selected", '1')
+                    from.subject_name = request.subject_name
+                }
+            }
+            layui.form.on('select(subject_name_select)', function (data) {
+                from['subject_name'] = data.elem[data.elem.selectedIndex].text;
+            })
+            layui.form.render("select");
+        }
+
+        //初始化科目名称选择框数据
+        init_subject_name_select_data();
+
+        let submit = document.querySelector(("#submit"))
+        submit.onclick = async function () {
+            from.subject_name = subject_name_select.value
+            from.title = title.value
+            from.answer = answer.value
+            from.question_item = question_item.value
+            from.score = score.value
+            const { data: res } = await axios.post(BaseUrl + '/api/exam_question_database/set?exam_question_id=' + exam_question_id, from, {
+                headers: {
+                    'x-auth-token': token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (res.result == 1) {
+                layer.msg('确认/Confirm成功');
+                setTimeout(function () {
+                    //  window.location.replace("./question_database_table.html?" + id);
+                    colseLayer()
+                     }, 1000)
+            }
+
+        }
+
+        let butt = document.querySelector('#butt')
+        butt.addEventListener('click', function () {
+            // window.history.back(-1);
+            colseLayer()
+        })
+    });
+</script>
+
+</html>

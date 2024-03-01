@@ -1,0 +1,168 @@
+<!-- 友情链接新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../../layui/css/layui.css">
+  <link rel="stylesheet" href="../../css/diy.css">
+</head>
+
+<body>
+  <article class="sign_in">
+    <div class="warp link">
+      <div class="layui-container">
+        <div class="layui-row">
+          <form class="layui-form" action="">
+            <div class="layui-upload">
+              <button type="button" class="layui-btn" id="img">友情链接图</button>
+              <div class="layui-upload-list">
+                <img class="layui-upload-img" id="img_img">
+                <p id="img_p"></p>
+              </div>
+              <div style="width: 95px;">
+                <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                     lay-filter="img_progress">
+                  <div class="layui-progress-bar" lay-percent=""></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-input-box">
+              <div class="layui-form-item">
+                <label class="layui-form-label">友情链接名</label>
+                <div class="layui-input-block input-i block">
+                  <input type="text" name="name" lay-verify="name" autocomplete="off" placeholder="请输入友情链接名"
+                         class="layui-input" id="name">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">链接地址</label>
+                <div class="layui-input-block input-i block">
+                  <input type="text" name="url" lay-verify="url" autocomplete="off" placeholder="请输入链接地址"
+                         class="layui-input" id="url">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">显示顺序</label>
+                <div class="layui-input-block input-i block">
+                  <input type="number" name="display" lay-verify="display" autocomplete="off" placeholder="请输入显示顺序"
+                         class="layui-input" id="display">
+                </div>
+              </div>
+            </div>
+           
+          </form>
+          <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-normal" id="submit"><span>确认</span></button>
+            <button type="button" class="layui-btn layui-btn-normal" id="Cancel"><span>取消</span></button>
+            <!-- <a href="./table.html" type="button" class="layui-btn layui-btn-normal"
+              target="main_self_frame">取消/Cancel</a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</body>
+
+<script src="../../js/index.js"></script>
+<script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+
+<script>
+  var BaseUrl = baseUrl()
+  layui.use(['element', 'layer', 'layedit'], function () {
+    var element = layui.element
+      , layer = layui.layer
+      , upload = layui.upload
+      , layedit = layui.layedit
+      , $ = layui.$;
+
+    layui.layedit.set({
+      uploadImage: {
+        url: BaseUrl + '/api/link/upload?' //接口url
+        , type: 'post' //默认post
+      }
+    });
+
+    // 拿到本地存储的token
+    let token = sessionStorage.token
+
+    let img = "";
+
+    let uploadInst = upload.render({
+      elem: '#img'
+      , url: BaseUrl + '/api/link/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+      , headers: {
+        'x-auth-token': token
+      }, before: function (obj) {
+        //预读本地文件示例，不支持ie8
+        obj.preview(function (index, file, result) {
+          $('#img_img').attr('src', fullUrl(BaseUrl,result)); //图片链接（base64）
+        });
+
+        element.progress('img_progress', '0%'); //进度条复位
+        layer.msg('上传中', { icon: 16, time: 0 });
+      }
+      , done: function (res) {
+        //如果上传失败
+        if (res.code > 0) {
+          return layer.msg('上传失败');
+        }
+        //上传成功的一些操作
+        img = res.result.url;
+        $('#img_p').html(''); //置空上传失败的状态
+      }
+      , error: function () {
+        //演示失败状态，并实现重传
+        let img_p = $('#img_p');
+        img_p.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs avatar-reload">重试</a>');
+        img_p.find('.avatar-reload').on('click', function () {
+          uploadInst.upload();
+        });
+      }
+      //进度条
+      , progress: function (n, elem, e) {
+        element.progress('img_progress', n + '%'); //可配合 layui 进度条元素使用
+        if (n == 100) {
+          layer.msg('上传完毕', { icon: 1 });
+        }
+      }
+    });
+
+    let name = document.querySelector('#name')
+    let url = document.querySelector('#url')
+    let display = document.querySelector('#display')
+    let cancel = document.querySelector("#cancel")
+    cancel.addEventListener('click',()=>{
+      colseLayer()
+    })
+    let submit = document.querySelector('#submit')
+    submit.onclick = async function () {
+      let { data: res } = await axios.post(BaseUrl + '/api/link/add', {
+        link_id: 0,
+        img: img,
+        name: name.value,
+        url: url.value,
+        display: display.value
+      }, {
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (res.result == 1) {
+        layer.msg('新增成功')
+        setTimeout(function () {
+          // window.location.replace("./table.html");
+          colseLayer()
+        }, 1000)
+      }
+    }
+  });
+</script>
+
+</html>

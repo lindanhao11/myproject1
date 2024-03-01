@@ -1,0 +1,600 @@
+<!-- 新增/Add -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet">
+    <link href="../../css/diy.css" rel="stylesheet">
+    <script src="../../js/axios.min.js"></script>
+
+    <style>
+        img {
+            width: 200px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<article class="sign_in">
+    <div class="warp tpl">
+        <div class="layui-container">
+            <div class="layui-row">
+                <form action="" class="layui-form">
+                    <div class="from-input-box-i">
+                        <div class="layui-form-item unique" id="chapter_name_box">
+                            <label class="layui-form-label">章节名称</label>
+                            <div class="layui-input-block input-i block">
+                                <input autocomplete="off" class="layui-input" id="chapter_name" lay-verify="title"
+                                       name="title"
+                                       placeholder="请输入章节名称" type="text">
+                            </div>
+                        </div>
+                        <div class="layui-form-item unique" id="sort_box">
+                            <label class="layui-form-label">排序</label>
+                            <div class="layui-input-block input-i block">
+                                <input autocomplete="off" class="layui-input" id="sort" lay-verify="title"
+                                       name="title"
+                                       placeholder="请输入排序" type="text">
+                            </div>
+                        </div>
+   
+                        <div class="layui-form-item edit">
+                            <label class="layui-form-label">章节内容</label>
+                            <div class="layui-input-block text">
+                                <textarea id="demo" style="display: none;"></textarea>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+                <div class="layui-btn-container">
+                    <button class="layui-btn login" id="submit" type="button">确认
+                        <button>
+                            <button class="layui-btnlogin" id="cancel" type="button">取消
+                                <button>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+</body>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../js/permissionSet.js"></script>
+<script>
+    var BaseUrl = baseUrl()
+    let cancel = document.querySelector("#cancel")
+    cancel.addEventListener("click", () => {
+        window.location.replace("./table.html");
+    })
+
+    let novel_reading_id = layui.url().search.novel_reading_id || ""
+    let novel_chapter_id = layui.url().search.novel_chapter_id || ""
+
+    layui.use(['upload', 'element', 'layer', 'laydate', 'layedit'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element
+            , layer = layui.layer
+            , laydate = layui.laydate
+            , layedit = layui.layedit
+            , form = layui.form;
+
+        let url
+
+        let token = sessionStorage.token || null
+        let personInfo = JSON.parse(sessionStorage.personInfo)
+        let user_group = personInfo.user_group
+        let use_id = personInfo.user_id
+
+
+        function $get_stamp() {
+            return new Date().getTime();
+        }
+
+        function $get_rand(len) {
+            var rand = Math.random();
+            return Math.ceil(rand * 10 ** len);
+        }
+
+
+        // 权限判断
+        /**
+         * 获取路径对应操作权限 鉴权
+         * @param {String} action 操作名
+         */
+        function $check_action(path1, action = "get") {
+            var o = $get_power(path1);
+            if (o && o[action] != 0 && o[action] != false) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * 是否有显示或操作字段的权限
+         * @param {String} action 操作名
+         * @param {String} field 查询的字段
+         */
+        function $check_field(action, field, path1) {
+            var o = $get_power(path1);
+            var auth;
+            if (o && o[action] != 0 && o[action] != false) {
+                auth = o["field_" + action];
+            }
+            if (auth) {
+                return auth.indexOf(field) !== -1;
+            }
+            return false;
+        }
+
+        /**
+         * 获取权限
+         * @param {String} path 路由路径
+         */
+        function $get_power(path) {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            var list = list_data;
+            var obj;
+            for (var i = 0; i < list.length; i++) {
+                var o = list[i];
+                if (o.path === path) {
+                    obj = o;
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        let submit = document.querySelector('#submit')
+        // 提交按钮校验权限
+        // if (   user_group == "管理员" ||$check_action('/novel_reading/view', 'add') || $check_action('/novel_reading/view', 'set')) {
+        //    submit.style.display = "block"
+        // }
+        // style="display: none"
+
+
+        let field = "novel_reading_id";
+        let url_add = "novel_reading";
+        let url_set = "novel_reading";
+        let url_get_obj = "novel_reading";
+        let url_upload = "novel_reading"
+        let query = {
+            "novel_reading_id": 0,
+        }
+
+        let form_data2 = {
+            "chapter_name": '', // 章节名称
+            "sort": '', // 排序
+            "chapter_content": '', // 章节内容
+            "novel_reading_id": novel_reading_id, // ID
+        }
+
+        layui.layedit.set({
+            uploadImage: {
+                url: BaseUrl + '/api/novel_reading/upload?' //接口url
+                , type: 'post' //默认post
+            }
+        });
+
+
+        var path1
+
+        function getpath() {
+            var list_data = JSON.parse(sessionStorage.list_data)
+            for (var i = 0; i < list_data.length; i++) {
+                var o = list_data[i];
+                if (o.path === "/novel_reading/table") {
+                    path1 = o.path
+                    $get_power(o.path)
+                }
+            }
+        }
+
+        getpath()
+
+        /**
+         * 注册时是否有显示或操作字段的权限
+         * @param {String} action 操作名
+         * @param {String} field 查询的字段
+         * @param {String} path 路径
+         */
+        function $check_register_field(action, field, path1) {
+            var o = $get_power(path1);
+            var auth;
+            if (o && o[action] != 0 && o[action] != false) {
+                auth = o["field_" + action];
+            }
+            if (auth) {
+                return auth.indexOf(field) !== -1;
+            }
+            return false;
+        }
+
+        /**
+         * 是否有显示或操作字段的权限
+         * @param {String} action 操作名
+         * @param {String} field 查询的字段
+         */
+        function $check_field(action, field) {
+            var o = $get_power("/novel_reading/view");
+            var auth;
+            if (o && o[action] != 0 && o[action] != false) {
+                auth = o["field_" + action];
+            }
+            if (auth) {
+                return auth.indexOf(field) !== -1;
+            }
+            return false;
+        }
+
+        /**
+         * 获取路径对应操作权限 鉴权
+         * @param {String} action 操作名
+         */
+        function $check_exam(path1, action = "get") {
+            var o = $get_power(path1);
+            if (o) {
+                var option = JSON.parse(o.option);
+                if (option[action])
+                    return true
+            }
+            return false;
+        }
+
+        /**
+         * 是否有审核字段的权限
+         */
+        function $check_examine() {
+            var url = window.location.href;
+            var url_ = url.split("/")
+            var pg_url = url_[url_.length - 2]
+            let path = "/" + pg_url + "/table"
+            var o = $get_power(path);
+            if (o) {
+                var option = JSON.parse(o.option);
+                if (option.examine)
+                    return true
+            }
+            return false;
+        }
+
+        if (user_group === '管理员') {
+            $("#chapter_name_box").show()
+        } else {
+            if ($check_field('add', 'chapter_name')) {
+                $("#chapter_name_box").show()
+            } else {
+                $("#chapter_name_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#cover_box").show()
+        } else {
+            if ($check_field('add', 'cover')) {
+                $("#cover_box").show()
+            } else {
+                $("#cover_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#author_box").show()
+        } else {
+            if ($check_field('add', 'author')) {
+                $("#author_box").show()
+            } else {
+                $("#author_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#sort_box").show()
+        } else {
+            if ($check_field('add', 'sort')) {
+                $("#sort_box").show()
+            } else {
+                $("#sort_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#state_box").show()
+        } else {
+            if ($check_field('add', 'state')) {
+                $("#state_box").show()
+            } else {
+                $("#state_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#brief_introduction_box").show()
+        } else {
+            if ($check_field('add', 'brief_introduction')) {
+                $("#brief_introduction_box").show()
+            } else {
+                $("#brief_introduction_box").hide()
+            }
+        }
+        if (user_group === '管理员') {
+            $("#chapter_content_box").show()
+        } else {
+            if ($check_field('add', 'chapter_content')) {
+                $("#chapter_content_box").show()
+            } else {
+                $("#chapter_content_box").hide()
+            }
+        }
+
+        //常规使用 - 普通图片上传
+        var uploadInst = upload.render({
+            elem: '#cover'
+            , url: BaseUrl + '/api/novel_reading/upload?' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , headers: {
+                'x-auth-token': token
+            }, before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#cover_img').attr('src', fullUrl(BaseUrl, result)); //图片链接（base64）
+                });
+
+                element.progress('cover', '0%'); //进度条复位
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                //上传成功的一些操作
+                //……
+                form_data2.cover = res.result.url
+                $('#demoText').html(''); //置空上传失败的状态
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+            //进度条
+            , progress: function (n, elem, e) {
+                element.progress('cover', n + '%'); //可配合 layui 进度条元素使用
+                if (n == 100) {
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+        var demo = layedit.build('demo', {
+            tool: [
+                'strong' //加粗
+                , 'italic' //斜体
+                , 'underline' //下划线
+                , 'del' //删除/Del线
+                , '|' //分割线
+                , 'left' //左对齐
+                , 'center' //居中对齐
+                , 'right' //右对齐
+                , 'link' //超链接
+                , 'unlink' //清除链接
+                , 'image' //插入图片
+                , 'help' //帮助
+            ]
+        });
+
+
+        //文本
+        let chapter_name = document.querySelector("#chapter_name")
+        chapter_name.onkeyup = function (event) {
+            form_data2.chapter_name = event.target.value
+        }
+
+        //文本
+        //文本
+        let sort = document.querySelector("#sort")
+        sort.onkeyup = function (event) {
+            form_data2.sort = event.target.value
+        }
+
+        //多文本
+        var data = sessionStorage.data || ''
+        if (data !== '') {
+            var data2 = JSON.parse(data)
+            Object.keys(form_data2).forEach(key => {
+                Object.keys(data2).forEach(dbKey => {
+                    if (key === dbKey) {
+                        if (key !== 'examine_state' && key !== 'examine_reply') {
+                            $('#' + key).val(data2[key])
+                            form_data2[key] = data2[key]
+                            $('#' + key).attr('disabled', 'disabled')
+
+
+                        }
+                    }
+                })
+            })
+            sessionStorage.removeItem("data");
+        }
+
+        if (novel_chapter_id !== '') {
+            async function axios_get_3() {
+                const {data: rese} = await axios.get(BaseUrl + '/api/novel_chapters/get_obj', {
+                    params: {
+                        novel_chapters_id: novel_chapter_id
+                    }, headers: {
+                        'x-auth-token': token
+                    }
+                })
+
+                let data = rese.result.obj
+                Object.keys(form_data2).forEach((key) => {
+                    form_data2[key] = data[key];
+                    $("#" + key).val(form_data2[key])
+                });
+
+
+                if (user_group === '管理员') {
+                    $("#chapter_name_box").show()
+                } else {
+                    if ($check_field('set', 'chapter_name') || $check_field('get', 'chapter_name')) {
+                        $("#chapter_name_box").show()
+                    } else {
+                        $("#chapter_name_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#cover_box").show()
+                } else {
+                    if ($check_field('set', 'cover') || $check_field('get', 'cover')) {
+                        $("#cover_box").show()
+                    } else {
+                        $("#cover_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#author_box").show()
+                } else {
+                    if ($check_field('set', 'author') || $check_field('get', 'author')) {
+                        $("#author_box").show()
+                    } else {
+                        $("#author_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#sort_box").show()
+                } else {
+                    if ($check_field('set', 'sort') || $check_field('get', 'sort')) {
+                        $("#sort_box").show()
+                    } else {
+                        $("#sort_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#state_box").show()
+                } else {
+                    if ($check_field('set', 'state') || $check_field('get', 'state')) {
+                        $("#state_box").show()
+                    } else {
+                        $("#state_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#brief_introduction_box").show()
+                } else {
+                    if ($check_field('set', 'brief_introduction') || $check_field('get', 'brief_introduction')) {
+                        $("#brief_introduction_box").show()
+                    } else {
+                        $("#brief_introduction_box").hide()
+                    }
+                }
+                if (user_group === '管理员') {
+                    $("#chapter_content_box").show()
+                } else {
+                    if ($check_field('set', 'chapter_content') || $check_field('get', 'chapter_content')) {
+                        $("#chapter_content_box").show()
+                    } else {
+                        $("#chapter_content_box").hide()
+                    }
+                }
+
+                // Array.prototype.slice.call(document.getElementsByTagName('input')).map(i => i.disabled = true)
+                // Array.prototype.slice.call(document.getElementsByTagName('select')).map(i => i.disabled = true)
+                // Array.prototype.slice.call(document.getElementsByTagName('textarea')).map(i => i.disabled = true)
+                //文本
+                chapter_name.value = form_data2.chapter_name
+                //文本
+
+                if (user_group === '管理员' || (form_data2['novel_reading_id'] && $check_field('set', 'chapter_name')) || (!form_data2['novel_reading_id'] && $check_field('add', 'chapter_name'))) {
+                } else {
+                    $("#chapter_name").attr("disabled", true);
+                    $("#chapter_name > input[name='file']").attr('disabled', true);
+                }
+
+                if (user_group === '管理员' || (form_data2['novel_reading_id'] && $check_field('set', 'sort')) || (!form_data2['novel_reading_id'] && $check_field('add', 'sort'))) {
+                } else {
+                    $("#sort").attr("disabled", true);
+                    $("#sort > input[name='file']").attr('disabled', true);
+                }
+
+                if (user_group === '管理员' || (form_data2['novel_reading_id'] && $check_field('set', 'chapter_content')) || (!form_data2['novel_reading_id'] && $check_field('add', 'chapter_content'))) {
+                } else {
+                    $("#chapter_content").attr("disabled", true);
+                    $("#chapter_content > input[name='file']").attr('disabled', true);
+                }
+
+                layedit.setContent(demo, form_data2.chapter_content)
+                layui.form.render("select");
+            }
+
+            axios_get_3()
+        }
+
+
+        submit.onclick = async function () {
+            try {
+                //文本
+                form_data2.chapter_name = chapter_name.value
+                //文本
+                form_data2.sort = sort.value
+                //多文本
+                form_data2.chapter_content = layedit.getContent(demo)
+            } catch (err) {
+                console.log(err)
+            }
+
+
+            let customize_field = []
+            customize_field.push({"field_name": "章节名称", "field_value": form_data2.chapter_name});
+            customize_field.push({"field_name": "排序", "field_value": form_data2.sort});
+            customize_field.push({"field_name": "章节内容", "field_value": form_data2.chapter_content});
+
+
+            if (novel_chapter_id == '') {
+                console.log("新增/Add")
+                const {data: res} = await axios.post(BaseUrl + '/api/novel_chapters/add?', form_data2, {
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                if (res.result == 1) {
+                    layer.msg('确认/Confirm完毕');
+                    setTimeout(function () {
+                        window.location.replace("./table.html?novel_reading_id="+novel_reading_id);
+                    }, 1000)
+                } else {
+                    layer.msg(res.error.message);
+                }
+            } else {
+                console.log("详情/Details")
+
+                const {data: res} = await axios.post(BaseUrl + '/api/novel_chapters/set?novel_chapters_id=' + novel_chapter_id,
+                    form_data2, {
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                if (res.result == 1) {
+                    layer.msg('确认/Confirm完毕');
+                    setTimeout(function () {
+                        window.location.replace("./table.html?novel_reading_id="+novel_reading_id);
+                    }, 1000)
+                } else {
+                    layer.msg(res.error.message);
+                }
+            }
+        }
+
+    })
+    ;
+</script>
+
+</html>

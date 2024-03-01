@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+      .diy_list_search .layui-input,
+      .diy_list_search .layui-textarea {
+        width: 250px;
+      }
+     /* 页面头部文字 */
+      #list_title_text_t{
+        min-height: 32px;
+      }
+    </style>
+  </head>
+  <body>
+      <div id="examList">
+        <div class="list_title"><p class="list_title_text" id="list_title_text_t"></p></div>
+        <form class="layui-form diy_list_form_search">
+          <div class="layui-row diy_list_search">
+            <div class="layui-col-md3">
+              <div class="layui-form-item">
+                名称:
+                <input
+                  type="keywords"
+                  name="keywords"
+                  placeholder="请输入名称"
+                  autocomplete="off"
+                  class="layui-input"
+                  id="keywords"
+                />
+              </div>
+            </div>
+            <div class="layui-col-md1">
+              <button
+                type="button"
+                class="layui-btn layui-btn-sm layui-btn-danger"
+                id="searchGo"
+              >
+                <i class="layui-icon layui-icon-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div class="layui-row layui-col-space15 t_list_wrap" id="t_list_box">
+            <table
+              class="layui-table"
+              id="testExam"
+              lay-filter="testExam"
+            ></table>
+            <script type="text/html" id="toolbarDemo">
+              <div class="layui-btn-container">
+                {{# if(d.dt>3&&d.status==='启用'){ }}
+                <button
+                  type="button"
+                  class="layui-btn layui-btn-sm layui-btn-danger"
+                  lay-event="dt"
+                  id="dt"
+                >
+                  答题
+                </button>
+                {{# } }} {{# if(d.ck>2){ }}
+                <button
+                  type="button"
+                  class="layui-btn layui-btn-sm layui-btn-danger"
+                  lay-event="fraction"
+                  id="ck"
+                >
+                  查看分数
+                </button>
+                {{# } }}
+              </div>
+            </script>
+          </div>
+        </div>
+      </div>
+  </body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+    var BaseUrl = baseUrl();
+    layui.use(
+      ["laypage", "layer", "dropdown", "jquery", "element", "util", "table"],
+      function () {
+        var element = layui.element,
+          table = layui.table,
+          util = layui.util,
+          laypage = layui.laypage,
+          layer = layui.layer,
+          dropdown = layui.dropdown,
+          $ = layui.$;
+        let personInfo = JSON.parse(sessionStorage.personInfo);
+        let user_group = personInfo.user_group;
+        let user_id  = personInfo.user_id ;
+        let token = sessionStorage.token || null;
+        var path1;
+        var list_arr = [];
+        var answered_list = [];
+
+        function getpath() {
+          var list_data = JSON.parse(sessionStorage.list_data);
+          for (var i = 0; i < list_data.length; i++) {
+            var o = list_data[i];
+            if (o.path === "/exam/table") {
+              console.log(o.path);
+              path1 = o.path;
+              // $get_power(o.path)
+            }
+          }
+        }
+
+        getpath();
+        //  table 事件
+        table.render({
+          elem: "#testExam",
+          url: BaseUrl + "/api/exam/get_list",
+          headers: {
+            "x-auth-token": token,
+            "Content-Type": "application/json",
+          },
+
+          page: {
+            //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+            layout: ["limit", "count", "prev", "page", "next", "skip"], //自定义分页布局
+            //,curr: 5 //设定初始在第 5 页
+            groups: 1, //只显示 1 个连续页码
+            first: false, //不显示首页
+            last: false, //不显示尾页
+          },
+          cols: [
+            [
+              { field: "name", width: "25%", title: "名称" },
+              { field: "duration", width: 120, title: "答题时长" },
+              { field: "score", width: 120, title: "总分" },
+              {
+                field: "operate",
+                width: "25%",
+                title: "操作",
+                fixed: "right",
+                toolbar: "#toolbarDemo",
+              },
+            ],
+          ],
+          page: true,
+          request: {
+            limitName: "size",
+          },
+          response: {
+            statusName: "code", //规定返回/Back的状态码字段为code
+            statusCode: 200, //规定成功的状态码味200
+          },
+          parseData: function (res) {
+            console.log($check_exam("/exam/list", "answers"));
+            console.log(user_group);
+            list_arr = res.result.list;
+            get_list_after();
+            res.result.list = list_arr;
+            if (user_group == "管理员" || $check_exam('/exam/list', 'answers')) {
+            for (var i = 0; i < res.result.list.length; i++) {
+              let p;
+              $.ajax({
+                type: "GET",
+                url:
+                  BaseUrl +
+                  "/api/user_answer/get_obj?user_id=" +
+                  personInfo.user_id +
+                  "&exam_id=" +
+                  res.result.list[i].exam_id,
+                async: false,
+                success: function (res) {
+                  console.log(res);
+                  p = res.result;
+                },
+              });
+              // console.log(p);
+              if (p && p.obj) {
+                res.result.list[i].dt = 0;
+                res.result.list[i].ck = 3;
+              } else {
+                if (res.result.list[i].status === "启用") {
+                  res.result.list[i].dt = 4;
+                }
+              }
+            }
+          }
+
+            return {
+              code: 200,
+              msg: "",
+              count: res.result.count,
+              data: res.result.list,
+            };
+          },
+          where: { like: 0, size: 10 },
+        });
+
+        table.on("tool(testExam)", function (obj) {
+          //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+          var data = obj.data; //获得当前行数据
+          var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+          var tr = obj.tr; //获得当前行 tr 的DOM对象
+          if (layEvent == "fraction") {
+            window.location = "./aanswer_view_ck_list.html?" + data.exam_id;
+            // document.cookie = data.user_id;
+          } else if (layEvent == "dt") {
+            window.location = "./answer_view_list.html?" + data.exam_id;
+          }
+        });
+        function get_list_after() {
+          for (let i = 0; i < list_arr.length; i++) {
+            get_user_answer_state(list_arr[i].exam_id, i);
+          }
+        }
+        async function get_user_answer_state(exam_id, index) {
+          let { data: res } = await axios.get(
+            BaseUrl +
+              "/api/user_answer/get_obj?user_id=" +
+              user_id +
+              "&exam_id=" +
+              exam_id,
+            {}
+          );
+          console.log(res);
+          if (res.result && res.result.obj != null) {
+            list_arr[index]["answered_list"] = res.result.obj;
+            //answered_list.push({'exam_id':exam_id,'ck':3})
+            // set(answered_list,exam_id,true)
+          } else {
+            list_arr[index]["answered_list"] = null;
+            //answered_list.push({'exam_id':exam_id,'ck':0})
+            // set(answered_list,exam_id,false)
+          }
+          //;
+        }
+        let keywords = document.getElementById("keywords");
+        let searchGo = document.getElementById("searchGo");
+        // 跳转搜索页面
+        searchGo.onclick = function () {
+          // 请求参数：
+          let request = {
+            like: 0,
+            size: 10,
+            page: 1,
+            name: keywords.value,
+            orderby: "create_time desc",
+          };
+          table.reload("testExam", {
+            where: request,
+          });
+        };
+      }
+    );
+    //}
+    //#end
+  </script>
+</html>

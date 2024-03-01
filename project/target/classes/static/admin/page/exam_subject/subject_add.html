@@ -1,0 +1,82 @@
+<!-- 科目详情 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../../layui/css/layui.css">
+  <link rel="stylesheet" href="../../css/diy.css">
+
+  <script src="../../js/axios.min.js"></script>
+
+</head>
+
+<body>
+  <article class="sign_in">
+    <div class="warp exam_sybject">
+      <div class="layui-container">
+        <div class="layui-row">
+          <form class="layui-form" action="">
+            <div class="form-input-box">
+              <div class="input-box">
+                <label class="layui-form-label">科目名称</label>
+                <div class="layui-input-block input-i block">
+                  <input type="text" name="subject_name" lay-verify="subject_name" autocomplete="off"
+                    placeholder="请输入科目名称" class="layui-input" id="subject_name_input">
+                </div>
+              </div>
+            </div>
+            
+          </form>
+          <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-normal" id="submit"><span>确认</span></button>
+            <button type="button" class="layui-btn layui-btn-normal" id="cancel"><span>取消</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</body>
+
+<script src="../../layui/layui.js"></script>
+<script src="../../js/base.js" charset="utf-8"></script>
+<script src="../../js/index.js"></script>
+
+<script>
+  var BaseUrl = baseUrl()
+  layui.use(['upload', 'element', 'layer'], async function () {
+    let token = localStorage.getItem('token') || null
+
+    let set_data = {}
+    submit.addEventListener('click', async function () {
+      set_data['name'] = subject_name_input.value
+
+      const { data: res } = await axios.post(BaseUrl + '/api/subject/add', set_data, {
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (res.result == 1) {
+        layer.msg('确认/Confirm成功');
+        setTimeout(function () { 
+          // window.location.replace("./subject_table.html");
+          colseLayer()
+         }, 1000)
+      }
+    })
+
+    cancel.onclick = function () {
+      // window.history.back(-1);
+      colseLayer()
+    }
+  })
+</script>
+
+<style>
+</style>
+
+</html>

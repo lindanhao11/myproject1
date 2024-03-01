@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="../../layui/css/layui.css" rel="stylesheet" />
+    <link href="../../css/diy.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+      .list-info-left p {
+        line-height: 15px;
+        font-size: 12px;
+        color: #999;
+      }
+      .list-info-child {
+        clear: both;
+        border-top: 1px dashed gray;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+     <div id="cartList">
+        <div class="list_title"><p class="list_title_text">我的购物车</p></div>
+        <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div>
+            <ul id="t_list_box" class="cars"></ul>
+ 
+            <div class="carx">
+              <span
+                ><input
+                  type="checkbox"
+                  name="selectAll"
+                  title="全选"
+                  id="selectAll"
+                />
+                全选</span
+              >
+              <p class="carje" style="font-size: 24px">
+                应付金额:<span class="amount">￥</span
+                ><span class="sum amount" id="sum_price">0</span>
+              </p>
+              <div class="toPay">
+                <button
+                  type="button"
+                  class="layui-btn layui-bg-red"
+                  id="handleAllDelCart"
+                >
+                  删除
+                </button>
+                <button type="button" class="layui-btn layui-bg-red" id="toMyorder">
+                  去购买
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 分页器--开始-->
+          <div id="cont" class="layui-row layui-col-space30"></div>
+          <div id="demo0"></div>
+          <!-- 分页器--结束 -->
+        </div>
+      </div>
+    </div>
+ 
+  </body>
+  <script src="../../js/axios.min.js"></script>
+  <script src="../../js/jquery.2.1.1.min.js"></script>
+  <script src="../../layui/layui.js"></script>
+  <script src="../../js/base.js"></script>
+  <script src="../../js/permissionSet.js"></script>
+  <script>
+    var BaseUrl = baseUrl()
+    layui.use(["laypage", "layer", "dropdown", "jquery", "form"], function () {
+      var laypage = layui.laypage,
+        layer = layui.layer;
+      form = layui.form;
+      var dropdown = layui.dropdown;
+      var $ = layui.jquery;
+      
+      let personInfo = JSON.parse(sessionStorage.personInfo);
+      let user_group = personInfo.user_group;
+      let user_id = personInfo.user_id;
+     
+      // 商城中心
+      //#if($model.filter.message)
+      // check_action('/cart/edit', "add", "forumAdd");
+      let btnMessageAdd = $check_action("/cart/edit", "add");
+      if (btnMessageAdd) {
+      } else {
+      }
+      // check_action("/cart/list", "get", "messageList");
+      //let message = $check_action("/cart/list", "get");
+      //if (message) {
+      //}
+      let pages = 1;
+      var laytpl = layui.laytpl;
+      let list_arr = [];
+      let type_arr = [];
+      // 列表--数据渲染
+      function list_add_html() {}
+      // 获取list数据
+      // message/forum/cart
+      var getTpl = null;
+      async function get_tpl_list(pagesNum, arr) {
+        let params1 = {
+          page: 1,
+          size: 10,
+          user_id: user_id,
+        };
+        let params;
+        if (arr) {
+          params = Object.assign({}, params1, arr);
+        } else {
+          params = params1;
+        }
+        let { data: res } = await axios.get(BaseUrl + "/api/cart/get_list", {
+          params: params,
+        });
+        if (res.result && res.result.list) {
+          list_arr = res.result;
+          // 列表--数据渲染
+          //list_add_html();
+          $("#t_list_box").empty();
+          var objecthtmls = "";
+          for (var i = 0; i < list_arr.list.length; i++) {
+            var item = list_arr.list[i];
+            var obj = JSON.stringify(item).replace(/\"/g, "'");
+            objecthtmls += `<li class="list-info">
+            <div class="list-info-left">
+              <input type="checkbox" name="agreement"  cart_id='${item.cart_id}' lay-verify="required" title="同意">
+              <img src="${fullUrl(BaseUrl, item.img)}" />
+            </div>
+            <div class="list-info-right">
+              <p class="title">${item.title} <button
+                id='del'
+                type="button"
+                cart_id='${item.cart_id}'
+                class="layui-btn jian layui-btn-sm layui-btn-primary record_creator delCart"
+                >删除
+                <i class="layui-icon layui-icon-delete"></i>
+              </button></p>
+              <p class="time">2022-12-12 10:22:36<span
+                ></p>
+              <p class="record">￥
+                <span
+                  class="y_price">${item.price}</span
+                >
+                ￥<del
+                  >${item.price_ago}</del
+                >
+                <span class="record_creator layui-btn-group">
+                  <button
+                    type="button"
+                    cart_id='${item.cart_id}'
+                    class="layui-btn jian layui-btn-sm layui-btn-primary"
+                  >
+                    <i class="layui-icon layui-icon-subtraction"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="layui-btn layui-btn-primary layui-btn-sm num"
+                  >
+                  ${item.num}
+                  </button>
+ 
+                  <button
+                    type="button"
+                    cart_id='${item.cart_id}'
+                    class="layui-btn add layui-btn-primary layui-btn-sm"
+                  >
+                    <i class="layui-icon layui-icon-addition"></i>
+                  </button>
+                </span>
+              </p>
+            </div>
+          </li>`;
+ 
+            // ${item[vm.reply].create_time}
+            //src 为你的图片地址
+          }
+          objecthtmls += ``;
+          $("#t_list_box").append(objecthtmls);
+        }
+      }
+      get_tpl_list(1);
+      $(".cars").on("click", ".jian", function () {
+        var num =parseInt($(this).next().text());
+        var cart_id = $(this).attr("cart_id");
+        //2.判断 当num=大于0时，才减-1
+        if (num > 0) {
+          //3.把数量文本框里的数字-1
+          $(this)
+            .next()
+            .text(num - 1);
+          getSum();
+          var number=num -1;
+        var price=$(this).parent().parent().find(".y_price").text();
+            // 获取数量
+            // var num  = $(this).parent().parent().find(".num").text();
+            //4.计算总价
+        var  price_count=number * price;
+         setcartsDetail(number,price,price_count,cart_id)
+        }else{
+          handleDelCart(cart_id);
+        }
+      });
+      $(".cars").on("click", ".add", function () {
+        var num = $(this).prev().text();
+        var cart_id = $(this).attr("cart_id");
+        var n = parseInt(num);
+        $(this)
+          .prev()
+          .text(n + 1);
+        getSum();
+        var number=n + 1;
+        var price= $(this).parent().parent().find(".y_price").text();
+        var  price_count=number * price;
+        setcartsDetail(number,price,price_count,cart_id)
+ 
+      });
+      async function setcartsDetail(num,price,price_count,cart_id){
+        let { data: resCart } = await axios.post(
+              BaseUrl + `/api/cart/set?cart_id=${cart_id}`,
+              {
+                num,
+                price,
+                price_count,
+              }
+            );
+            if (resCart) {
+              get_tpl_list(1);
+              console.log("更改值");
+            }
+         }
+      $(".cars").on("click", "input[type=checkbox]", function () {
+        var cart_id = $(this).attr("cart_id");
+        //2.把数量文本框里的数字+1
+        let list = list_arr.list;
+        for (let i = 0; i < list.length; i++) {
+          if (cart_id == list[i].cart_id) {
+            list_arr.list[i].selected=true;
+          }
+        }
+        getSum();
+      });
+      //计算总金额
+      function getSum() {
+        var sum = 0;
+        //遍历获取到每一个对象
+        $("input[type=checkbox]").each(function () {
+          if ($(this).is(":checked")) {
+            //3.获取单价(打折):parent()找父标签，prev()找它前面的同级标签
+            var price  = $(this).parent().next().find(".y_price").text();
+            // 获取数量
+            var num  = $(this).parent().next().find(".num").text();
+            //4.计算总价
+            sum += num * price;
+          }
+        });
+        $(".sum").text(sum);  
+      }
+      // 跳转搜索页面
+      let selectAllFlag = false;
+      let selectAll = document.getElementById("selectAll");
+      selectAll.addEventListener("click", function (e) {
+        selectAllFlag = !selectAllFlag;
+        if(selectAllFlag){
+          list_arr.list.map((o) => {
+          o.selected = true;
+         });
+        }else{
+          list_arr.list.map((o) => {
+          o.selected = false;
+           });
+        }
+        var child = $(".cars input[type=checkbox]");
+        child.each(function (index, item) {
+          item.checked = selectAllFlag;
+        });
+        if (selectAllFlag) {
+          getSum();
+        } else {
+          $(".sum").text(0);
+        }
+      });
+      async function handleDelCart(id, index) {
+        let { data: res } = await axios.get(
+          BaseUrl + `/api/cart/del?cart_id=${id}`,
+          {}
+        );
+        if (res.result) {
+          list_arr.list.splice(index, 1);
+          layer.msg("删除成功"); 
+          get_tpl_list(1);
+        }
+      }
+      $(".cars").on("click", ".delCart", function () {
+        var cart_id = $(this).attr("cart_id");
+        //2.把数量文本框里的数字+1
+        let list = list_arr.list;
+        for (let i = 0; i < list.length; i++) {
+          if (cart_id == list[i].cart_id) {
+            handleDelCart(cart_id, i);
+          }
+        }
+      });
+      $("#handleAllDelCart").on("click", function handleAllDelCart() {
+        $(".cars input[type=checkbox]").each(function (index, item) {
+          if ($(this).is(":checked")) {
+            let ids=$(this).attr("cart_id")
+            handleDelCart(ids, index);
+          }
+        });
+      });
+      // 根据当前时间和随机数生成流水号
+      function order_code() {
+          var orderCode = "";
+          for (
+            var i = 0;
+            i < 6;
+            i++ //6位随机数，用以加在时间戳后面。
+          ) {
+            orderCode += Math.floor(Math.random() * 10);
+          }
+          orderCode = new Date().getTime() + orderCode; //时间戳，用来生成订单号。
+          return orderCode;
+        }
+        // 添加跳转到订单详情
+        $("#toMyorder").click(function () {
+          if(list_arr.list.length){
+            add_order();
+          }else{
+            layer.msg("勾选需要购买的商品");
+          }
+          
+        });
+        async function add_order() {
+        // 查询库存
+          let flag = false;
+          let att=list_arr.list
+          for (let i=0;i<att.length;i++){
+            if (att[i].selected) {
+              let { data: goods_json } = await axios.get(
+                BaseUrl + "/api/goods/get_obj",
+                {
+                  params: {"goods_id": att[i].goods_id},
+                }
+              );
+              if (goods_json.result && goods_json.result.obj) {
+                  if (att[i].num>goods_json.result.obj.inventory){
+                    flag = true
+                    layer.msg("库存不足");
+                    break;
+                  }
+                }
+              ;
+                
+            }
+          }
+          if (flag){
+            return;
+          }
+        //生成订单号
+          var order_number =order_code();
+          //获取用户地址数据
+          let { data: res } = await axios.get(
+            BaseUrl + "/api/address/get_obj",
+            {
+              params: {
+                user_id,
+                default: 1,
+              },
+            }
+          );
+          if (res.result && res.result.obj) {
+                  // 选出选中的物品
+              var list_settle = list_arr.list.map(async (o, i) => {
+                if (o.selected) {
+                  settle_one(o, i, order_number,res.result);
+                  //this.$router.push("/order/details?order_number=" + order_number);
+                }
+              });
+              layer.msg("加入订单成功");
+          }else {
+              layer.msg("地址未添加");
+              return;
+          }
+        
+        }
+        /**
+     * 异步单个结算
+     * @param { Object } obj 结算对象
+     * @param { Number } index 规定删除项目的位置
+     * @param { Object } order_number 订单编号
+     */
+    async function settle_one(obj, index, order_number,address) {
+      // 获取被选中的商品
+      var {
+        title,
+        img,
+        price,
+        price_ago,
+        price_count,
+        num,
+        type,
+        goods_id,
+        description,
+        user_id,
+        cart_id,
+      } = obj;
+      // 请求参数
+      const result = await axios.get(BaseUrl + '/api/goods/get_obj?goods_id=' + obj.goods_id)
+      var body = {
+        order_number,
+        title,
+        img,
+        price,
+        price_ago,
+        price_count,
+        num,
+        type,
+        goods_id,
+        description,
+        "contact_name":address.obj.name,
+        "contact_phone":address.obj.phone,
+        "contact_address":address.obj.address,
+        "postal_code":address.obj.postcode,
+        user_id,
+        merchant_id:result.data.result.obj.user_id
+      };
+      // 延迟发送添加订单请求
+      let { data: json } = await axios.post(
+              BaseUrl + `/api/order/add`,
+              body
+            );
+      if (json) {
+        layer.msg("加入订单成功");
+        window.location.replace(
+          "../order/detail.html?order_number=" + order_number
+        );
+      }
+      //删除购物车
+      handleDelCart(obj.cart_id, index)
+      
+    }
+    });
+  </script>
+</html>
